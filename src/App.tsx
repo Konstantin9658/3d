@@ -9,8 +9,9 @@ import {
   useGLTF,
   useScroll,
 } from "@react-three/drei";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { useControls } from "leva";
 
 const MainScene = () => {
   const scroll = useScroll();
@@ -54,10 +55,15 @@ const MainScene = () => {
 };
 
 function App() {
+  const cameraControlsRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const { fov } = useControls({
+    fov: 16,
+  });
   return (
     <Canvas>
       <Environment preset="city" />
-      <PerspectiveCamera makeDefault fov={27} />
+      <PerspectiveCamera makeDefault fov={fov} ref={cameraControlsRef} />
+
       <Suspense fallback={null}>
         <ScrollControls damping={0.7} pages={50} infinite>
           <MainScene />
