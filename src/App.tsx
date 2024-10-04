@@ -46,7 +46,7 @@ const MainScene = () => {
 
       animatedCamera.updateMatrixWorld();
       camera.position.lerp(animatedCamera.position, 0.1);
-      camera.quaternion.copy(animatedCamera.quaternion);
+      camera.quaternion.slerp(animatedCamera.quaternion, 0.1);
     }
   });
 
