@@ -28,7 +28,7 @@ const MainScene = () => {
 
     if (actions && Object.keys(actions).length > 0 && actions["Camera"]) {
       const action = actions["Camera"];
-      action.clampWhenFinished = true;
+      // action.clampWhenFinished = true;
       action.play();
     }
   }, [cameras, actions]);
@@ -57,9 +57,9 @@ function App() {
   return (
     <Canvas>
       <Environment preset="city" />
-      <PerspectiveCamera />
+      <PerspectiveCamera makeDefault fov={27} />
       <Suspense fallback={null}>
-        <ScrollControls damping={0.7} pages={50}>
+        <ScrollControls damping={0.7} pages={50} infinite>
           <MainScene />
         </ScrollControls>
       </Suspense>
