@@ -1,6 +1,6 @@
 import "./App.css";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import model from "./scene.glb";
+import model from "./model.glb";
 import {
   Environment,
   PerspectiveCamera,
@@ -15,76 +15,77 @@ import { useControls } from "leva";
 
 // Основной компонент сцены
 const MainScene = () => {
-  const scroll = useScroll();
-  const { scene, cameras, animations } = useGLTF(model);
-  const camera = useThree((state) => state.camera); // Основная камера
-  const { actions, mixer } = useAnimations(animations, scene);
-  const [animatedCamera, setAnimatedCamera] = useState<THREE.Camera | null>(null);
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const [animatedCamera, setAnimatedCamera] = useState<THREE.Camera | null>(
+    null
+  );
 
+  const { scene, cameras, animations } = useGLTF(model);
+  const { actions, mixer } = useAnimations(animations, scene);
   const { parallaxCoef } = useControls({ parallaxCoef: 0.01 });
 
+  const scroll = useScroll();
+  const camera = useThree((state) => state.camera); // Основная камера
+
+  const prevMouse = useRef({ x: 0, y: 0 });
   const basePosition = useRef(new THREE.Vector3()); // Базовая позиция камеры
   const baseQuaternion = useRef(new THREE.Quaternion()); // Базовый поворот камеры
   const parallaxOffset = useRef(new THREE.Vector3()); // Параллакс-смещение
 
-  const prevMouse = useRef({ x: 0, y: 0 });
-
-  // Обработчик движения мыши
-  const handleMouseMove = (event: MouseEvent) => {
-    setMouse({
-      x: (event.clientX / window.innerWidth) * 2 - 1,
-      y: -(event.clientY / window.innerHeight) * 2 + 1,
-    });
-  };
-
   useEffect(() => {
+    // Обработчик движения мыши
+    const handleMouseMove = (event: MouseEvent) => {
+      setMouse({
+        x: (event.clientX / window.innerWidth) * 2 - 1,
+        y: -(event.clientY / window.innerHeight) * 2 + 1,
+      });
+    };
+
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
   useEffect(() => {
-    if (cameras.length > 0) {
-      setAnimatedCamera(cameras[0]); // Устанавливаем анимированную камеру
-      basePosition.current.copy(camera.position); // Сохраняем базовую позицию
-      baseQuaternion.current.copy(camera.quaternion); // Сохраняем базовый quaternion
-    }
+    if (cameras.length < 0 || !actions || !actions["Camera"]) return;
 
-    if (actions && actions["Camera"]) {
-      const action = actions["Camera"];
-      action.play();
-      action.paused = true; // Останавливаем проигрывание анимации
-    }
+    setAnimatedCamera(cameras[0]); // Устанавливаем анимированную камеру
+    basePosition.current.copy(camera.position); // Сохраняем базовую позицию
+    baseQuaternion.current.copy(camera.quaternion); // Сохраняем базовый quaternion
+
+    const action = actions["Camera"];
+    action.play();
+    action.paused = true; // Останавливаем проигрывание анимации
   }, [cameras, actions, camera]);
 
   useFrame((_, delta) => {
-    if (animatedCamera && actions) {
-      const action = actions["Camera"];
-      if (!action) return;
+    if (!animatedCamera || !actions) return;
 
-      const duration = action.getClip().duration;
-      const scrollOffset = scroll.offset;
+    const action = actions["Camera"];
 
-      // Обновляем время анимации в зависимости от прокрутки
-      action.time = scrollOffset * duration;
-      mixer.update(delta);
+    if (!action) return;
 
-      animatedCamera.updateMatrixWorld();
+    const scrollOffset = scroll.offset;
+    const duration = action.getClip().duration;
 
-      // Плавное обновление позиции и поворота камеры из анимации
-      camera.position.lerp(animatedCamera.position, 0.1);
-      camera.quaternion.slerp(animatedCamera.quaternion, 0.1);
+    // Обновляем время анимации в зависимости от прокрутки
+    action.time = scrollOffset * duration;
+    mixer.update(delta);
 
-      // Применение параллакс-эффекта к камере
-      const parallaxX = mouse.x * parallaxCoef;
-      const parallaxY = mouse.y * parallaxCoef;
+    animatedCamera.updateMatrixWorld();
 
-      // Обновляем смещение параллакса относительно базовой позиции камеры
-      parallaxOffset.current.set(parallaxX, parallaxY, 0);
-      camera.position.add(parallaxOffset.current);
+    // Плавное обновление позиции и поворота камеры из анимации
+    camera.position.lerp(animatedCamera.position, 0.1);
+    camera.quaternion.slerp(animatedCamera.quaternion, 0.1);
 
-      prevMouse.current = { x: parallaxX, y: parallaxY };
-    }
+    // Применение параллакс-эффекта к камере
+    const parallaxX = mouse.x * parallaxCoef;
+    const parallaxY = mouse.y * parallaxCoef;
+
+    // Обновляем смещение параллакса относительно базовой позиции камеры
+    parallaxOffset.current.set(parallaxX, parallaxY, 0);
+    camera.position.add(parallaxOffset.current);
+
+    prevMouse.current = { x: parallaxX, y: parallaxY };
   });
 
   const sceneMemo = useMemo(() => <primitive object={scene} />, [scene]);
@@ -92,21 +93,52 @@ const MainScene = () => {
   return sceneMemo;
 };
 
+type Preset =
+  | "apartment"
+  | "city"
+  | "dawn"
+  | "forest"
+  | "lobby"
+  | "night"
+  | "park"
+  | "studio"
+  | "sunset"
+  | "warehouse"
+  | undefined;
+
 function App() {
-  const cameraControlsRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const { fov } = useControls({ fov: 21.5 });
+  const { fov, environment = "night" } = useControls({
+    fov: 21.5,
+    environment: {
+      options: {
+        none: undefined,
+        apartment: "apartment",
+        city: "city",
+        dawn: "dawn",
+        forest: "forest",
+        lobby: "lobby",
+        night: "night",
+        park: "park",
+        studio: "studio",
+        sunset: "sunset",
+        warehouse: "warehouse",
+      },
+    },
+  });
 
   return (
-    <Canvas>
-      <Environment preset="city" />
-      <PerspectiveCamera makeDefault fov={fov} ref={cameraControlsRef} />
+    <>
+      <Canvas>
+        {environment && <Environment preset={environment as Preset} />}
+        <PerspectiveCamera makeDefault fov={fov} />
 
-      <Suspense fallback={null}>
-        <ScrollControls damping={0.7} pages={50} infinite>
-          <MainScene />
-        </ScrollControls>
-      </Suspense>
-    </Canvas>
+        <Suspense fallback={null}>
+          <ScrollControls damping={0.7} pages={50} infinite>
+            <MainScene />
+          </ScrollControls>
+        </Suspense>
+      </Canvas>
+    </>
   );
 }
 
