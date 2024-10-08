@@ -1,6 +1,7 @@
 import "./App.css";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import model from "./model.glb";
+import model2 from "./scene.glb";
 import {
   Environment,
   PerspectiveCamera,
@@ -20,9 +21,18 @@ const MainScene = () => {
     null
   );
 
-  const { scene, cameras, animations } = useGLTF(model);
+  const { parallaxCoef, currentModel } = useControls({
+    parallaxCoef: 0.01,
+    currentModel: {
+      options: {
+        "12k frames": model2,
+        "3k frames": model,
+      },
+    },
+  });
+
+  const { scene, cameras, animations } = useGLTF(currentModel);
   const { actions, mixer } = useAnimations(animations, scene);
-  const { parallaxCoef } = useControls({ parallaxCoef: 0.01 });
 
   const scroll = useScroll();
   const camera = useThree((state) => state.camera); // Основная камера
