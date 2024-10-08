@@ -10,16 +10,20 @@ import {
   useGLTF,
   useScroll,
 } from "@react-three/drei";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Suspense,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
 import { useControls } from "leva";
 
 // Основной компонент сцены
 const MainScene = () => {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
-  const [animatedCamera, setAnimatedCamera] = useState<THREE.Camera | null>(
-    null
-  );
 
   const { parallaxCoef, currentModel } = useControls({
     parallaxCoef: 0.01,
@@ -36,42 +40,41 @@ const MainScene = () => {
 
   const scroll = useScroll();
   const camera = useThree((state) => state.camera); // Основная камера
+  const animatedCamera = useMemo(
+    () => (cameras.length > 0 ? cameras[0] : null),
+    [cameras]
+  );
 
-  const prevMouse = useRef({ x: 0, y: 0 });
-  const basePosition = useRef(new THREE.Vector3()); // Базовая позиция камеры
-  const baseQuaternion = useRef(new THREE.Quaternion()); // Базовый поворот камеры
-  const parallaxOffset = useRef(new THREE.Vector3()); // Параллакс-смещение
+  const basePosition = useRef(new THREE.Vector3());
+  const baseQuaternion = useRef(new THREE.Quaternion());
+  const parallaxOffset = useRef(new THREE.Vector3());
+
+  const handleMouseMove = useCallback((event: MouseEvent) => {
+    setMouse({
+      x: (event.clientX / window.innerWidth) * 2 - 1,
+      y: -(event.clientY / window.innerHeight) * 2 + 1,
+    });
+  }, []);
 
   useEffect(() => {
-    // Обработчик движения мыши
-    const handleMouseMove = (event: MouseEvent) => {
-      setMouse({
-        x: (event.clientX / window.innerWidth) * 2 - 1,
-        y: -(event.clientY / window.innerHeight) * 2 + 1,
-      });
-    };
-
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [handleMouseMove]);
 
   useEffect(() => {
     if (cameras.length < 0 || !actions || !actions["Camera"]) return;
 
-    setAnimatedCamera(cameras[0]); // Устанавливаем анимированную камеру
-    basePosition.current.copy(camera.position); // Сохраняем базовую позицию
-    baseQuaternion.current.copy(camera.quaternion); // Сохраняем базовый quaternion
+    basePosition.current.copy(camera.position);
+    baseQuaternion.current.copy(camera.quaternion);
 
     const action = actions["Camera"];
     action.play();
-    action.paused = true; // Останавливаем проигрывание анимации
   }, [cameras, actions, camera]);
 
   useFrame((_, delta) => {
     if (!animatedCamera || !actions) return;
 
     const action = actions["Camera"];
-
     if (!action) return;
 
     const scrollOffset = scroll.offset;
@@ -94,13 +97,9 @@ const MainScene = () => {
     // Обновляем смещение параллакса относительно базовой позиции камеры
     parallaxOffset.current.set(parallaxX, parallaxY, 0);
     camera.position.add(parallaxOffset.current);
-
-    prevMouse.current = { x: parallaxX, y: parallaxY };
   });
 
-  const sceneMemo = useMemo(() => <primitive object={scene} />, [scene]);
-
-  return sceneMemo;
+  return useMemo(() => <primitive object={scene} />, [scene]);
 };
 
 type Preset =
@@ -117,7 +116,7 @@ type Preset =
   | undefined;
 
 function App() {
-  const { fov, environment = "night" } = useControls({
+  const { fov, environment } = useControls({
     fov: 21.5,
     environment: {
       options: {
@@ -139,10 +138,10 @@ function App() {
   return (
     <>
       <Canvas>
-        {environment && <Environment preset={environment as Preset} />}
-        <PerspectiveCamera makeDefault fov={fov} />
-
         <Suspense fallback={null}>
+          {environment && <Environment preset={environment as Preset} />}
+          <PerspectiveCamera makeDefault fov={fov} />
+
           <ScrollControls damping={0.7} pages={50} infinite>
             <MainScene />
           </ScrollControls>
