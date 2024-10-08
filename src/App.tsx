@@ -37,6 +37,8 @@ const MainScene = () => {
     },
   });
 
+  console.log(currentModel);
+
   const { scene, cameras, animations } = useGLTF(model3);
   const { actions, mixer } = useAnimations(animations, scene);
 
