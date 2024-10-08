@@ -2,6 +2,7 @@ import "./App.css";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import model from "./model.glb";
 import model2 from "./scene.glb";
+import model3 from "./model3.glb";
 import {
   Environment,
   PerspectiveCamera,
@@ -29,13 +30,14 @@ const MainScene = () => {
     parallaxCoef: 0.01,
     currentModel: {
       options: {
+        "600 frames": model3,
         "12k frames": model2,
         "3k frames": model,
       },
     },
   });
 
-  const { scene, cameras, animations } = useGLTF(currentModel);
+  const { scene, cameras, animations } = useGLTF(model3);
   const { actions, mixer } = useAnimations(animations, scene);
 
   const scroll = useScroll();
@@ -99,7 +101,12 @@ const MainScene = () => {
     camera.position.add(parallaxOffset.current);
   });
 
-  return useMemo(() => <primitive object={scene} />, [scene]);
+  // const memoziedScene = useMemo(
+  //   () => ,
+  //   [scene, currentModel]
+  // );
+
+  return <primitive object={scene} />;
 };
 
 type Preset =
