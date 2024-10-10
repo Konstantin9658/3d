@@ -108,37 +108,37 @@ const MainScene = () => {
   return <primitive object={scene} />;
 };
 
-type Preset =
-  | "apartment"
-  | "city"
-  | "dawn"
-  | "forest"
-  | "lobby"
-  | "night"
-  | "park"
-  | "studio"
-  | "sunset"
-  | "warehouse"
-  | undefined;
+// type Preset =
+//   | "apartment"
+//   | "city"
+//   | "dawn"
+//   | "forest"
+//   | "lobby"
+//   | "night"
+//   | "park"
+//   | "studio"
+//   | "sunset"
+//   | "warehouse"
+//   | undefined;
 
 function App() {
-  const { fov, environment } = useControls({
+  const { fov } = useControls({
     fov: 21.5,
-    environment: {
-      options: {
-        none: undefined,
-        apartment: "apartment",
-        city: "city",
-        dawn: "dawn",
-        forest: "forest",
-        lobby: "lobby",
-        night: "night",
-        park: "park",
-        studio: "studio",
-        sunset: "sunset",
-        warehouse: "warehouse",
-      },
-    },
+    // environment: {
+    //   options: {
+    //     none: undefined,
+    //     apartment: "apartment",
+    //     city: "city",
+    //     dawn: "dawn",
+    //     forest: "forest",
+    //     lobby: "lobby",
+    //     night: "night",
+    //     park: "park",
+    //     studio: "studio",
+    //     sunset: "sunset",
+    //     warehouse: "warehouse",
+    //   },
+    // },
   });
 
   return (
