@@ -1,10 +1,8 @@
 import "./App.css";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import model from "./assets/models/full_scene.glb";
-
 import {
   Environment,
-  // OrbitControls,
   PerspectiveCamera,
   ScrollControls,
   useAnimations,
@@ -31,11 +29,14 @@ import { FifthStage } from "./components/FifthStage";
 import { SixthStage } from "./components/SixthStage";
 import { SeventhStage } from "./components/SeventhStage";
 import { Effects } from "./components/Effects";
-// import env from "./env.hdr";
 import env2 from "./env2.hdr";
 
 // Основной компонент сцены
-const MainScene = () => {
+const MainScene = ({
+  setEnvRotation,
+}: {
+  setEnvRotation?: (euler: THREE.Euler) => void;
+}) => {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
   const { parallaxCoef } = useControls({
@@ -94,8 +95,18 @@ const MainScene = () => {
     animatedCamera.updateMatrixWorld();
 
     // Плавное обновление позиции и поворота камеры из анимации
-    camera.position.lerp(animatedCamera.position, 0.1);
-    camera.quaternion.slerp(animatedCamera.quaternion, 0.1);
+    const targetPosition = animatedCamera.position;
+    const targetQuaternion = animatedCamera.quaternion;
+
+    // Только если расстояние между текущей и целевой позицией больше порога
+    if (camera.position.distanceTo(targetPosition) > 0.001) {
+      camera.position.lerp(targetPosition, 0.1);
+    }
+
+    // Только если разница в углах поворота больше порога
+    if (camera.quaternion.angleTo(targetQuaternion) > 0.001) {
+      camera.quaternion.slerp(targetQuaternion, 0.1);
+    }
 
     // Применение параллакс-эффекта к камере
     const parallaxX = mouse.x * parallaxCoef;
@@ -104,13 +115,16 @@ const MainScene = () => {
     // Обновляем смещение параллакса относительно базовой позиции камеры
     parallaxOffset.current.set(parallaxX, parallaxY, 0);
     camera.position.add(parallaxOffset.current);
+
+    // Устанавливаем вращение окружения в зависимости от поворота камеры
+    const euler = new THREE.Euler().setFromQuaternion(camera.quaternion);
+    setEnvRotation?.(euler);
   });
 
   return <primitive object={scene} />;
 };
 
 function App() {
-
   const { fov, linear } = useControls({
     fov: 21.5,
     linear: {
@@ -119,6 +133,7 @@ function App() {
     },
   });
 
+  const [envRotation, setEnvRotation] = useState(new THREE.Euler());
 
   const canvasKey = useMemo(() => `canvas-${linear}`, [linear]);
 
@@ -127,11 +142,13 @@ function App() {
       <Canvas linear={linear} key={canvasKey}>
         <Suspense fallback={null}>
           <Effects />
-          <Environment files={env2} />
+          <Environment
+            files={env2}
+            environmentRotation={[envRotation.x, envRotation.y, envRotation.z]}
+          />
           <PerspectiveCamera makeDefault fov={fov} name="Camera" />
-          {/* <OrbitControls makeDefault /> */}
           <ScrollControls damping={0.7} pages={50} infinite>
-            <MainScene />
+            <MainScene setEnvRotation={setEnvRotation} />
             <Planet />
             <SpaceStation />
             <FirstStage />
