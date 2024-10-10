@@ -147,8 +147,6 @@ const updateLastComposerEffect = (effectComposer: RawEffectComposer) => {
   }
 };
 
-const isAAEnabled = true;
-
 export const Effects = () => {
   const effectComposer = useRef<RawEffectComposer>(null);
 
@@ -185,6 +183,11 @@ export const Effects = () => {
     modulationOffset,
     x: chromaticOffsetX,
     y: chromaticOffsetY,
+
+    aaEnabled,
+    edgeDetectionMode,
+    predicationMode,
+    preset,
   } = useControls(
     {
       Bloom: folder(
@@ -247,6 +250,37 @@ export const Effects = () => {
             max: 5,
             min: 0,
             step: 0.05,
+          },
+        },
+        { collapsed: true }
+      ),
+      "Anti-aliasing": folder(
+        {
+          aaEnabled: { label: "enabled", value: true },
+          edgeDetectionMode: {
+            value: EdgeDetectionMode.COLOR,
+            options: {
+              COLOR: EdgeDetectionMode.COLOR,
+              DEPTH: EdgeDetectionMode.DEPTH,
+              LUMA: EdgeDetectionMode.LUMA,
+            },
+          },
+          predicationMode: {
+            value: PredicationMode.DISABLED,
+            options: {
+              DISABLED: PredicationMode.DISABLED,
+              CUSTOM: PredicationMode.CUSTOM,
+              DEPTH: PredicationMode.DEPTH,
+            },
+          },
+          preset: {
+            value: SMAAPreset.HIGH,
+            options: {
+              LOW: SMAAPreset.LOW,
+              MEDIUM: SMAAPreset.MEDIUM,
+              HIGH: SMAAPreset.HIGH,
+              ULTRA: SMAAPreset.ULTRA,
+            },
           },
         },
         { collapsed: true }
@@ -365,13 +399,13 @@ export const Effects = () => {
       );
     }
 
-    if (isAAEnabled) {
+    if (aaEnabled) {
       const smaaPass = new EffectPass(
         camera,
         new SMAAEffect({
-          edgeDetectionMode: EdgeDetectionMode.COLOR,
-          predicationMode: PredicationMode.DISABLED,
-          preset: SMAAPreset.MEDIUM,
+          edgeDetectionMode,
+          predicationMode,
+          preset,
         })
       );
       composer.addPass(smaaPass);
@@ -383,6 +417,7 @@ export const Effects = () => {
 
     return () => composer.reset();
   }, [
+    aaEnabled,
     blendFunction,
     bloomEnabled,
     camera,
@@ -398,6 +433,7 @@ export const Effects = () => {
     colorSaturation,
     colorSaturationRads,
     darkness,
+    edgeDetectionMode,
     intensity,
     kernelSize,
     luminanceSmoothing,
@@ -405,6 +441,8 @@ export const Effects = () => {
     mipmapBlur,
     modulationOffset,
     offset,
+    predicationMode,
+    preset,
     radialModulationEnabled,
     scene,
     vignetteEnabled,

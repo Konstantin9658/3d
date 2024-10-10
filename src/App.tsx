@@ -31,7 +31,8 @@ import { FifthStage } from "./components/FifthStage";
 import { SixthStage } from "./components/SixthStage";
 import { SeventhStage } from "./components/SeventhStage";
 import { Effects } from "./components/Effects";
-import env from "./env.hdr";
+// import env from "./env.hdr";
+import env2 from "./env2.hdr";
 
 // Основной компонент сцены
 const MainScene = () => {
@@ -108,45 +109,25 @@ const MainScene = () => {
   return <primitive object={scene} />;
 };
 
-// type Preset =
-//   | "apartment"
-//   | "city"
-//   | "dawn"
-//   | "forest"
-//   | "lobby"
-//   | "night"
-//   | "park"
-//   | "studio"
-//   | "sunset"
-//   | "warehouse"
-//   | undefined;
-
 function App() {
-  const { fov } = useControls({
+
+  const { fov, linear } = useControls({
     fov: 21.5,
-    // environment: {
-    //   options: {
-    //     none: undefined,
-    //     apartment: "apartment",
-    //     city: "city",
-    //     dawn: "dawn",
-    //     forest: "forest",
-    //     lobby: "lobby",
-    //     night: "night",
-    //     park: "park",
-    //     studio: "studio",
-    //     sunset: "sunset",
-    //     warehouse: "warehouse",
-    //   },
-    // },
+    linear: {
+      label: "linear",
+      value: true,
+    },
   });
+
+
+  const canvasKey = useMemo(() => `canvas-${linear}`, [linear]);
 
   return (
     <>
-      <Canvas>
+      <Canvas linear={linear} key={canvasKey}>
         <Suspense fallback={null}>
           <Effects />
-          <Environment files={env} />
+          <Environment files={env2} />
           <PerspectiveCamera makeDefault fov={fov} name="Camera" />
           {/* <OrbitControls makeDefault /> */}
           <ScrollControls damping={0.7} pages={50} infinite>
