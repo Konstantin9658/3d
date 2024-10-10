@@ -31,6 +31,7 @@ import { FifthStage } from "./components/FifthStage";
 import { SixthStage } from "./components/SixthStage";
 import { SeventhStage } from "./components/SeventhStage";
 import { Effects } from "./components/Effects";
+import env from "./env.hdr";
 
 // Основной компонент сцены
 const MainScene = () => {
@@ -145,7 +146,7 @@ function App() {
       <Canvas>
         <Suspense fallback={null}>
           <Effects />
-          {environment && <Environment preset={environment as Preset} />}
+          <Environment files={env} />
           <PerspectiveCamera makeDefault fov={fov} name="Camera" />
           {/* <OrbitControls makeDefault /> */}
           <ScrollControls damping={0.7} pages={50} infinite>
