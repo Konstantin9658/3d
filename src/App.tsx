@@ -178,14 +178,7 @@ import {
   useGLTF,
   useScroll,
 } from "@react-three/drei";
-import {
-  Suspense,
-  useEffect,
-  useMemo,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { useControls } from "leva";
 import { FirstStage } from "./components/FirstStage";
@@ -207,7 +200,9 @@ const MainScene = ({
   setEnvRotation?: (euler: THREE.Euler) => void;
 }) => {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
-
+  const [scrolling, setScrolling] = useState(false); // Состояние активности скролла
+  const [lastScrollOffset, setLastScrollOffset] = useState(0); // Для отслеживания изменения скролла
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null); // Таймер для остановки анимации
   const { parallaxCoef } = useControls({
     parallaxCoef: 0.01,
   });
@@ -226,18 +221,28 @@ const MainScene = ({
   const baseQuaternion = useRef(new THREE.Quaternion());
   const parallaxOffset = useRef(new THREE.Vector3());
 
-  const handleMouseMove = useCallback((event: MouseEvent) => {
-    setMouse({
-      x: (event.clientX / window.innerWidth) * 2 - 1,
-      y: -(event.clientY / window.innerHeight) * 2 + 1,
-    });
-  }, []);
-
   useEffect(() => {
+    if (animatedCamera) {
+      // Копируем позицию и ориентацию камеры, чтобы не было рывков
+      camera.position.copy(animatedCamera.position);
+      camera.quaternion.copy(animatedCamera.quaternion);
+    }
+  }, [animatedCamera, camera]);
+
+  // Функция для отслеживания мыши
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      setMouse({
+        x: (event.clientX / window.innerWidth) * 2 - 1,
+        y: -(event.clientY / window.innerHeight) * 2 + 1,
+      });
+    };
+
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [handleMouseMove]);
+  }, []);
 
+  // Инициализация камеры и анимации
   useEffect(() => {
     if (cameras.length < 0 || !actions || !actions["Camera"]) return;
 
@@ -248,6 +253,7 @@ const MainScene = ({
     action.play();
   }, [cameras, actions, camera]);
 
+  // Основной рендер-цикл
   useFrame((_, delta) => {
     if (!animatedCamera || !actions) return;
 
@@ -255,44 +261,64 @@ const MainScene = ({
     if (!action) return;
 
     const scrollOffset = scroll.offset;
-    const duration = action.getClip().duration;
 
-    // Обновляем время анимации в зависимости от прокрутки
-    action.time = scrollOffset * duration;
-    mixer.update(delta);
+    // Проверяем, изменился ли скролл
+    if (scrollOffset !== lastScrollOffset) {
+      setScrolling(true); // Скролл активен
 
-    animatedCamera.updateMatrixWorld();
+      // Сброс таймера остановки анимации
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
 
-    // Плавное обновление позиции и поворота камеры из анимации
-    camera.position.lerp(animatedCamera.position, 0.05);
-    camera.quaternion.slerp(animatedCamera.quaternion, 0.05);
+      // Устанавливаем таймер для остановки анимации
+      scrollTimeout.current = setTimeout(() => {
+        setScrolling(false); // Скролл завершен
+      }, 1000); // 1 секунда задержки
 
-    // Применение параллакс-эффекта к камере
-    const parallaxX = mouse.x * parallaxCoef;
-    const parallaxY = mouse.y * parallaxCoef;
+      setLastScrollOffset(scrollOffset); // Обновляем последнее значение прокрутки
+    }
 
-    // Обновляем смещение параллакса относительно базовой позиции камеры
-    parallaxOffset.current.set(parallaxX, parallaxY, 0);
-    camera.position.add(parallaxOffset.current);
+    // Если скроллинг активен, продолжаем анимацию
+    if (scrolling) {
+      const duration = action.getClip().duration;
 
-    // Устанавливаем вращение окружения в зависимости от поворота камеры
-    const euler = new THREE.Euler().setFromQuaternion(camera.quaternion);
-    setEnvRotation?.(euler);
+      // Обновляем время анимации в зависимости от прокрутки
+      action.time = scrollOffset * duration;
+      mixer.update(delta);
+
+      animatedCamera.updateMatrixWorld();
+
+      // Плавное обновление позиции и поворота камеры из анимации
+      camera.position.lerp(animatedCamera.position, 0.05);
+      camera.quaternion.slerp(animatedCamera.quaternion, 0.05);
+
+      // Применение параллакс-эффекта к камере
+      const parallaxX = mouse.x * parallaxCoef;
+      const parallaxY = mouse.y * parallaxCoef;
+
+      // Обновляем смещение параллакса относительно базовой позиции камеры
+      parallaxOffset.current.set(parallaxX, parallaxY, 0);
+      camera.position.add(parallaxOffset.current);
+
+      // Устанавливаем вращение окружения в зависимости от поворота камеры
+      const euler = new THREE.Euler().setFromQuaternion(
+        camera.quaternion,
+        "ZYX"
+      );
+      setEnvRotation?.(euler);
+    }
   });
 
   return <primitive object={scene} />;
 };
 
 function App() {
-  const { fov, linear, invertEnv } = useControls({
+  const { fov, linear } = useControls({
     fov: 21.5,
     linear: {
       label: "linear",
       value: true,
-    },
-    invertEnv: {
-      label: "invert",
-      value: false,
     },
   });
 
@@ -307,12 +333,7 @@ function App() {
           <Effects />
           <Environment
             files={env2}
-            // Передаем текущий угол поворота окружения на основе камеры
-            environmentRotation={
-              invertEnv
-                ? [-envRotation.x, -envRotation.y, -envRotation.z]
-                : [envRotation.x, envRotation.y, envRotation.z]
-            }
+            environmentRotation={[envRotation.x, envRotation.y, envRotation.z]}
           />
           <PerspectiveCamera makeDefault fov={fov} name="Camera" />
           <ScrollControls damping={0.7} pages={50} infinite>

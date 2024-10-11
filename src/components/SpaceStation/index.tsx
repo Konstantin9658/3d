@@ -9,7 +9,7 @@ export const SpaceStation = () => {
 
   useEffect(() => {
     if (!actions || !actions["Scene"]) return;
-    console.log(actions);
+
     const action = actions["Scene"];
     action.play();
   }, [actions, animations]);
