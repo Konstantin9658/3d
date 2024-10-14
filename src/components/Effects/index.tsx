@@ -1,119 +1,3 @@
-// import {
-//   Bloom,
-//   BrightnessContrast,
-//   ChromaticAberration,
-//   EffectComposer,
-//   HueSaturation,
-//   SMAA,
-//   Vignette,
-// } from "@react-three/postprocessing";
-// import { Vector2 } from "three";
-// import { degToRad } from "three/src/math/MathUtils.js";
-// import {
-//   BlendFunction,
-//   EdgeDetectionMode,
-//   KernelSize,
-//   PredicationMode,
-//   SMAAPreset,
-// } from "postprocessing";
-// import { folder, useControls } from "leva";
-// import { BLOOM_BLEND_FUNC_OPTIONS } from "./consts";
-
-// export const Effects = () => {
-//   const {
-//     colorEnabled,
-//     colorHue,
-//     colorSaturation,
-//     colorBrightness,
-//     colorContrast,
-
-//     bloomEnabled,
-//     mipmapBlur,
-//     blendFunction,
-//     luminanceThreshold,
-//     luminanceSmoothing,
-//     intensity,
-//     kernelSize,
-
-//     chromaticAberrationEnabled,
-//     noiseEnabled,
-//     vignetteEnabled,
-//   } = useControls({
-//     bloom: folder(
-//       {
-//         bloomEnabled: { label: "enabled", value: true },
-//         mipmapBlur: true,
-//         blendFunction: {
-//           value: BLOOM_BLEND_FUNC_OPTIONS.SCREEN,
-//           options: BLOOM_BLEND_FUNC_OPTIONS,
-//         },
-//         luminanceThreshold: {
-//           value: 1,
-//           max: 5,
-//           min: 0,
-//           step: 0.05,
-//         },
-//         luminanceSmoothing: {
-//           value: 0,
-//           min: 0,
-//           max: 1,
-//           step: 0.05,
-//         },
-//         intensity: {
-//           value: 0.65,
-//           max: 5,
-//           min: 0,
-//           step: 0.05,
-//         },
-//         kernelSize: {
-//           value: KernelSize.LARGE,
-//           options: {
-//             verySmall: KernelSize.VERY_SMALL,
-//             small: KernelSize.SMALL,
-//             medium: KernelSize.MEDIUM,
-//             large: KernelSize.LARGE,
-//             veryLarge: KernelSize.VERY_LARGE,
-//             huge: KernelSize.HUGE,
-//           },
-//         },
-//       },
-//       { collapsed: true }
-//     ),
-//   });
-
-//   return (
-//     <EffectComposer multisampling={0}>
-//       <></>
-//       {/* {bloomEnabled ? (
-//         <Bloom
-//           mipmapBlur={mipmapBlur}
-//           blendFunction={blendFunction}
-//           kernelSize={kernelSize}
-//           luminanceThreshold={luminanceThreshold}
-//           luminanceSmoothing={luminanceSmoothing}
-//           intensity={intensity}
-//         />
-//       ) : (
-//         <></>
-//       )}
-//       <ChromaticAberration
-//         offset={new Vector2(0.0004, 0.0004)}
-//         blendFunction={BlendFunction.NORMAL}
-//         radialModulation={false}
-//         modulationOffset={0.15}
-//       />
-//       <Vignette offset={0.05} darkness={0.2} />
-//       <HueSaturation hue={0} saturation={degToRad(7)} />
-//       <BrightnessContrast brightness={0.2} contrast={-0.25} />
-//       <SMAA
-//         edgeDetectionMode={EdgeDetectionMode.COLOR}
-//         predicationMode={PredicationMode.DISABLED}
-//         preset={SMAAPreset.MEDIUM}
-//       /> */}
-//     </EffectComposer>
-//   );
-// };
-
 import { useThree } from "@react-three/fiber";
 import { EffectComposer } from "@react-three/postprocessing";
 import { folder, useControls } from "leva";
@@ -225,7 +109,7 @@ export const Effects = () => {
       ),
       "Chromatic Aberration": folder(
         {
-          chromaticAberrationEnabled: { label: "enabled", value: false },
+          chromaticAberrationEnabled: { label: "enabled", value: true },
           radialModulationEnabled: { value: false },
           chromaticBlendFunc: {
             value: BLEND_FUNC_OPTIONS.NORMAL,
@@ -274,7 +158,7 @@ export const Effects = () => {
             },
           },
           preset: {
-            value: SMAAPreset.HIGH,
+            value: SMAAPreset.ULTRA,
             options: {
               LOW: SMAAPreset.LOW,
               MEDIUM: SMAAPreset.MEDIUM,
@@ -316,14 +200,14 @@ export const Effects = () => {
           },
           colorBrightness: {
             label: "brightness",
-            value: 0.2,
+            value: 0.25,
             step: 0.05,
             min: -1,
             max: 1,
           },
           colorContrast: {
             label: "contrast",
-            value: -0.25,
+            value: 0.1,
             step: 0.05,
             min: -1,
             max: 1,

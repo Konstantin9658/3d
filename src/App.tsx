@@ -9,7 +9,6 @@ import {
   useAnimations,
   useGLTF,
   useScroll,
-  SoftShadows,
 } from "@react-three/drei";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -35,6 +34,8 @@ import env700 from "@/assets/hdr/dam_wall_1k-700.hdr";
 import env800 from "@/assets/hdr/dam_wall_1k-800.hdr";
 import env900 from "@/assets/hdr/dam_wall_1k-900.hdr";
 
+const PARALLAX_COEF = 0.01;
+
 // Основной компонент сцены
 const MainScene = ({
   setEnvRotation,
@@ -42,12 +43,9 @@ const MainScene = ({
   setEnvRotation?: (euler: THREE.Euler) => void;
 }) => {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
-  const [scrolling, setScrolling] = useState(false); // Состояние активности скролла
-  const [lastScrollOffset, setLastScrollOffset] = useState(0); // Для отслеживания изменения скролла
-  const scrollTimeout = useRef<NodeJS.Timeout | null>(null); // Таймер для остановки анимации
-  const { parallaxCoef } = useControls({
-    parallaxCoef: 0.01,
-  });
+  // const [scrolling, setScrolling] = useState(false); // Состояние активности скролла
+  // const [lastScrollOffset, setLastScrollOffset] = useState(0); // Для отслеживания изменения скролла
+  // const scrollTimeout = useRef<NodeJS.Timeout | null>(null); // Таймер для остановки анимации
 
   const { scene, cameras, animations } = useGLTF(model);
   const { actions, mixer } = useAnimations(animations, scene);
@@ -68,6 +66,8 @@ const MainScene = ({
       // Копируем позицию и ориентацию камеры, чтобы не было рывков
       camera.position.copy(animatedCamera.position);
       camera.quaternion.copy(animatedCamera.quaternion);
+      camera.castShadow = true;
+      animatedCamera.castShadow = true;
     }
   }, [animatedCamera, camera]);
 
@@ -92,7 +92,7 @@ const MainScene = ({
     baseQuaternion.current.copy(camera.quaternion);
 
     const action = actions["Camera"];
-    action.clampWhenFinished = false;
+    action.clampWhenFinished = true;
     action.play();
   }, [cameras, actions, camera]);
 
@@ -106,51 +106,48 @@ const MainScene = ({
     const scrollOffset = scroll.offset;
 
     // Проверяем, изменился ли скролл
-    if (scrollOffset !== lastScrollOffset) {
-      setScrolling(true); // Скролл активен
+    // if (scrollOffset !== lastScrollOffset) {
+    //   setScrolling(true); // Скролл активен
 
-      // Сброс таймера остановки анимации
-      if (scrollTimeout.current) {
-        clearTimeout(scrollTimeout.current);
-      }
+    //   // Сброс таймера остановки анимации
+    //   if (scrollTimeout.current) {
+    //     clearTimeout(scrollTimeout.current);
+    //   }
 
-      // Устанавливаем таймер для остановки анимации
-      scrollTimeout.current = setTimeout(() => {
-        setScrolling(false); // Скролл завершен
-      }, 1000); // 1 секунда задержки
+    //   // Устанавливаем таймер для остановки анимации
+    //   scrollTimeout.current = setTimeout(() => {
+    //     setScrolling(false); // Скролл завершен
+    //   }, 1000); // 1 секунда задержки
 
-      setLastScrollOffset(scrollOffset); // Обновляем последнее значение прокрутки
-    }
+    //   setLastScrollOffset(scrollOffset); // Обновляем последнее значение прокрутки
+    // }
+
+    // if (!scrolling) return (action.paused = true);
 
     // Если скроллинг активен, продолжаем анимацию
-    if (scrolling) {
-      const duration = action.getClip().duration;
+    const duration = action.getClip().duration;
 
-      // Обновляем время анимации в зависимости от прокрутки
-      action.time = scrollOffset * duration;
-      mixer.update(delta);
+    // Обновляем время анимации в зависимости от прокрутки
+    action.time = scrollOffset * duration;
+    mixer.update(delta);
 
-      animatedCamera.updateMatrixWorld();
+    animatedCamera.updateMatrixWorld();
 
-      // Плавное обновление позиции и поворота камеры из анимации
-      camera.position.lerp(animatedCamera.position, 0.1);
-      camera.quaternion.slerp(animatedCamera.quaternion, 0.1);
+    // Плавное обновление позиции и поворота камеры из анимации
+    camera.position.lerp(animatedCamera.position, 0.05);
+    camera.quaternion.slerp(animatedCamera.quaternion, 0.05);
 
-      // Применение параллакс-эффекта к камере
-      const parallaxX = mouse.x * parallaxCoef;
-      const parallaxY = mouse.y * parallaxCoef;
+    // Применение параллакс-эффекта к камере
+    const parallaxX = mouse.x * PARALLAX_COEF;
+    const parallaxY = mouse.y * PARALLAX_COEF;
 
-      // Обновляем смещение параллакса относительно базовой позиции камеры
-      parallaxOffset.current.set(parallaxX, parallaxY, 0);
-      camera.position.add(parallaxOffset.current);
+    // Обновляем смещение параллакса относительно базовой позиции камеры
+    parallaxOffset.current.set(parallaxX, parallaxY, 0);
+    camera.position.add(parallaxOffset.current);
 
-      // Устанавливаем вращение окружения в зависимости от поворота камеры
-      const euler = new THREE.Euler().setFromQuaternion(
-        camera.quaternion,
-        "ZYX"
-      );
-      setEnvRotation?.(euler);
-    }
+    // Устанавливаем вращение окружения в зависимости от поворота камеры
+    const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, "ZYX");
+    setEnvRotation?.(euler);
   });
 
   return <primitive object={scene} />;
@@ -193,14 +190,18 @@ function App() {
   return (
     <>
       <Canvas
-        flat
         linear={linear}
         key={canvasKey}
         style={{ background: "#000" }}
         shadows
+        // gl={{
+        //   depth: true,
+        //   stencil: true,
+        //   antialias: true,
+        //   logarithmicDepthBuffer: true,
+        // }}
       >
         <Suspense fallback={null}>
-          <SoftShadows />
           <Effects />
           <PerspectiveCamera
             makeDefault
