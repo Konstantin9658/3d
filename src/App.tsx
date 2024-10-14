@@ -23,16 +23,7 @@ import { FifthStage } from "./components/FifthStage";
 import { SixthStage } from "./components/SixthStage";
 import { SeventhStage } from "./components/SeventhStage";
 import { Effects } from "./components/Effects";
-import env2 from "./env2.hdr";
-import env100 from "@/assets/hdr/dam_wall_1k-100.hdr";
-import env200 from "@/assets/hdr/dam_wall_1k-200.hdr";
-import env300 from "@/assets/hdr/dam_wall_1k-300.hdr";
-import env400 from "@/assets/hdr/dam_wall_1k-400.hdr";
-import env500 from "@/assets/hdr/dam_wall_1k-500.hdr";
-import env600 from "@/assets/hdr/dam_wall_1k-600.hdr";
-import env700 from "@/assets/hdr/dam_wall_1k-700.hdr";
-import env800 from "@/assets/hdr/dam_wall_1k-800.hdr";
-import env900 from "@/assets/hdr/dam_wall_1k-900.hdr";
+import env from "@/assets/hdr/kloofendal_28d_misty_1k.hdr";
 
 const PARALLAX_COEF = 0.01;
 
@@ -154,7 +145,7 @@ const MainScene = ({
 };
 
 function App() {
-  const { fov, linear, env, envIntensity } = useControls({
+  const { fov, linear, envIntensity } = useControls({
     fov: 21.5,
     envIntensity: {
       value: 0.5,
@@ -165,21 +156,6 @@ function App() {
     linear: {
       label: "linear",
       value: true,
-    },
-    env: {
-      value: env2,
-      options: {
-        default: env2,
-        100: env100,
-        200: env200,
-        300: env300,
-        400: env400,
-        500: env500,
-        600: env600,
-        700: env700,
-        800: env800,
-        900: env900,
-      },
     },
   });
 
