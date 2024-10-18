@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import model from "./assets/models/full_scene.glb";
 import {
   Environment,
+  Html,
   PerspectiveCamera,
   ScrollControls,
   // OrbitControls,
@@ -10,13 +11,20 @@ import {
   useGLTF,
   useScroll,
 } from "@react-three/drei";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ReactNode,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
-import { useControls } from "leva";
+import { Leva, useControls } from "leva";
 import { FirstStage } from "./components/FirstStage";
 import { Planet } from "./components/Planet";
 import { SpaceStation } from "./components/SpaceStation";
-import { SecondStage } from "./components/SecondStage";
+import { AnimatedText, SecondStage } from "./components/SecondStage";
 import { ThirdStage } from "./components/ThirdStage";
 import { FourthStage } from "./components/FourthStage";
 import { FifthStage } from "./components/FifthStage";
@@ -24,6 +32,7 @@ import { SixthStage } from "./components/SixthStage";
 import { SeventhStage } from "./components/SeventhStage";
 import { Effects } from "./components/Effects";
 import env from "@/assets/hdr/kloofendal_28d_misty_1k.hdr";
+import { HtmlProps } from "@react-three/drei/web/Html";
 
 const PARALLAX_COEF = 0.01;
 
@@ -34,9 +43,12 @@ const MainScene = ({
   setEnvRotation?: (euler: THREE.Euler) => void;
 }) => {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const [visible, setVisible] = useState(false);
   // const [scrolling, setScrolling] = useState(false); // Состояние активности скролла
   // const [lastScrollOffset, setLastScrollOffset] = useState(0); // Для отслеживания изменения скролла
   // const scrollTimeout = useRef<NodeJS.Timeout | null>(null); // Таймер для остановки анимации
+
+  console.log(visible);
 
   const { scene, cameras, animations } = useGLTF(model);
   const { actions, mixer } = useAnimations(animations, scene);
@@ -95,6 +107,13 @@ const MainScene = ({
     if (!action) return;
 
     const scrollOffset = scroll.offset;
+    const scrollY = scroll.offset;
+
+    if (scrollY > 0.2 && scrollY < 0.8) {
+      setVisible(true); // Показываем контент при прокрутке более 20% и менее 80%
+    } else {
+      setVisible(false); // Скрываем контент в других случаях
+    }
 
     // Проверяем, изменился ли скролл
     // if (scrollOffset !== lastScrollOffset) {
@@ -144,8 +163,16 @@ const MainScene = ({
   return <primitive object={scene} />;
 };
 
+export const HtmlContent = ({
+  children,
+}: {
+  children: ReactNode;
+} & HtmlProps) => {
+  return <Html center>{children}</Html>;
+};
+
 function App() {
-  const { fov, linear, envIntensity } = useControls({
+  const { fov, envIntensity } = useControls({
     fov: 21.5,
     envIntensity: {
       value: 0.5,
@@ -153,21 +180,15 @@ function App() {
       min: 0,
       step: 0.1,
     },
-    linear: {
-      label: "linear",
-      value: true,
-    },
   });
 
   const [envRotation, setEnvRotation] = useState(new THREE.Euler());
 
-  const canvasKey = useMemo(() => `canvas-${linear}`, [linear]);
-
   return (
     <>
+      <Leva collapsed />
       <Canvas
-        linear={linear}
-        key={canvasKey}
+        linear
         style={{ background: "#000" }}
         shadows
         // gl={{
@@ -206,6 +227,7 @@ function App() {
           </ScrollControls>
         </Suspense>
       </Canvas>
+      <AnimatedText text={"WHAT WE DO"} />
     </>
   );
 }
