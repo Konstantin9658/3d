@@ -171,10 +171,10 @@ function App() {
         style={{ background: "#000" }}
         shadows
         // gl={{
-        //   depth: true,
-        //   stencil: true,
-        //   antialias: true,
-        //   logarithmicDepthBuffer: true,
+        //   depth: false,
+        //   stencil: false,
+        //   antialias: false,
+        //   logarithmicDepthBuffer: false,
         // }}
       >
         <Suspense fallback={null}>
