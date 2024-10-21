@@ -109,9 +109,8 @@ const MainScene = ({
     baseQuaternion.current.copy(camera.quaternion);
 
     const action = actions[CAMERA_NAME];
-    // action.clampWhenFinished = true;
+    // action.clampWhenFinished = false;
     action.play();
-    // console.log(window.scrollY);
   }, [cameras, actions, camera]);
 
   // Основной рендер-цикл
@@ -121,8 +120,8 @@ const MainScene = ({
     const action = actions[CAMERA_NAME];
     if (!action) return;
 
-    if (lenis?.isSmooth) {
-      action.paused = true;
+    if (!lenis?.isSmooth) {
+      return action.paused = true;
     }
 
     const duration = action.getClip().duration;
@@ -134,8 +133,8 @@ const MainScene = ({
     animatedCamera.updateMatrixWorld();
 
     // Плавное обновление позиции и поворота камеры из анимации
-    camera.position.lerp(animatedCamera.position, 0.05);
-    camera.quaternion.slerp(animatedCamera.quaternion, 0.05);
+    camera.position.lerp(animatedCamera.position, 0.3);
+    camera.quaternion.slerp(animatedCamera.quaternion, 0.3);
 
     // Применение параллакс-эффекта к камере
     const parallaxX = mouse.x * PARALLAX_COEF;
@@ -191,7 +190,7 @@ function App() {
           end: "bottom -6000px",
           scrub: 1,
           pin: "#pin",
-          markers: true,
+          // markers: true,
         },
       })
       .to(shuffledLetters, {
@@ -220,7 +219,7 @@ function App() {
 
   return (
     <>
-      <ReactLenis root options={{ infinite: true, lerp: 0.03 }}>
+      <ReactLenis root options={{ infinite: true, lerp: 0.01 }}>
         <div
           style={{
             width: "100%",
