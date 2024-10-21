@@ -3,28 +3,18 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import model from "./assets/models/full_scene.glb";
 import {
   Environment,
-  Html,
   PerspectiveCamera,
-  ScrollControls,
   // OrbitControls,
   useAnimations,
   useGLTF,
-  useScroll,
 } from "@react-three/drei";
-import {
-  ReactNode,
-  Suspense,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { Leva, useControls } from "leva";
 import { FirstStage } from "./components/FirstStage";
 import { Planet } from "./components/Planet";
 import { SpaceStation } from "./components/SpaceStation";
-import { AnimatedText, SecondStage } from "./components/SecondStage";
+import { SecondStage } from "./components/SecondStage";
 import { ThirdStage } from "./components/ThirdStage";
 import { FourthStage } from "./components/FourthStage";
 import { FifthStage } from "./components/FifthStage";
@@ -32,9 +22,31 @@ import { SixthStage } from "./components/SixthStage";
 import { SeventhStage } from "./components/SeventhStage";
 import { Effects } from "./components/Effects";
 import env from "@/assets/hdr/kloofendal_28d_misty_1k.hdr";
-import { HtmlProps } from "@react-three/drei/web/Html";
+import {
+  CAMERA_NAME,
+  FAR_PERSPECTIVE_CAMERA,
+  NEAR_PERSPECTIVE_CAMERA,
+  PARALLAX_COEF,
+} from "./consts";
+import { ReactLenis, useLenis } from "lenis/react";
+import { useAppHeight } from "./hooks/useAppHeight";
+import { useAppStore } from "./store/app";
 
-const PARALLAX_COEF = 0.01;
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
+
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Observer } from "gsap/Observer";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { TextPlugin } from "gsap/TextPlugin";
+
+gsap.registerPlugin(
+  useGSAP,
+  ScrollTrigger,
+  Observer,
+  ScrollToPlugin,
+  TextPlugin
+);
 
 // Основной компонент сцены
 const MainScene = ({
@@ -43,17 +55,19 @@ const MainScene = ({
   setEnvRotation?: (euler: THREE.Euler) => void;
 }) => {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
-  const [visible, setVisible] = useState(false);
-  // const [scrolling, setScrolling] = useState(false); // Состояние активности скролла
-  // const [lastScrollOffset, setLastScrollOffset] = useState(0); // Для отслеживания изменения скролла
-  // const scrollTimeout = useRef<NodeJS.Timeout | null>(null); // Таймер для остановки анимации
 
-  console.log(visible);
+  const appHeight = useAppHeight();
+
+  const scrollOffset = useAppStore((state) => state.scrollOffset);
+  const setScrollOffset = useAppStore((state) => state.setScrollOffset);
+
+  const lenis = useLenis(({ scroll }) => {
+    setScrollOffset(scroll / (appHeight - 1000));
+  }, []);
 
   const { scene, cameras, animations } = useGLTF(model);
   const { actions, mixer } = useAnimations(animations, scene);
 
-  const scroll = useScroll();
   const camera = useThree((state) => state.camera); // Основная камера
   const animatedCamera = useMemo(
     () => (cameras.length > 0 ? cameras[0] : null),
@@ -89,52 +103,28 @@ const MainScene = ({
 
   // Инициализация камеры и анимации
   useEffect(() => {
-    if (cameras.length < 0 || !actions || !actions["Camera"]) return;
+    if (cameras.length < 0 || !actions || !actions[CAMERA_NAME]) return;
 
     basePosition.current.copy(camera.position);
     baseQuaternion.current.copy(camera.quaternion);
 
-    const action = actions["Camera"];
-    action.clampWhenFinished = true;
+    const action = actions[CAMERA_NAME];
+    // action.clampWhenFinished = true;
     action.play();
+    // console.log(window.scrollY);
   }, [cameras, actions, camera]);
 
   // Основной рендер-цикл
   useFrame((_, delta) => {
     if (!animatedCamera || !actions) return;
 
-    const action = actions["Camera"];
+    const action = actions[CAMERA_NAME];
     if (!action) return;
 
-    const scrollOffset = scroll.offset;
-    const scrollY = scroll.offset;
-
-    if (scrollY > 0.2 && scrollY < 0.8) {
-      setVisible(true); // Показываем контент при прокрутке более 20% и менее 80%
-    } else {
-      setVisible(false); // Скрываем контент в других случаях
+    if (lenis?.isSmooth) {
+      action.paused = true;
     }
 
-    // Проверяем, изменился ли скролл
-    // if (scrollOffset !== lastScrollOffset) {
-    //   setScrolling(true); // Скролл активен
-
-    //   // Сброс таймера остановки анимации
-    //   if (scrollTimeout.current) {
-    //     clearTimeout(scrollTimeout.current);
-    //   }
-
-    //   // Устанавливаем таймер для остановки анимации
-    //   scrollTimeout.current = setTimeout(() => {
-    //     setScrolling(false); // Скролл завершен
-    //   }, 1000); // 1 секунда задержки
-
-    //   setLastScrollOffset(scrollOffset); // Обновляем последнее значение прокрутки
-    // }
-
-    // if (!scrolling) return (action.paused = true);
-
-    // Если скроллинг активен, продолжаем анимацию
     const duration = action.getClip().duration;
 
     // Обновляем время анимации в зависимости от прокрутки
@@ -163,15 +153,9 @@ const MainScene = ({
   return <primitive object={scene} />;
 };
 
-export const HtmlContent = ({
-  children,
-}: {
-  children: ReactNode;
-} & HtmlProps) => {
-  return <Html center>{children}</Html>;
-};
-
 function App() {
+  const [envRotation, setEnvRotation] = useState(new THREE.Euler());
+
   const { fov, envIntensity } = useControls({
     fov: 21.5,
     envIntensity: {
@@ -182,38 +166,129 @@ function App() {
     },
   });
 
-  const [envRotation, setEnvRotation] = useState(new THREE.Euler());
+  const appHeight = useAppHeight();
+
+  const textRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!textRef.current) return;
+    // Анимация появления букв
+    const letters = textRef.current.querySelectorAll(".letter");
+
+    const shuffledLetters = gsap.utils.shuffle([...letters]);
+
+    gsap.set(shuffledLetters, {
+      opacity: 0,
+      scale: 0.95,
+      filter: "blur(5px)",
+    }); // начальное состояние всех букв
+
+    const tl = gsap
+      .timeline({
+        paused: true,
+        scrollTrigger: {
+          start: "top 50%",
+          end: "bottom -6000px",
+          scrub: 1,
+          pin: "#pin",
+          markers: true,
+        },
+      })
+      .to(shuffledLetters, {
+        opacity: 1,
+        scale: 1,
+        filter: "blur(0px)",
+        stagger: 0.01,
+        duration: 0.1,
+        ease: "power2.out",
+      })
+      .to(
+        shuffledLetters,
+        {
+          opacity: 0,
+          scale: 0.95,
+          filter: "blur(5px)",
+          stagger: 0.01,
+          duration: 0.1,
+          ease: "power2.out",
+        },
+        ">"
+      );
+
+    return () => void tl.kill();
+  }, []);
 
   return (
     <>
-      <Leva collapsed />
-      <Canvas
-        linear
-        style={{ background: "#000" }}
-        shadows
-        // gl={{
-        //   depth: false,
-        //   stencil: false,
-        //   antialias: false,
-        //   logarithmicDepthBuffer: false,
-        // }}
-      >
-        <Suspense fallback={null}>
-          <Effects />
-          <PerspectiveCamera
-            makeDefault
-            fov={fov}
-            name="Camera"
-            near={1.7}
-            far={100}
-          />
-          <Environment
-            files={env}
-            environmentIntensity={envIntensity}
-            environmentRotation={[envRotation.x, envRotation.y, envRotation.z]}
-          />
-          {/* <OrbitControls makeDefault /> */}
-          <ScrollControls damping={0.7} pages={50} infinite>
+      <ReactLenis root options={{ infinite: true, lerp: 0.03 }}>
+        <div
+          style={{
+            width: "100%",
+            height: `${appHeight}px`,
+            position: "absolute",
+          }}
+        >
+          <div
+            id="start"
+            style={{
+              display: "flex",
+              gap: "4px",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              height: "100vh",
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 10,
+            }}
+          >
+            <div ref={textRef} id="pin">
+              {"what we do".split("").map((letter, index) => (
+                <span
+                  key={index}
+                  className="letter"
+                  style={{
+                    display: "inline-block",
+                    fontSize: 50,
+                    fontWeight: 700,
+                    color: "#fff",
+                    opacity: 0,
+                    textTransform: "uppercase",
+                    margin: "0 4px",
+                  }}
+                >
+                  {letter === " " ? "\u00A0" : letter}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <Leva collapsed />
+        <Canvas
+          linear
+          style={{ background: "#000", position: "fixed" }}
+          shadows
+        >
+          <Suspense fallback={null}>
+            <Effects />
+            <PerspectiveCamera
+              makeDefault
+              fov={fov}
+              name={CAMERA_NAME}
+              near={NEAR_PERSPECTIVE_CAMERA}
+              far={FAR_PERSPECTIVE_CAMERA}
+            />
+            <Environment
+              files={env}
+              environmentIntensity={envIntensity}
+              environmentRotation={[
+                envRotation.x,
+                envRotation.y,
+                envRotation.z,
+              ]}
+            />
             <MainScene setEnvRotation={setEnvRotation} />
             <Planet />
             <SpaceStation />
@@ -224,10 +299,9 @@ function App() {
             <FifthStage />
             <SixthStage />
             <SeventhStage />
-          </ScrollControls>
-        </Suspense>
-      </Canvas>
-      <AnimatedText text={"WHAT WE DO"} />
+          </Suspense>
+        </Canvas>
+      </ReactLenis>
     </>
   );
 }

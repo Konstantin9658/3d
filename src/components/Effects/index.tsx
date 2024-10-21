@@ -20,6 +20,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { Vector2 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { BLEND_FUNC_OPTIONS, KERNEL_SIZE_OPTIONS } from "./consts";
+import { CAMERA_NAME } from "@/consts";
 
 const updateLastComposerEffect = (effectComposer: RawEffectComposer) => {
   for (let i = 0; i < effectComposer.passes.length; i++) {
@@ -228,7 +229,7 @@ export const Effects = () => {
   useEffect(() => {
     const composer = effectComposer.current;
 
-    if (!camera || !scene || camera.name !== "Camera" || !composer) return;
+    if (!camera || !scene || camera.name !== CAMERA_NAME || !composer) return;
 
     composer.reset();
     composer.addPass(new RenderPass(scene, camera));
