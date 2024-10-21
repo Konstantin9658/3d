@@ -19,13 +19,13 @@ export const SecondStage = () => {
 
     const action = actions[SECOND_STAGE_ANIM];
     action.clampWhenFinished = true;
-    action.play();
-  }, [cameras, actions]);
+    if (!lenis?.isSmooth) {
+      action.paused = true;
+    } else action.play();
+  }, [cameras, actions, lenis?.isSmooth]);
 
   useFrame((_, delta) => {
     if (!actions) return;
-
-    if (!lenis?.isSmooth) return;
 
     const action = actions[SECOND_STAGE_ANIM];
     if (!action) return;

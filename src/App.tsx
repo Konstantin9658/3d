@@ -110,19 +110,18 @@ const MainScene = ({
 
     const action = actions[CAMERA_NAME];
     // action.clampWhenFinished = false;
-    action.play();
-  }, [cameras, actions, camera]);
+    if (!lenis?.isSmooth) {
+      action.paused = true;
+    } else action.play();
+  }, [cameras, actions, camera, lenis?.isSmooth]);
 
   // Основной рендер-цикл
   useFrame((_, delta) => {
     if (!animatedCamera || !actions) return;
 
     const action = actions[CAMERA_NAME];
-    if (!action) return;
 
-    if (!lenis?.isSmooth) {
-      return action.paused = true;
-    }
+    if (!action) return;
 
     const duration = action.getClip().duration;
 
