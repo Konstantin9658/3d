@@ -40,6 +40,25 @@ import { Observer } from "gsap/Observer";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { TextPlugin } from "gsap/TextPlugin";
 import { useDebounce } from "rooks";
+import W from "@/assets/images/1w.svg?react";
+import H from "@/assets/images/2h.svg?react";
+import A from "@/assets/images/3a.svg?react";
+import T from "@/assets/images/4t.svg?react";
+import W2 from "@/assets/images/5w.svg?react";
+import E from "@/assets/images/6e.svg?react";
+import D from "@/assets/images/7d.svg?react";
+import O from "@/assets/images/8o.svg?react";
+
+const images = [
+  { image: <W /> },
+  { image: <H /> },
+  { image: <A /> },
+  { image: <T /> },
+  { image: <W2 /> },
+  { image: <E /> },
+  { image: <D /> },
+  { image: <O /> },
+];
 
 gsap.registerPlugin(
   useGSAP,
@@ -84,19 +103,18 @@ const MainScene = ({
   const parallaxOffset = useRef(new THREE.Vector3());
 
   const handleResize = () => {
-    const newFov = 21.5 * (1920 / size.width);
+    const newFov = 23.5 * (1920 / size.width);
     const clampedFov = Math.min(Math.max(newFov, 11), 50);
     setCameraFov(clampedFov);
   };
 
-  const dobouncedResize = useDebounce(handleResize, 300);
+  const debouncedResize = useDebounce(handleResize, 300);
 
   useEffect(() => {
-    window.addEventListener("resize", dobouncedResize);
+    window.addEventListener("resize", debouncedResize);
 
-    return () =>
-      window.removeEventListener("resize", dobouncedResize);
-  }, [cameraFov, dobouncedResize, setCameraFov, size]);
+    return () => window.removeEventListener("resize", debouncedResize);
+  }, [cameraFov, debouncedResize, setCameraFov, size]);
 
   useEffect(() => {
     if (animatedCamera) {
@@ -271,22 +289,22 @@ function App() {
             }}
           >
             <div ref={textRef} id="pin">
-              {"what we do".split("").map((letter, index) => (
-                <span
+              {images.map(({ image }, index) => (
+                <div
                   key={index}
                   className="letter"
                   style={{
                     display: "inline-block",
-                    fontSize: 50,
-                    fontWeight: 700,
+                    // fontSize: 50,
+                    // fontWeight: 700,
                     color: "#fff",
                     opacity: 0,
                     textTransform: "uppercase",
-                    margin: "0 4px",
+                    // margin: "0 4px",
                   }}
                 >
-                  {letter === " " ? "\u00A0" : letter}
-                </span>
+                  {image}
+                </div>
               ))}
             </div>
           </div>
@@ -305,9 +323,6 @@ function App() {
             <Effects />
             <PerspectiveCamera
               makeDefault
-              // manual
-              // aspect={aspectRatio}
-              // dispose={null}
               fov={cameraFov}
               name={CAMERA_NAME}
               near={NEAR_PERSPECTIVE_CAMERA}
