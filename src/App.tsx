@@ -39,6 +39,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Observer } from "gsap/Observer";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { TextPlugin } from "gsap/TextPlugin";
+import { useDebounce } from "rooks";
 
 gsap.registerPlugin(
   useGSAP,
@@ -60,6 +61,8 @@ const MainScene = ({
 
   const scrollOffset = useAppStore((state) => state.scrollOffset);
   const setScrollOffset = useAppStore((state) => state.setScrollOffset);
+  const setCameraFov = useAppStore((state) => state.setCameraFov);
+  const cameraFov = useAppStore((state) => state.cameraFov);
 
   const lenis = useLenis(({ scroll }) => {
     setScrollOffset(scroll / (appHeight - 1000));
@@ -69,6 +72,8 @@ const MainScene = ({
   const { actions, mixer } = useAnimations(animations, scene);
 
   const camera = useThree((state) => state.camera); // Основная камера
+  const size = useThree((state) => state.size); // Основная камера
+
   const animatedCamera = useMemo(
     () => (cameras.length > 0 ? cameras[0] : null),
     [cameras]
@@ -77,6 +82,21 @@ const MainScene = ({
   const basePosition = useRef(new THREE.Vector3());
   const baseQuaternion = useRef(new THREE.Quaternion());
   const parallaxOffset = useRef(new THREE.Vector3());
+
+  const handleResize = () => {
+    const newFov = 21.5 * (1920 / size.width);
+    const clampedFov = Math.min(Math.max(newFov, 11), 50);
+    setCameraFov(clampedFov);
+  };
+
+  const dobouncedResize = useDebounce(handleResize, 300);
+
+  useEffect(() => {
+    window.addEventListener("resize", dobouncedResize);
+
+    return () =>
+      window.removeEventListener("resize", dobouncedResize);
+  }, [cameraFov, dobouncedResize, setCameraFov, size]);
 
   useEffect(() => {
     if (animatedCamera) {
@@ -109,7 +129,7 @@ const MainScene = ({
     baseQuaternion.current.copy(camera.quaternion);
 
     const action = actions[CAMERA_NAME];
-    // action.clampWhenFinished = false;
+
     if (!lenis?.isSmooth) {
       action.paused = true;
     } else action.play();
@@ -136,8 +156,16 @@ const MainScene = ({
     camera.quaternion.slerp(animatedCamera.quaternion, 0.3);
 
     // Применение параллакс-эффекта к камере
-    const parallaxX = mouse.x * PARALLAX_COEF;
-    const parallaxY = mouse.y * PARALLAX_COEF;
+    const parallaxX = THREE.MathUtils.lerp(
+      parallaxOffset.current.x,
+      mouse.x * PARALLAX_COEF,
+      0.3
+    );
+    const parallaxY = THREE.MathUtils.lerp(
+      parallaxOffset.current.y,
+      mouse.y * PARALLAX_COEF,
+      0.3
+    );
 
     // Обновляем смещение параллакса относительно базовой позиции камеры
     parallaxOffset.current.set(parallaxX, parallaxY, 0);
@@ -154,8 +182,9 @@ const MainScene = ({
 function App() {
   const [envRotation, setEnvRotation] = useState(new THREE.Euler());
 
-  const { fov, envIntensity } = useControls({
-    fov: 21.5,
+  const cameraFov = useAppStore((state) => state.cameraFov);
+
+  const { envIntensity } = useControls({
     envIntensity: {
       value: 0.5,
       max: 5,
@@ -187,7 +216,7 @@ function App() {
         scrollTrigger: {
           start: "top 50%",
           end: "bottom -6000px",
-          scrub: 1,
+          scrub: 0.5,
           pin: "#pin",
           // markers: true,
         },
@@ -266,14 +295,20 @@ function App() {
         <Leva collapsed />
         <Canvas
           linear
-          style={{ background: "#000", position: "fixed" }}
+          style={{
+            background: "#000",
+            position: "fixed",
+          }}
           shadows
         >
           <Suspense fallback={null}>
             <Effects />
             <PerspectiveCamera
               makeDefault
-              fov={fov}
+              // manual
+              // aspect={aspectRatio}
+              // dispose={null}
+              fov={cameraFov}
               name={CAMERA_NAME}
               near={NEAR_PERSPECTIVE_CAMERA}
               far={FAR_PERSPECTIVE_CAMERA}
