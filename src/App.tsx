@@ -11,15 +11,15 @@ import {
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { Leva, useControls } from "leva";
-import { FirstStage } from "./components/FirstStage";
-import { Planet } from "./components/Planet";
-import { SpaceStation } from "./components/SpaceStation";
-import { SecondStage } from "./components/SecondStage";
-import { ThirdStage } from "./components/ThirdStage";
-import { FourthStage } from "./components/FourthStage";
-import { FifthStage } from "./components/FifthStage";
-import { SixthStage } from "./components/SixthStage";
-import { SeventhStage } from "./components/SeventhStage";
+import { FirstStage } from "./scenes/FirstStage";
+import { Planet } from "./scenes/Planet";
+import { SpaceStation } from "./scenes/SpaceStation";
+import { SecondStage } from "./scenes/SecondStage";
+import { ThirdStage } from "./scenes/ThirdStage";
+import { FourthStage } from "./scenes/FourthStage";
+import { FifthStage } from "./scenes/FifthStage";
+import { SixthStage } from "./scenes/SixthStage";
+import { SeventhStage } from "./scenes/SeventhStage";
 import { Effects } from "./components/Effects";
 import env from "@/assets/hdr/kloofendal_28d_misty_1k.hdr";
 import {
@@ -48,6 +48,8 @@ import W2 from "@/assets/images/5w.svg?react";
 import E from "@/assets/images/6e.svg?react";
 import D from "@/assets/images/7d.svg?react";
 import O from "@/assets/images/8o.svg?react";
+import { Header } from "./components/Header";
+import { Welcome } from "./sections/Welcome";
 
 const images = [
   { image: <W /> },
@@ -177,12 +179,12 @@ const MainScene = ({
     const parallaxX = THREE.MathUtils.lerp(
       parallaxOffset.current.x,
       mouse.x * PARALLAX_COEF,
-      0.3
+      0.2
     );
     const parallaxY = THREE.MathUtils.lerp(
       parallaxOffset.current.y,
       mouse.y * PARALLAX_COEF,
-      0.3
+      0.2
     );
 
     // Обновляем смещение параллакса относительно базовой позиции камеры
@@ -232,11 +234,12 @@ function App() {
       .timeline({
         paused: true,
         scrollTrigger: {
-          start: "top 50%",
-          end: "bottom -6000px",
-          scrub: 0.5,
+          // trigger: "#start",
+          start: "top 40%",
+          end: "bottom -3000px",
+          scrub: 10,
           pin: "#pin",
-          // markers: true,
+          markers: true,
         },
       })
       .to(shuffledLetters, {
@@ -265,7 +268,10 @@ function App() {
 
   return (
     <>
-      <ReactLenis root options={{ infinite: true, lerp: 0.01 }}>
+      <ReactLenis
+        root
+        options={{ infinite: true, lerp: 0.01, smoothWheel: true }}
+      >
         <div
           style={{
             width: "100%",
@@ -273,12 +279,14 @@ function App() {
             position: "absolute",
           }}
         >
+          <Header />
+          <Welcome />
           <div
             id="start"
             style={{
               display: "flex",
               gap: "4px",
-              position: "absolute",
+              position: "relative",
               top: 0,
               left: 0,
               height: "100vh",
@@ -295,12 +303,8 @@ function App() {
                   className="letter"
                   style={{
                     display: "inline-block",
-                    // fontSize: 50,
-                    // fontWeight: 700,
                     color: "#fff",
                     opacity: 0,
-                    textTransform: "uppercase",
-                    // margin: "0 4px",
                   }}
                 >
                   {image}
