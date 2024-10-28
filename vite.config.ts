@@ -29,5 +29,10 @@ export default defineConfig({
     postcss: {
       plugins: [autoprefixer, postcssLogical],
     },
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler' // or "modern"
+      }
+    }
   },
 });

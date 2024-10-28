@@ -1,0 +1,65 @@
+@use "../../styles/fonts.scss" as *;
+@use "../../styles/colors.scss" as *;
+
+.header {
+  width: 100%;
+  position: fixed;
+  min-height: 116px;
+  z-index: 11;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.header__logo {
+  flex-shrink: 0;
+}
+
+.header__wrapper {
+  width: 100%;
+  max-width: 1920px;
+  padding: 0 120px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header__button {
+  max-width: 208px;
+  width: 100%;
+  padding: 0 26px;
+}
+
+.header__navList {
+  display: flex;
+}
+
+.header__navListItem {
+  cursor: pointer;
+  text-transform: uppercase;
+  font-family: $hoves;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 700;
+  color: $white;
+  letter-spacing: 1px;
+  transition: all 0.15s ease-in-out;
+
+  &:not(:last-child) {
+    margin-right: 38px;
+  }
+
+  &:hover {
+    color: $accent;
+  }
+
+  &:active {
+    transition-duration: 0.1s;
+    color: $accentMain;
+  }
+}
