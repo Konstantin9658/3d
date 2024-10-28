@@ -26,13 +26,13 @@ export const Welcome = () => {
         .timeline({
           paused: true,
           scrollTrigger: {
-            // start:
-            trigger: "#welcome",
-            end: "+=600",
+            start: "top 0",
+            // trigger: "#welcome",
+            end: "+=900",
             // endTrigger: "#start",
             scrub: 1,
             pin: "#welcome-pin",
-            markers: true,
+            // markers: true,
           },
         })
         .from(`.${classes.welcome__inner}`, {
@@ -42,9 +42,13 @@ export const Welcome = () => {
         .to(`.${classes.welcome__inner}`, {
           opacity: 0,
         })
-        .to(`.${classes.welcome__inner}`, {
-          transform: "translateY(-100%)",
-        }, ">-0.5")
+        .to(
+          `.${classes.welcome__inner}`,
+          {
+            transform: "translateY(-100%)",
+          },
+          ">-0.5"
+        )
         .to(`.${classes.welcome__achives}`, {
           opacity: 0,
         });
