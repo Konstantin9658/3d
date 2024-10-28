@@ -1,203 +1,40 @@
 import "./App.css";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import model from "./assets/models/full_scene.glb";
+
 import {
   Environment,
   PerspectiveCamera,
   // OrbitControls,
-  useAnimations,
-  useGLTF,
 } from "@react-three/drei";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
-import * as THREE from "three";
+// import classes from "./styles.module.scss";
+import { Canvas } from "@react-three/fiber";
+import { ReactLenis } from "lenis/react";
 import { Leva, useControls } from "leva";
-import { FirstStage } from "./scenes/FirstStage";
-import { Planet } from "./scenes/Planet";
-import { SpaceStation } from "./scenes/SpaceStation";
-import { SecondStage } from "./scenes/SecondStage";
-import { ThirdStage } from "./scenes/ThirdStage";
-import { FourthStage } from "./scenes/FourthStage";
-import { FifthStage } from "./scenes/FifthStage";
-import { SixthStage } from "./scenes/SixthStage";
-import { SeventhStage } from "./scenes/SeventhStage";
-import { Effects } from "./components/Effects";
+import { Suspense, useState } from "react";
+import * as THREE from "three";
+
 import env from "@/assets/hdr/kloofendal_28d_misty_1k.hdr";
+
+import { Effects } from "./components/Effects";
+import { Header } from "./components/Header";
 import {
   CAMERA_NAME,
   FAR_PERSPECTIVE_CAMERA,
   NEAR_PERSPECTIVE_CAMERA,
-  PARALLAX_COEF,
 } from "./consts";
-import { ReactLenis, useLenis } from "lenis/react";
 import { useAppHeight } from "./hooks/useAppHeight";
-import { useAppStore } from "./store/app";
-
-import { gsap } from "gsap";
-import { useGSAP } from "@gsap/react";
-
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Observer } from "gsap/Observer";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import { TextPlugin } from "gsap/TextPlugin";
-import { useDebounce } from "rooks";
-import W from "@/assets/images/1w.svg?react";
-import H from "@/assets/images/2h.svg?react";
-import A from "@/assets/images/3a.svg?react";
-import T from "@/assets/images/4t.svg?react";
-import W2 from "@/assets/images/5w.svg?react";
-import E from "@/assets/images/6e.svg?react";
-import D from "@/assets/images/7d.svg?react";
-import O from "@/assets/images/8o.svg?react";
-import { Header } from "./components/Header";
+import { FifthStage } from "./scenes/FifthStage";
+import { FirstStage } from "./scenes/FirstStage";
+import { FourthStage } from "./scenes/FourthStage";
+import { MainScene } from "./scenes/MainScene";
+import { Planet } from "./scenes/Planet";
+import { SecondStage } from "./scenes/SecondStage";
+import { SeventhStage } from "./scenes/SeventhStage";
+import { SixthStage } from "./scenes/SixthStage";
+import { SpaceStation } from "./scenes/SpaceStation";
+import { ThirdStage } from "./scenes/ThirdStage";
 import { Welcome } from "./sections/Welcome";
-
-const images = [
-  { image: <W /> },
-  { image: <H /> },
-  { image: <A /> },
-  { image: <T /> },
-  { image: <W2 /> },
-  { image: <E /> },
-  { image: <D /> },
-  { image: <O /> },
-];
-
-gsap.registerPlugin(
-  useGSAP,
-  ScrollTrigger,
-  Observer,
-  ScrollToPlugin,
-  TextPlugin
-);
-
-// Основной компонент сцены
-const MainScene = ({
-  setEnvRotation,
-}: {
-  setEnvRotation?: (euler: THREE.Euler) => void;
-}) => {
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-
-  const appHeight = useAppHeight();
-
-  const scrollOffset = useAppStore((state) => state.scrollOffset);
-  const setScrollOffset = useAppStore((state) => state.setScrollOffset);
-  const setCameraFov = useAppStore((state) => state.setCameraFov);
-  const cameraFov = useAppStore((state) => state.cameraFov);
-
-  const lenis = useLenis(({ scroll }) => {
-    setScrollOffset(scroll / (appHeight - 1000));
-  }, []);
-
-  const { scene, cameras, animations } = useGLTF(model);
-  const { actions, mixer } = useAnimations(animations, scene);
-
-  const camera = useThree((state) => state.camera); // Основная камера
-  const size = useThree((state) => state.size); // Основная камера
-
-  const animatedCamera = useMemo(
-    () => (cameras.length > 0 ? cameras[0] : null),
-    [cameras]
-  );
-
-  const basePosition = useRef(new THREE.Vector3());
-  const baseQuaternion = useRef(new THREE.Quaternion());
-  const parallaxOffset = useRef(new THREE.Vector3());
-
-  const handleResize = () => {
-    const newFov = 23.5 * (1920 / size.width);
-    const clampedFov = Math.min(Math.max(newFov, 11), 50);
-    setCameraFov(clampedFov);
-  };
-
-  const debouncedResize = useDebounce(handleResize, 300);
-
-  useEffect(() => {
-    window.addEventListener("resize", debouncedResize);
-
-    return () => window.removeEventListener("resize", debouncedResize);
-  }, [cameraFov, debouncedResize, setCameraFov, size]);
-
-  useEffect(() => {
-    if (animatedCamera) {
-      // Копируем позицию и ориентацию камеры, чтобы не было рывков
-      camera.position.copy(animatedCamera.position);
-      camera.quaternion.copy(animatedCamera.quaternion);
-      camera.castShadow = true;
-      animatedCamera.castShadow = true;
-    }
-  }, [animatedCamera, camera]);
-
-  // Функция для отслеживания мыши
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      setMouse({
-        x: (event.clientX / window.innerWidth) * 2 - 1,
-        y: -(event.clientY / window.innerHeight) * 2 + 1,
-      });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  // Инициализация камеры и анимации
-  useEffect(() => {
-    if (cameras.length < 0 || !actions || !actions[CAMERA_NAME]) return;
-
-    basePosition.current.copy(camera.position);
-    baseQuaternion.current.copy(camera.quaternion);
-
-    const action = actions[CAMERA_NAME];
-
-    if (!lenis?.isSmooth) {
-      action.paused = true;
-    } else action.play();
-  }, [cameras, actions, camera, lenis?.isSmooth]);
-
-  // Основной рендер-цикл
-  useFrame((_, delta) => {
-    if (!animatedCamera || !actions) return;
-
-    const action = actions[CAMERA_NAME];
-
-    if (!action) return;
-
-    const duration = action.getClip().duration;
-
-    // Обновляем время анимации в зависимости от прокрутки
-    action.time = scrollOffset * duration;
-    mixer.update(delta);
-
-    animatedCamera.updateMatrixWorld();
-
-    // Плавное обновление позиции и поворота камеры из анимации
-    camera.position.lerp(animatedCamera.position, 0.3);
-    camera.quaternion.slerp(animatedCamera.quaternion, 0.3);
-
-    // Применение параллакс-эффекта к камере
-    const parallaxX = THREE.MathUtils.lerp(
-      parallaxOffset.current.x,
-      mouse.x * PARALLAX_COEF,
-      0.2
-    );
-    const parallaxY = THREE.MathUtils.lerp(
-      parallaxOffset.current.y,
-      mouse.y * PARALLAX_COEF,
-      0.2
-    );
-
-    // Обновляем смещение параллакса относительно базовой позиции камеры
-    parallaxOffset.current.set(parallaxX, parallaxY, 0);
-    camera.position.add(parallaxOffset.current);
-
-    // Устанавливаем вращение окружения в зависимости от поворота камеры
-    const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, "ZYX");
-    setEnvRotation?.(euler);
-  });
-
-  return <primitive object={scene} />;
-};
+import { WWD } from "./sections/WWD";
+import { useAppStore } from "./store/app";
 
 function App() {
   const [envRotation, setEnvRotation] = useState(new THREE.Euler());
@@ -215,62 +52,11 @@ function App() {
 
   const appHeight = useAppHeight();
 
-  const textRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!textRef.current) return;
-    // Анимация появления букв
-    const letters = textRef.current.querySelectorAll(".letter");
-
-    const shuffledLetters = gsap.utils.shuffle([...letters]);
-
-    gsap.set(shuffledLetters, {
-      opacity: 0,
-      scale: 0.95,
-      filter: "blur(5px)",
-    }); // начальное состояние всех букв
-
-    const tl = gsap
-      .timeline({
-        paused: true,
-        scrollTrigger: {
-          // trigger: "#start",
-          start: "top 40%",
-          end: "bottom -3000px",
-          scrub: 10,
-          pin: "#pin",
-          markers: true,
-        },
-      })
-      .to(shuffledLetters, {
-        opacity: 1,
-        scale: 1,
-        filter: "blur(0px)",
-        stagger: 0.01,
-        duration: 0.1,
-        ease: "power2.out",
-      })
-      .to(
-        shuffledLetters,
-        {
-          opacity: 0,
-          scale: 0.95,
-          filter: "blur(5px)",
-          stagger: 0.01,
-          duration: 0.1,
-          ease: "power2.out",
-        },
-        ">"
-      );
-
-    return () => void tl.kill();
-  }, []);
-
   return (
     <>
       <ReactLenis
         root
-        options={{ infinite: true, lerp: 0.01, smoothWheel: true }}
+        options={{ infinite: true, lerp: 0.03, syncTouch: true }}
       >
         <div
           style={{
@@ -281,37 +67,7 @@ function App() {
         >
           <Header />
           <Welcome />
-          <div
-            id="start"
-            style={{
-              display: "flex",
-              gap: "4px",
-              position: "relative",
-              top: 0,
-              left: 0,
-              height: "100vh",
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 10,
-            }}
-          >
-            <div ref={textRef} id="pin">
-              {images.map(({ image }, index) => (
-                <div
-                  key={index}
-                  className="letter"
-                  style={{
-                    display: "inline-block",
-                    color: "#fff",
-                    opacity: 0,
-                  }}
-                >
-                  {image}
-                </div>
-              ))}
-            </div>
-          </div>
+          <WWD />
         </div>
 
         <Leva collapsed />
@@ -320,6 +76,7 @@ function App() {
           style={{
             background: "#000",
             position: "fixed",
+            top: 0,
           }}
           shadows
         >
@@ -341,6 +98,7 @@ function App() {
                 envRotation.z,
               ]}
             />
+            {/* <fog attach="fog" color="#234243" near={1} far={110} /> */}
             <MainScene setEnvRotation={setEnvRotation} />
             <Planet />
             <SpaceStation />

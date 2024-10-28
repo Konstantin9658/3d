@@ -49,6 +49,9 @@
 
 .wrapper__title {
   margin-bottom: 56px;
+  width: 100%;
+  max-width: 896px;
+  height: auto;
 }
 
 .welcome__description {
@@ -57,6 +60,7 @@
   font-size: 28px;
   line-height: 44px;
   max-width: 680px;
+  color: $white;
 }
 
 .welcome__achives {
@@ -74,12 +78,12 @@
     margin-right: 26px;
   }
 
-  > svg {
+  >svg {
     margin-right: 16px;
     flex-shrink: 0;
   }
 
-  > p {
+  >p {
     font-family: $hoves;
     font-weight: 700;
     font-size: 10px;
@@ -99,12 +103,13 @@
   flex-direction: column;
   justify-content: space-around;
 
-  > p {
+  >p {
     font-family: $hoves;
     font-weight: 800;
     font-size: 12px;
     line-height: 14px;
     letter-spacing: 1.2px;
     text-transform: uppercase;
+    color: $white;
   }
 }

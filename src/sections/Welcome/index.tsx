@@ -1,15 +1,63 @@
-import classes from "./styles.module.scss";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef } from "react";
+
+import Decor from "./images/decor.svg?react";
 import Title from "./images/development_the_future.svg?react";
 import AppStore from "./images/p44_app_store.svg?react";
-import GlobalLeaders from "./images/p44_global_leaders.svg?react";
 import CssDesign from "./images/p44_css_design.svg?react";
+import GlobalLeaders from "./images/p44_global_leaders.svg?react";
 import AndroidDev from "./images/p44_top_android_development.svg?react";
-import Decor from "./images/decor.svg?react";
+import classes from "./styles.module.scss";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export const Welcome = () => {
+  const welcomeRef = useRef<HTMLElement | null>(null);
+
+  useGSAP(
+    () => {
+      gsap
+        .timeline({
+          paused: true,
+          scrollTrigger: {
+            trigger: "#welcome",
+            end: "bottom 40%",
+            scrub: 1,
+            pin: "#welcome-pin",
+            markers: true,
+          },
+        })
+        .from(`.${classes.welcome__inner}`, {
+          opacity: 1,
+          ease: "power2.out",
+        })
+        .to(`.${classes.welcome__scroll}`, {
+          opacity: 0,
+        })
+        .to(
+          `.${classes.welcome__inner}`,
+          {
+            opacity: 0,
+          },
+        )
+        .to(
+          `.${classes.welcome__inner}`,
+          {
+            transform: "translateY(-100%)",
+          },
+          ">-0.3"
+        )
+        .to(`.${classes.welcome__achives}`, {
+          opacity: 0,
+        });
+    },
+    { scope: welcomeRef }
+  );
   return (
-    <section className={classes.welcome}>
-      <div className={classes.welcome__wrapper}>
+    <section className={classes.welcome} id="welcome" ref={welcomeRef}>
+      <div className={classes.welcome__wrapper} id="welcome-pin">
         <div className={classes.welcome__inner}>
           <div className={classes.welcome__badge}>Worldwide reach</div>
           <Title className={classes.wrapper__title} />

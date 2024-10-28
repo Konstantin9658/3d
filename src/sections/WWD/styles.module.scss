@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.letter {
+  // width: calc(100% / 8);
+  height: 11.5vw;
+  opacity: 0;
+}
+
+.pin {
+  width: 100%;
+  max-width: 2160px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 120px;
+}
+
+.letter__wrapper {
+  width: 100%;
+  display: flex;
+}

@@ -16,6 +16,7 @@
     "@react-three/postprocessing": "^2.16.3",
     "@types/three": "^0.169.0",
     "clsx": "^2.1.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "gsap": "^3.12.5",
     "lenis": "^1.1.14",
     "leva": "^0.9.35",

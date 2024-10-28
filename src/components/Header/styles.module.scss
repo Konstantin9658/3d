@@ -11,6 +11,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease-in-out;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.header__logo {
+  flex-shrink: 0;
 }
 
 .header__wrapper {
@@ -50,5 +56,10 @@
 
   &:hover {
     color: $accent;
+  }
+
+  &:active {
+    transition-duration: 0.1s;
+    color: $accentMain;
   }
 }

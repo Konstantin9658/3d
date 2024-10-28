@@ -1,5 +1,6 @@
-import planet from "@/assets/models/planet.glb";
 import { useGLTF } from "@react-three/drei";
+
+import planet from "@/assets/models/planet.glb";
 
 export const Planet = () => {
   const { scene } = useGLTF(planet);

@@ -1,4 +1,5 @@
 import { useGLTF } from "@react-three/drei";
+
 import stage_1st from "@/assets/models/1st_stage.glb";
 
 export const FirstStage = () => {

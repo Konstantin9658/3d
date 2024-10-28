@@ -1,6 +1,7 @@
-import stage_6th from "@/assets/models/6th_stage.glb";
 import { useGLTF } from "@react-three/drei";
 import { degToRad } from "three/src/math/MathUtils.js";
+
+import stage_6th from "@/assets/models/6th_stage.glb";
 
 export const SixthStage = () => {
   const { scene } = useGLTF(stage_6th);

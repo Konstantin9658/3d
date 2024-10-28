@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import { ButtonProps } from "./types";
+
 import classes from "./styles.module.scss";
+import { ButtonProps } from "./types";
 
 export const Button = (props: ButtonProps) => {
   const { text, icon, variant, className } = props;

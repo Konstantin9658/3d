@@ -1,10 +1,12 @@
 import { useAnimations, useGLTF } from "@react-three/drei";
-import stage_2nd from "@/assets/models/2nd_stage.glb";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useAppStore } from "@/store/app";
-import { useEffect, useRef, useState } from "react";
 import { useLenis } from "lenis/react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+
+import stage_2nd from "@/assets/models/2nd_stage.glb";
+import { useAppStore } from "@/store/app";
+
 import {
   HOVER_ACTION,
   SCROLL_ACTION,
@@ -49,6 +51,7 @@ export const SecondStage = () => {
     actionScroll.clampWhenFinished = true;
 
     actionWwd5loop.play();
+    actionWwd5loop.setDuration(2);
 
     if (!lenis?.isSmooth) actionScroll.paused = true;
     else actionScroll.play();
@@ -75,6 +78,7 @@ export const SecondStage = () => {
 
       if (intersects.length > 0) {
         if (!hovered) {
+          actionsHover.setDuration(2);
           actionsUnhover.stop();
           actionsHover.reset().play(); // Запускаем анимацию при наведении
           actionsHover.clampWhenFinished = true;
@@ -84,6 +88,7 @@ export const SecondStage = () => {
       } else {
         if (hovered) {
           actionsHover.stop();
+          actionsUnhover.setDuration(2);
           actionsUnhover.reset().play(); // Запускаем анимацию при уходе курсора
           actionsUnhover.clampWhenFinished = true;
           actionsUnhover.loop = THREE.LoopOnce;

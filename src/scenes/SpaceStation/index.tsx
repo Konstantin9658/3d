@@ -1,6 +1,7 @@
 import { useAnimations, useGLTF } from "@react-three/drei";
-import spaceStation from "@/assets/models/space_station.glb";
 import { useEffect } from "react";
+
+import spaceStation from "@/assets/models/space_station.glb";
 
 export const SpaceStation = () => {
   const { scene, animations } = useGLTF(spaceStation);
@@ -12,6 +13,7 @@ export const SpaceStation = () => {
 
     const action = actions["Scene"];
     action.play();
+    action.setDuration(40)
   }, [actions, animations]);
 
   return <primitive object={scene} position={[22, 0, -108]} />;

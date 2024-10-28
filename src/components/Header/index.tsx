@@ -1,12 +1,13 @@
 import Logo from "@/assets/images/logo.svg?react";
-import classes from "./styles.module.scss";
+
 import { Button } from "../Button";
+import classes from "./styles.module.scss";
 
 export const Header = () => {
   return (
     <header className={classes.header}>
       <div className={classes.header__wrapper}>
-        <Logo />
+        <Logo className={classes.header__logo} />
         <nav className={classes.header__nav}>
           <ul className={classes.header__navList}>
             <li className={classes.header__navListItem}>what we do</li>

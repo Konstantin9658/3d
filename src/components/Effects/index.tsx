@@ -15,12 +15,15 @@ import {
   SMAAEffect,
   SMAAPreset,
   VignetteEffect,
+  // DepthOfFieldEffect
 } from "postprocessing";
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { Vector2 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
-import { BLEND_FUNC_OPTIONS, KERNEL_SIZE_OPTIONS } from "./consts";
+
 import { CAMERA_NAME } from "@/consts";
+
+import { BLEND_FUNC_OPTIONS, KERNEL_SIZE_OPTIONS } from "./consts";
 
 const updateLastComposerEffect = (effectComposer: RawEffectComposer) => {
   for (let i = 0; i < effectComposer.passes.length; i++) {
@@ -248,6 +251,15 @@ export const Effects = () => {
         })
       );
     }
+
+    // effects.push(
+    //   new DepthOfFieldEffect(camera, {
+    //     focusDistance: 0.1,
+    //     focalLength: 0.1, 
+    //     bokehScale: 3,
+    //     height: window.innerHeight
+    //   })
+    // );
 
     if (chromaticAberrationEnabled) {
       effects.push(
