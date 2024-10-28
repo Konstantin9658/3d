@@ -1,6 +1,8 @@
 import { useGSAP } from "@gsap/react";
+import clsx from "clsx";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLenis } from "lenis/react";
 import { useRef } from "react";
 
 import Decor from "./images/decor.svg?react";
@@ -16,14 +18,18 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 export const Welcome = () => {
   const welcomeRef = useRef<HTMLElement | null>(null);
 
+  const lenis = useLenis();
+
   useGSAP(
     () => {
       gsap
         .timeline({
           paused: true,
           scrollTrigger: {
+            // start:
             trigger: "#welcome",
-            end: "bottom 40%",
+            end: "+=600",
+            // endTrigger: "#start",
             scrub: 1,
             pin: "#welcome-pin",
             markers: true,
@@ -33,22 +39,12 @@ export const Welcome = () => {
           opacity: 1,
           ease: "power2.out",
         })
-        .to(`.${classes.welcome__scroll}`, {
+        .to(`.${classes.welcome__inner}`, {
           opacity: 0,
         })
-        .to(
-          `.${classes.welcome__inner}`,
-          {
-            opacity: 0,
-          },
-        )
-        .to(
-          `.${classes.welcome__inner}`,
-          {
-            transform: "translateY(-100%)",
-          },
-          ">-0.3"
-        )
+        .to(`.${classes.welcome__inner}`, {
+          transform: "translateY(-100%)",
+        }, ">-0.5")
         .to(`.${classes.welcome__achives}`, {
           opacity: 0,
         });
@@ -67,7 +63,12 @@ export const Welcome = () => {
           </p>
         </div>
         <div className={classes.welcome__bottom}>
-          <div className={classes.welcome__scroll}>
+          <div
+            className={clsx(
+              classes.welcome__scroll,
+              lenis?.animatedScroll !== 0 && classes.welcome__scroll_hide
+            )}
+          >
             <Decor />
             <p>Scroll down</p>
           </div>

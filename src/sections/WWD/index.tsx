@@ -2,7 +2,8 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect } from "react";
 
-import Space from "./images/space.svg?react";
+import Space_S from "./images/space_1.svg?react";
+import Space_L from "./images/space_2.svg?react";
 import W from "./images/test/1w.svg";
 import H from "./images/test/2h.svg";
 import A from "./images/test/3a.svg";
@@ -34,11 +35,10 @@ export const WWD = () => {
       .timeline({
         paused: true,
         scrollTrigger: {
-          trigger: "#start",
-          // start: "top 40%",
-          end: "bottom -5000px",
+          trigger: "#wwd",
+          end: "bottom -500%",
           scrub: 1,
-          pin: "#pin",
+          pin: "#wwd-pin",
           // markers: true,
         },
       })
@@ -71,29 +71,42 @@ export const WWD = () => {
   }, []);
 
   return (
-    <div id="start" className={classes.container}>
-      <div id="pin" className={classes.pin}>
-        <div className={classes.letter__wrapper}>
-          <img className={classes.letter} src={W} alt="" />
-          <img className={classes.letter} src={H} alt="" />
-          <img className={classes.letter} src={A} alt="" />
-          <img className={classes.letter} src={T} alt="" />
-        </div>
-        <Space style={{ flexShrink: 0 }} />
+    <div id="wwd" className={classes.container}>
+      <div id="wwd-pin" className={classes.pin}>
         <div
-          className={classes.letter__wrapper}
-          style={{ justifyContent: "center" }}
+          style={{
+            display: "flex",
+            width: "100%",
+            maxWidth: 1920,
+            maxHeight: 191,
+            height: "10vw",
+            padding: "0 120px",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <img className={classes.letter} src={W2} alt="" />
-          <img className={classes.letter} src={E} alt="" />
-        </div>
-        <Space style={{ flexShrink: 0 }} />
-        <div
-          className={classes.letter__wrapper}
-          style={{ justifyContent: "flex-end", flexShrink: 3 }}
-        >
-          <img className={classes.letter} src={D} alt="" />
-          <img className={classes.letter} src={O} alt="" />
+          <div className={classes.letter__wrapper}>
+            <img className={classes.letter} src={W} alt="" />
+            <img className={classes.letter} src={H} alt="" />
+            <img className={classes.letter} src={A} alt="" />
+            <img className={classes.letter} src={T} alt="" />
+          </div>
+          <Space_S style={{ flexShrink: 0 }} />
+          <div
+            className={classes.letter__wrapper}
+            // style={{ justifyContent: "center" }}
+          >
+            <img className={classes.letter} src={W2} alt="" />
+            <img className={classes.letter} src={E} alt="" />
+          </div>
+          <Space_L style={{ flexShrink: 0 }} />
+          <div
+            className={classes.letter__wrapper}
+            // style={{ justifyContent: "flex-end", flexShrink: 3 }}
+          >
+            <img className={classes.letter} src={D} alt="" />
+            <img className={classes.letter} src={O} alt="" />
+          </div>
         </div>
       </div>
     </div>
