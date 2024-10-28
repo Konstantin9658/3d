@@ -1,13 +1,7 @@
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useLenis } from "lenis/react";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDebounce } from "rooks";
 import * as THREE from "three";
 
@@ -49,10 +43,14 @@ export const MainScene = ({
   const parallaxOffset = useRef(new THREE.Vector3());
 
   const handleResize = useCallback(() => {
-    const newFov = 15 * (size.width / size.height);
+    const aspectRatioFactor = Math.sqrt(
+      (size.width / 1920) * (size.height / 1080)
+    );
+    const newFov = 28 / aspectRatioFactor;
     const clampedFov = Math.min(Math.max(newFov, 11), 50);
     setCameraFov(clampedFov);
-  }, [setCameraFov, size.height, size.width]);
+    camera.updateProjectionMatrix();
+  }, [camera, setCameraFov, size.height, size.width]);
 
   // Функция для отслеживания мыши
   const handleMouseMove = (event: MouseEvent) => {
