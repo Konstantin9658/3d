@@ -31,7 +31,7 @@ export const Welcome = () => {
             end: "+=90%",
             scrub: 1,
             pin: "#welcome-pin",
-            markers: true,
+            // markers: true,
           },
         })
         .fromTo(
