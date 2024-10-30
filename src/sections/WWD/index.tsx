@@ -36,7 +36,7 @@ export const WWD = () => {
         paused: true,
         scrollTrigger: {
           trigger: "#wwd",
-          end: "bottom -500%",
+          end: "bottom -450%",
           scrub: 1,
           pin: "#wwd-pin",
           // markers: true,
@@ -48,11 +48,11 @@ export const WWD = () => {
           opacity: 1,
           scale: 1,
           filter: "blur(0px)",
-          stagger: 0.01,
+          stagger: 0.03,
           duration: 0.1,
           ease: "power2.out",
         },
-        "<+0.1"
+        "<-0.6"
       )
       .to(
         shuffledLetters,
@@ -60,7 +60,7 @@ export const WWD = () => {
           opacity: 0,
           scale: 0.95,
           filter: "blur(5px)",
-          stagger: 0.01,
+          stagger: 0.03,
           duration: 0.1,
           ease: "power2.out",
         },
@@ -79,7 +79,7 @@ export const WWD = () => {
             width: "100%",
             maxWidth: 1920,
             maxHeight: 191,
-            height: "10vw",
+            height: "9.5vw",
             padding: "0 120px",
             alignItems: "center",
             justifyContent: "center",

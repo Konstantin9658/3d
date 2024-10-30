@@ -25,29 +25,28 @@ export const Welcome = () => {
       gsap
         .timeline({
           paused: true,
+          repeatRefresh: false,
           scrollTrigger: {
-            start: "top 0",
-            // trigger: "#welcome",
-            end: "+=900",
-            // endTrigger: "#start",
+            start: "top 133px",
+            end: "+=90%",
             scrub: 1,
             pin: "#welcome-pin",
-            // markers: true,
+            markers: true,
           },
         })
-        .from(`.${classes.welcome__inner}`, {
-          opacity: 1,
-          ease: "power2.out",
-        })
-        .to(`.${classes.welcome__inner}`, {
-          opacity: 0,
-        })
-        .to(
+        .fromTo(
           `.${classes.welcome__inner}`,
           {
-            transform: "translateY(-100%)",
+            opacity: 1,
+            immediateRender: false,
+            repeat: 0,
+            transform: "translateY(0%)",
+            ease: "power2.out",
           },
-          ">-0.5"
+          {
+            transform: "translateY(-100%)",
+            opacity: 0,
+          }
         )
         .to(`.${classes.welcome__achives}`, {
           opacity: 0,
