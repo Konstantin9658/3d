@@ -18,7 +18,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 export const WWD = () => {
   useEffect(() => {
-    // if (!textRef.current) return;
     // Анимация появления букв
     const letters = document.querySelectorAll<HTMLDivElement>(
       `.${classes.letter}`
@@ -27,7 +26,7 @@ export const WWD = () => {
 
     gsap.set(shuffledLetters, {
       opacity: 0,
-      scale: 0.95,
+      scale: 0.85,
       filter: "blur(5px)",
     }); // начальное состояние всех букв
 
@@ -48,8 +47,8 @@ export const WWD = () => {
           opacity: 1,
           scale: 1,
           filter: "blur(0px)",
-          stagger: 0.03,
-          duration: 0.1,
+          stagger: 0.05,
+          // duration: 0.1,
           ease: "power2.out",
         },
         "<-0.6"
@@ -58,7 +57,7 @@ export const WWD = () => {
         shuffledLetters,
         {
           opacity: 0,
-          scale: 0.95,
+          scale: 0.85,
           filter: "blur(5px)",
           stagger: 0.03,
           duration: 0.1,

@@ -9,7 +9,7 @@ import {
 import { Canvas } from "@react-three/fiber";
 import { ReactLenis } from "lenis/react";
 import { Leva, useControls } from "leva";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import * as THREE from "three";
 
 import env from "@/assets/hdr/kloofendal_28d_misty_1k.hdr";
@@ -40,6 +40,9 @@ function App() {
   const [envRotation, setEnvRotation] = useState(new THREE.Euler());
 
   const cameraFov = useAppStore((state) => state.cameraFov);
+  useEffect(() => {
+    console.log(cameraFov);
+  }, [cameraFov]);
 
   const { envIntensity } = useControls({
     envIntensity: {

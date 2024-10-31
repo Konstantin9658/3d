@@ -43,12 +43,16 @@ export const MainScene = ({
   const parallaxOffset = useRef(new THREE.Vector3());
 
   const handleResize = useCallback(() => {
-    const newFov = 30 * ((1920 / size.width));
+    const widthFactor = 1920 / size.width;
+    const heightFactor = size.height / 1080;
+
+    const newFov = 25 * widthFactor * heightFactor;
+
     const clampedFov = Math.min(Math.max(newFov, 1), 120);
 
     setCameraFov(clampedFov);
     camera.updateProjectionMatrix();
-  }, [camera, setCameraFov, size.width]);
+  }, [camera, setCameraFov, size.height, size.width]);
 
   // Функция для отслеживания мыши
   const handleMouseMove = (event: MouseEvent) => {
