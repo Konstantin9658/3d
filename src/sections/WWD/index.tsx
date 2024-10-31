@@ -35,7 +35,7 @@ export const WWD = () => {
         paused: true,
         scrollTrigger: {
           trigger: "#wwd",
-          end: "bottom -450%",
+          end: "bottom -480%",
           scrub: 1,
           pin: "#wwd-pin",
           // markers: true,
@@ -48,7 +48,6 @@ export const WWD = () => {
           scale: 1,
           filter: "blur(0px)",
           stagger: 0.05,
-          // duration: 0.1,
           ease: "power2.out",
         },
         "<-0.6"
