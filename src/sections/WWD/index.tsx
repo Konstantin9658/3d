@@ -91,18 +91,12 @@ export const WWD = () => {
             <img className={classes.letter} src={T} alt="" />
           </div>
           <Space_S style={{ flexShrink: 0 }} />
-          <div
-            className={classes.letter__wrapper}
-            // style={{ justifyContent: "center" }}
-          >
+          <div className={classes.letter__wrapper}>
             <img className={classes.letter} src={W2} alt="" />
             <img className={classes.letter} src={E} alt="" />
           </div>
           <Space_L style={{ flexShrink: 0 }} />
-          <div
-            className={classes.letter__wrapper}
-            // style={{ justifyContent: "flex-end", flexShrink: 3 }}
-          >
+          <div className={classes.letter__wrapper}>
             <img className={classes.letter} src={D} alt="" />
             <img className={classes.letter} src={O} alt="" />
           </div>

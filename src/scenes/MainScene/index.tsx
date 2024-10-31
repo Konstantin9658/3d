@@ -46,7 +46,7 @@ export const MainScene = ({
     const widthFactor = 1920 / size.width;
     const heightFactor = size.height / 1080;
 
-    const newFov = 25 * widthFactor * heightFactor;
+    const newFov = 29 * widthFactor * heightFactor;
 
     const clampedFov = Math.min(Math.max(newFov, 1), 120);
 
