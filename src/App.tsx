@@ -9,7 +9,7 @@ import {
 import { Canvas } from "@react-three/fiber";
 import { ReactLenis } from "lenis/react";
 import { Leva, useControls } from "leva";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import * as THREE from "three";
 
 import env from "@/assets/hdr/kloofendal_28d_misty_1k.hdr";
@@ -32,6 +32,7 @@ import { SeventhStage } from "./scenes/SeventhStage";
 import { SixthStage } from "./scenes/SixthStage";
 import { SpaceStation } from "./scenes/SpaceStation";
 import { ThirdStage } from "./scenes/ThirdStage";
+import { Industries } from "./sections/Industries";
 import { Welcome } from "./sections/Welcome";
 import { WWD } from "./sections/WWD";
 import { useAppStore } from "./store/app";
@@ -40,9 +41,6 @@ function App() {
   const [envRotation, setEnvRotation] = useState(new THREE.Euler());
 
   const cameraFov = useAppStore((state) => state.cameraFov);
-  useEffect(() => {
-    console.log(cameraFov);
-  }, [cameraFov]);
 
   const { envIntensity } = useControls({
     envIntensity: {
@@ -71,6 +69,7 @@ function App() {
           <Header />
           <Welcome />
           <WWD />
+          <Industries />
         </div>
 
         <Leva collapsed />
