@@ -13,7 +13,6 @@ export const SpaceStation = () => {
 
     const action = actions["Scene"];
     action.play();
-    action.setDuration(40)
   }, [actions, animations]);
 
   return <primitive object={scene} position={[22, 0, -108]} />;
