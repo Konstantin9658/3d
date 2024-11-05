@@ -12,12 +12,13 @@ import {
   HueSaturationEffect,
   PredicationMode,
   RenderPass,
-  SMAAEffect,
+  // SMAAEffect,
+  // MSAA
   SMAAPreset,
   VignetteEffect,
   // DepthOfFieldEffect
 } from "postprocessing";
-import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { Suspense, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { Vector2 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 
@@ -255,7 +256,7 @@ export const Effects = () => {
     // effects.push(
     //   new DepthOfFieldEffect(camera, {
     //     focusDistance: 0.1,
-    //     focalLength: 0.1, 
+    //     focalLength: 0.1,
     //     bokehScale: 3,
     //     height: window.innerHeight
     //   })
@@ -296,17 +297,17 @@ export const Effects = () => {
       );
     }
 
-    if (aaEnabled) {
-      const smaaPass = new EffectPass(
-        camera,
-        new SMAAEffect({
-          edgeDetectionMode,
-          predicationMode,
-          preset,
-        })
-      );
-      composer.addPass(smaaPass);
-    }
+    // if (aaEnabled) {
+    //   const smaaPass = new EffectPass(
+    //     camera,
+    //     new SMAAEffect({
+    //       edgeDetectionMode,
+    //       predicationMode,
+    //       preset,
+    //     })
+    //   );
+    //   composer.addPass(smaaPass);
+    // }
 
     if (effects.length) composer.addPass(new EffectPass(camera, ...effects));
 
@@ -346,9 +347,11 @@ export const Effects = () => {
   ]);
 
   return (
-    <EffectComposer multisampling={0} ref={effectComposer}>
-      {/* Обман для свойства children */}
-      <></>
-    </EffectComposer>
+    <Suspense fallback={null}>
+      <EffectComposer enabled multisampling={3} ref={effectComposer}>
+        {/* Обман для свойства children */}
+        <></>
+      </EffectComposer>
+    </Suspense>
   );
 };

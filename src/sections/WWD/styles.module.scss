@@ -1,35 +1,51 @@
-.container {
+.wwd {
   display: flex;
   position: relative;
-  top: 0;
-  left: 0;
-  height: 100vh;
+  height: 12.5%;
   width: 100%;
-  align-items: center;
-  justify-content: center;
   z-index: 10;
-}
-
-.letter {
-  // width: calc(100% / 8);
-  // width: 100%;
-  height: auto;
-  // opacity: 0;
 }
 
 .pin {
   width: 100%;
-  // max-width: 1920px;
-  height: 100%;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  // padding: 0 120px;
+}
+
+.title {
+  display: flex;
+  width: 100%;
+  max-width: 1920px;
+  max-height: 200px;
+  height: 9.5vw;
+  padding: 0 120px;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  display: flex;
+  width: 100%;
+  max-width: 1920px;
+  max-height: 200px;
+  height: 9.5vw;
+  padding: 0 120px;
+  align-items: center;
+  justify-content: center;
+}
+
+.letter {
+  height: auto;
 }
 
 .letter__wrapper {
-  // width: 100%;
   height: 100%;
   display: flex;
+}
+
+.letter__space {
+  flex-shrink: 0;
 }
