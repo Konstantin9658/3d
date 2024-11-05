@@ -35,6 +35,21 @@
   height: auto;
 }
 
+.title {
+  display: flex;
+  width: 100%;
+  max-width: 1920px;
+  max-height: 200px;
+  height: 9.5vw;
+  padding: 0 120px;
+  align-items: center;
+  justify-content: center;
+}
+
+.letter {
+  height: auto;
+}
+
 .letter__wrapper {
   height: 100%;
   display: flex;
