@@ -33,9 +33,9 @@ export const Industries = () => {
       .timeline({
         paused: true,
         scrollTrigger: {
-          // trigger: "#industries",
-          start: "top 0%",
-          end: "bottom -180%",
+          trigger: "#industries",
+          // start: "top 0%",
+          end: "bottom -300%",
           scrub: 1,
           pin: "#industries-pin",
           // markers: true,
@@ -55,7 +55,15 @@ export const Industries = () => {
           stagger: 0.05,
           ease: "power2.out",
         }
-        // "<-0.6"
+      )
+      .fromTo(
+        `.${classes.industries__description}`,
+        {
+          opacity: 0,
+        },
+        {
+          opacity: 1,
+        }
       )
       .to(
         shuffledLetters,
@@ -68,14 +76,18 @@ export const Industries = () => {
           ease: "power2.out",
         },
         ">"
-      );
+      )
+      .to(`.${classes.industries__description}`, {
+        opacity: 0,
+      }, ">")
 
     return () => void tl.kill();
   }, []);
+
   return (
     <section className={classes.industries} id="industries">
       <div id="industries-pin" className={classes.industries__wrapper}>
-        <div>
+        <div className={classes.industries__title}>
           <img className={classes.word} src={I} alt="" />
           <img className={classes.word} src={N} alt="" />
           <img className={classes.word} src={D} alt="" />
@@ -87,6 +99,10 @@ export const Industries = () => {
           <img className={classes.word} src={E} alt="" />
           <img className={classes.word} src={S2} alt="" />
         </div>
+        <p className={classes.industries__description}>
+          We’ve gained ample experience for a wide range of industries, making
+          our soilutions compliant with the specific requirements.
+        </p>
       </div>
     </section>
   );

@@ -18,29 +18,19 @@ gsap.registerPlugin(ScrollTrigger);
 
 export const WWD = () => {
   useEffect(() => {
-    // Анимация появления букв
     const letters = document.querySelectorAll<HTMLImageElement>(
       `.${classes.letter}`
     );
     const shuffledLetters = gsap.utils.shuffle([...letters]);
-
-    // gsap.set(shuffledLetters, {
-    //   opacity: 0,
-    //   scale: 0.85,
-    //   filter: "blur(5px)",
-    // }); // начальное состояние всех букв
 
     const tl = gsap
       .timeline({
         paused: true,
         scrollTrigger: {
           trigger: "#wwd",
-          end: "bottom -480%",
+          end: "bottom 35%",
           scrub: 1,
           pin: "#wwd-pin",
-          pinSpacing: true,
-          // pinReparent: true,
-          // markers: true,
         },
       })
       .fromTo(

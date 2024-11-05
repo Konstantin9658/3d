@@ -7,9 +7,9 @@ import {
 } from "@react-three/drei";
 // import classes from "./styles.module.scss";
 import { Canvas } from "@react-three/fiber";
-import { ReactLenis } from "lenis/react";
+import { LenisRef, ReactLenis } from "lenis/react";
 import { Leva, useControls } from "leva";
-import { Suspense, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import * as THREE from "three";
 
 import env from "@/assets/hdr/kloofendal_28d_misty_1k.hdr";
@@ -40,6 +40,8 @@ import { useAppStore } from "./store/app";
 function App() {
   const [envRotation, setEnvRotation] = useState(new THREE.Euler());
 
+  const lenisRef = useRef<LenisRef | null>(null);
+
   const cameraFov = useAppStore((state) => state.cameraFov);
 
   const { envIntensity } = useControls({
@@ -57,6 +59,7 @@ function App() {
     <>
       <ReactLenis
         root
+        ref={lenisRef}
         options={{ infinite: true, lerp: 0.03, syncTouch: true }}
       >
         <div
@@ -69,17 +72,18 @@ function App() {
           <Header />
           <Welcome />
           <WWD />
+          <div style={{ height: "30%" }}></div>
           <Industries />
         </div>
-
+        <Header />
         <Leva collapsed />
         <Canvas
           linear
+          // gl={{a}}
           style={{
             background: "#000",
             position: "fixed",
             top: 0,
-            // height: "calc(100% + 200px)",
           }}
           shadows
         >
@@ -102,6 +106,7 @@ function App() {
               ]}
             />
             {/* <fog attach="fog" color="#234243" near={1} far={110} /> */}
+            {/* <ScrollControls damping={0.7} infinite pages={50}> */}
             <MainScene setEnvRotation={setEnvRotation} />
             <Planet />
             <SpaceStation />
@@ -112,6 +117,7 @@ function App() {
             <FifthStage />
             <SixthStage />
             <SeventhStage />
+            {/* </ScrollControls> */}
           </Suspense>
         </Canvas>
       </ReactLenis>
