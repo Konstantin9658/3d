@@ -105,8 +105,6 @@ function App() {
                 envRotation.z,
               ]}
             />
-            {/* <fog attach="fog" color="#234243" near={1} far={110} /> */}
-            {/* <ScrollControls damping={0.7} infinite pages={50}> */}
             <MainScene setEnvRotation={setEnvRotation} />
             <Planet />
             <SpaceStation />
@@ -117,7 +115,6 @@ function App() {
             <FifthStage />
             <SixthStage />
             <SeventhStage />
-            {/* </ScrollControls> */}
           </Suspense>
         </Canvas>
       </ReactLenis>

@@ -348,7 +348,7 @@ export const Effects = () => {
 
   return (
     <Suspense fallback={null}>
-      <EffectComposer enabled multisampling={3} ref={effectComposer}>
+      <EffectComposer multisampling={3} ref={effectComposer}>
         {/* Обман для свойства children */}
         <></>
       </EffectComposer>

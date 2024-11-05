@@ -8,6 +8,7 @@ import * as THREE from "three";
 import model from "@/assets/models/full_scene.glb";
 import { CAMERA_NAME, PARALLAX_COEF } from "@/consts";
 import { useAppHeight } from "@/hooks/useAppHeight";
+import { useMergeVertices } from "@/hooks/useMergeVertices";
 import { useAppStore } from "@/store/app";
 
 export const MainScene = ({
@@ -32,6 +33,10 @@ export const MainScene = ({
 
   const camera = useThree((state) => state.camera); // Основная камера
   const size = useThree((state) => state.size);
+
+  const scenes = useThree((state) => state.scene);
+
+  useMergeVertices(scenes);
 
   const animatedCamera = useMemo(
     () => (cameras.length > 0 ? cameras[0] : null),
