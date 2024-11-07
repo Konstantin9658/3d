@@ -188,11 +188,6 @@
     "@babel/helper-validator-identifier" "^7.25.7"
     to-fast-properties "^2.0.0"
 
-"@darkroom.engineering/tempus@^0.0.46":
-  version "0.0.46"
-  resolved "https://registry.yarnpkg.com/@darkroom.engineering/tempus/-/tempus-0.0.46.tgz#3d958807503e4055fcc4a1aeeff83ca0546c62f0"
-  integrity sha512-s5vav3KMHYezvUCl4ee5epg0oimF6M8C9gAaKxFnFaTvX2q3ywFDryIv6XLd0mRFUt3S1uHDJqKaiEcs2ZVSvw==
-
 "@esbuild/aix-ppc64@0.21.5":
   version "0.21.5"
   resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.21.5.tgz#c7184a326533fcdf1b8ee0733e21c713b975575f"
@@ -2066,11 +2061,9 @@ keyv@^4.5.4:
     json-buffer "3.0.1"
 
 lenis@^1.1.14:
-  version "1.1.14"
-  resolved "https://registry.yarnpkg.com/lenis/-/lenis-1.1.14.tgz#209d6f1e9461f8c9e98c3300e4fd27691aa14f2d"
-  integrity sha512-dzIeiOCdBL/7Tjh6jU8iN5j1uu5R3PIQwRYipS4C8POPyTH1pHyux3HDyvcGuLqNNsEztZjkmwfPii2cPLXBbg==
-  dependencies:
-    "@darkroom.engineering/tempus" "^0.0.46"
+  version "1.1.16"
+  resolved "https://registry.yarnpkg.com/lenis/-/lenis-1.1.16.tgz#af78e09ebd025f659a8df77f9c68c900da38fed9"
+  integrity sha512-bGS8IxJW3x310gTwFylgYU6bGzeVnTALmgyLP8RZ9DFSYC/hN3fi+urCWspr5otljbDAGF4ND2GKCFtemAd45Q==
 
 leva@^0.9.35:
   version "0.9.35"

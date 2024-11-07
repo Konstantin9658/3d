@@ -7,9 +7,10 @@ import {
 } from "@react-three/drei";
 // import classes from "./styles.module.scss";
 import { Canvas } from "@react-three/fiber";
+import { gsap } from "gsap";
 import { LenisRef, ReactLenis } from "lenis/react";
 import { Leva, useControls } from "leva";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 import env from "@/assets/hdr/kloofendal_28d_misty_1k.hdr";
@@ -32,7 +33,9 @@ import { SeventhStage } from "./scenes/SeventhStage";
 import { SixthStage } from "./scenes/SixthStage";
 import { SpaceStation } from "./scenes/SpaceStation";
 import { ThirdStage } from "./scenes/ThirdStage";
+import { Cases } from "./sections/Cases";
 import { Industries } from "./sections/Industries";
+import { MobileApps } from "./sections/MobileApps";
 import { Welcome } from "./sections/Welcome";
 import { WWD } from "./sections/WWD";
 import { useAppStore } from "./store/app";
@@ -41,9 +44,8 @@ function App() {
   const [envRotation, setEnvRotation] = useState(new THREE.Euler());
 
   const lenisRef = useRef<LenisRef | null>(null);
-
   const cameraFov = useAppStore((state) => state.cameraFov);
-
+  // const lenis = useLenis();
   const { envIntensity } = useControls({
     envIntensity: {
       value: 0.5,
@@ -52,6 +54,16 @@ function App() {
       step: 0.1,
     },
   });
+
+  useEffect(() => {
+    function update(time: number) {
+      lenisRef.current?.lenis?.raf(time * 1000);
+    }
+
+    gsap.ticker.add(update);
+    gsap.ticker.lagSmoothing(0);
+    return () => gsap.ticker.remove(update);
+  }, []);
 
   const appHeight = useAppHeight();
 
@@ -67,23 +79,26 @@ function App() {
             width: "100%",
             height: `${appHeight}px`,
             position: "absolute",
+            top: 0,
           }}
         >
           <Header />
           <Welcome />
           <WWD />
-          <div style={{ height: "30%" }}></div>
+          <div style={{ height: "30%" }} />
           <Industries />
+          <div style={{ height: "17%" }} />
+          <MobileApps />
+          <Cases />
         </div>
-        <Header />
         <Leva collapsed />
         <Canvas
           linear
-          // gl={{a}}
           style={{
             background: "#000",
             position: "fixed",
             top: 0,
+            height: "100vh",
           }}
           shadows
         >

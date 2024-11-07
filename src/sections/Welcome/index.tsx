@@ -20,8 +20,6 @@ export const Welcome = () => {
     () => {
       gsap
         .timeline({
-          paused: true,
-          repeatRefresh: false,
           scrollTrigger: {
             start: "top 133px",
             end: "+=100%",
@@ -52,7 +50,7 @@ export const Welcome = () => {
     { scope: welcomeRef }
   );
   return (
-    <section className={classes.welcome} id="welcome" ref={welcomeRef}>
+    <section className={classes.welcome} id="welcome" ref={welcomeRef} >
       <div className={classes.welcome__wrapper} id="welcome-pin">
         <div className={classes.welcome__inner}>
           <div className={classes.welcome__badge}>Worldwide reach</div>

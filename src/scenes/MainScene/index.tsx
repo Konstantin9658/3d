@@ -6,7 +6,13 @@ import { useDebounce } from "rooks";
 import * as THREE from "three";
 
 import model from "@/assets/models/full_scene.glb";
-import { CAMERA_NAME, PARALLAX_COEF } from "@/consts";
+import {
+  CAMERA_NAME,
+  PARALLAX_COEF,
+  REFERENCE_FOV,
+  REFERENCE_HEIGHT,
+  REFERENCE_WIDTH,
+} from "@/consts";
 import { useAppHeight } from "@/hooks/useAppHeight";
 import { useMergeVertices } from "@/hooks/useMergeVertices";
 import { useAppStore } from "@/store/app";
@@ -48,10 +54,10 @@ export const MainScene = ({
   const parallaxOffset = useRef(new THREE.Vector3());
 
   const handleResize = useCallback(() => {
-    const widthFactor = 1920 / size.width;
-    const heightFactor = size.height / 1080;
+    const widthFactor = REFERENCE_WIDTH / size.width;
+    const heightFactor = size.height / REFERENCE_HEIGHT;
 
-    const newFov = 29 * widthFactor * heightFactor;
+    const newFov = REFERENCE_FOV * widthFactor * heightFactor;
 
     const clampedFov = Math.min(Math.max(newFov, 1), 120);
 

@@ -15,19 +15,13 @@ import S2 from "./images/10s.svg";
 import classes from "./styles.module.scss";
 
 gsap.registerPlugin(ScrollTrigger);
+
 export const Industries = () => {
   useEffect(() => {
-    // Анимация появления букв
     const letters = document.querySelectorAll<HTMLImageElement>(
-      `.${classes.word}`
+      `.${classes.industries__titleLetter}`
     );
     const shuffledLetters = gsap.utils.shuffle([...letters]);
-
-    // gsap.set(shuffledLetters, {
-    //   opacity: 0,
-    //   scale: 0.85,
-    //   filter: "blur(5px)",
-    // }); // начальное состояние всех букв
 
     const tl = gsap
       .timeline({
@@ -35,7 +29,7 @@ export const Industries = () => {
         scrollTrigger: {
           trigger: "#industries",
           // start: "top 0%",
-          end: "bottom -300%",
+          end: "bottom 20%",
           scrub: 1,
           pin: "#industries-pin",
           // markers: true,
@@ -52,7 +46,7 @@ export const Industries = () => {
           opacity: 1,
           scale: 1,
           filter: "blur(0px)",
-          stagger: 0.05,
+          stagger: 0.03,
           ease: "power2.out",
         }
       )
@@ -63,7 +57,8 @@ export const Industries = () => {
         },
         {
           opacity: 1,
-        }
+        },
+        "<+=0.5"
       )
       .to(
         shuffledLetters,
@@ -72,14 +67,17 @@ export const Industries = () => {
           scale: 0.85,
           filter: "blur(5px)",
           stagger: 0.03,
-          duration: 0.1,
           ease: "power2.out",
         },
         ">"
       )
-      .to(`.${classes.industries__description}`, {
-        opacity: 0,
-      }, ">")
+      .to(
+        `.${classes.industries__description}`,
+        {
+          opacity: 0,
+        },
+        ">"
+      );
 
     return () => void tl.kill();
   }, []);
@@ -87,17 +85,19 @@ export const Industries = () => {
   return (
     <section className={classes.industries} id="industries">
       <div id="industries-pin" className={classes.industries__wrapper}>
-        <div className={classes.industries__title}>
-          <img className={classes.word} src={I} alt="" />
-          <img className={classes.word} src={N} alt="" />
-          <img className={classes.word} src={D} alt="" />
-          <img className={classes.word} src={U} alt="" />
-          <img className={classes.word} src={S} alt="" />
-          <img className={classes.word} src={T} alt="" />
-          <img className={classes.word} src={R} alt="" />
-          <img className={classes.word} src={I2} alt="" />
-          <img className={classes.word} src={E} alt="" />
-          <img className={classes.word} src={S2} alt="" />
+        <div className={classes.industries__inner}>
+          <div className={classes.industries__title}>
+            <img className={classes.industries__titleLetter} src={I} alt="" />
+            <img className={classes.industries__titleLetter} src={N} alt="" />
+            <img className={classes.industries__titleLetter} src={D} alt="" />
+            <img className={classes.industries__titleLetter} src={U} alt="" />
+            <img className={classes.industries__titleLetter} src={S} alt="" />
+            <img className={classes.industries__titleLetter} src={T} alt="" />
+            <img className={classes.industries__titleLetter} src={R} alt="" />
+            <img className={classes.industries__titleLetter} src={I2} alt="" />
+            <img className={classes.industries__titleLetter} src={E} alt="" />
+            <img className={classes.industries__titleLetter} src={S2} alt="" />
+          </div>
         </div>
         <p className={classes.industries__description}>
           We’ve gained ample experience for a wide range of industries, making

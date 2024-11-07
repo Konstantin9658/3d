@@ -1,3 +1,4 @@
+import { folder } from "leva";
 import { BlendFunction, KernelSize } from "postprocessing";
 
 export const BLEND_FUNC_OPTIONS = {
@@ -45,4 +46,117 @@ export const KERNEL_SIZE_OPTIONS = {
   large: KernelSize.LARGE,
   veryLarge: KernelSize.VERY_LARGE,
   huge: KernelSize.HUGE,
+};
+
+export const CONFIG = {
+  Bloom: folder(
+    {
+      bloomEnabled: { label: "enabled", value: true },
+      mipmapBlur: true,
+      blendFunction: {
+        value: BLEND_FUNC_OPTIONS.SCREEN,
+        options: BLEND_FUNC_OPTIONS,
+      },
+      luminanceThreshold: {
+        value: 1,
+        max: 5,
+        min: 0,
+        step: 0.05,
+      },
+      luminanceSmoothing: {
+        value: 0,
+        min: 0,
+        max: 1,
+        step: 0.05,
+      },
+      intensity: {
+        value: 0.65,
+        max: 5,
+        min: 0,
+        step: 0.05,
+      },
+      kernelSize: {
+        value: KERNEL_SIZE_OPTIONS.large,
+        options: KERNEL_SIZE_OPTIONS,
+      },
+    },
+    { collapsed: true }
+  ),
+  "Chromatic Aberration": folder(
+    {
+      chromaticAberrationEnabled: { label: "enabled", value: true },
+      radialModulationEnabled: { value: false },
+      chromaticBlendFunc: {
+        value: BLEND_FUNC_OPTIONS.NORMAL,
+        options: BLEND_FUNC_OPTIONS,
+      },
+      chromaticOffset: folder({
+        x: {
+          value: 0.0004,
+          max: 0.01,
+          min: 0,
+          step: 0.0001,
+        },
+        y: {
+          value: 0.0004,
+          max: 0.01,
+          min: 0,
+          step: 0.0001,
+        },
+      }),
+      modulationOffset: {
+        value: 0.15,
+        max: 5,
+        min: 0,
+        step: 0.05,
+      },
+    },
+    { collapsed: true }
+  ),
+  Vignette: folder(
+    {
+      vignetteEnabled: { label: "enabled", value: false },
+      offset: {
+        value: 0.05,
+        max: 5,
+        min: 0,
+        step: 0.05,
+      },
+      darkness: {
+        value: 0.2,
+        max: 1,
+        min: 0,
+        step: 0.1,
+      },
+    },
+    { collapsed: true }
+  ),
+  Color: folder(
+    {
+      colorEnabled: { label: "enabled", value: true },
+      colorHue: { label: "hue", value: 0, step: 1, min: -180, max: 180 },
+      colorSaturation: {
+        label: "saturation",
+        value: 7,
+        step: 1,
+        min: -180,
+        max: 180,
+      },
+      colorBrightness: {
+        label: "brightness",
+        value: 0.25,
+        step: 0.05,
+        min: -1,
+        max: 1,
+      },
+      colorContrast: {
+        label: "contrast",
+        value: 0.1,
+        step: 0.05,
+        min: -1,
+        max: 1,
+      },
+    },
+    { collapsed: true }
+  ),
 };

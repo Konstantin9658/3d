@@ -1,0 +1,61 @@
+@use "../../styles/colors.scss" as *;
+@use "../../styles/fonts.scss" as *;
+
+.mobileApps {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 7%;
+  width: 100%;
+  align-items: center;
+  z-index: 10;
+  max-width: 1920px;
+  // padding: 133px 120px 100px;
+  padding: 0 120px;
+}
+
+.mobileApps__wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 823px;
+  height: 100vh;
+}
+
+.mobileApps__title {
+  font-family: $akrobat;
+  font-size: 114px;
+  line-height: 117px;
+  font-weight: 900;
+  color: $white;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  margin-bottom: 58px;
+}
+
+.mobileApps__description {
+  font-family: $akrobat;
+  font-size: 64px;
+  line-height: 77px;
+  font-weight: 900;
+  color: $white;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 3.2px;
+}
+
+.mobileApps__count {
+  display: flex;
+  width: 100%;
+  max-width: 1920px;
+  max-height: 296px;
+  height: 15.5vw;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 69px;
+}
+
+.mobileApps__countItem {
+  height: 100%;
+}

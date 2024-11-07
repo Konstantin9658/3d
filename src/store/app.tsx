@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+import { REFERENCE_FOV } from "@/consts";
+
 interface AppStore {
   scrollOffset: number;
   setScrollOffset: (v: number) => void;
@@ -12,7 +14,7 @@ interface AppStore {
 export const useAppStore = create<AppStore>((set) => ({
   scrollOffset: 0,
   setScrollOffset: (v) => set({ scrollOffset: v }),
-  cameraFov: 21.5,
+  cameraFov: REFERENCE_FOV,
   setCameraFov: (v) => set({ cameraFov: v }),
   hoveredStates: {},
   setHoveredState: (name, state) =>

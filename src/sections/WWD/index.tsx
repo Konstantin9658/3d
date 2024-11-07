@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect } from "react";
@@ -19,7 +20,7 @@ gsap.registerPlugin(ScrollTrigger);
 export const WWD = () => {
   useEffect(() => {
     const letters = document.querySelectorAll<HTMLImageElement>(
-      `.${classes.letter}`
+      `.${classes.wwd__titleLetter}`
     );
     const shuffledLetters = gsap.utils.shuffle([...letters]);
 
@@ -27,6 +28,7 @@ export const WWD = () => {
       .timeline({
         paused: true,
         scrollTrigger: {
+          invalidateOnRefresh: true,
           trigger: "#wwd",
           end: "bottom 35%",
           scrub: 1,
@@ -67,23 +69,33 @@ export const WWD = () => {
 
   return (
     <section id="wwd" className={classes.wwd}>
-      <div id="wwd-pin" className={classes.pin}>
-        <div className={classes.title}>
-          <div className={classes.letter__wrapper}>
-            <img className={classes.letter} src={W} alt="" />
-            <img className={classes.letter} src={H} alt="" />
-            <img className={classes.letter} src={A} alt="" />
-            <img className={classes.letter} src={T} alt="" />
+      <div id="wwd-pin" className={classes.wwd__pin}>
+        <div className={classes.wwd__title}>
+          <div className={classes.wwd__letterWrapper}>
+            <img className={classes.wwd__titleLetter} src={W} alt="" />
+            <img className={classes.wwd__titleLetter} src={H} alt="" />
+            <img className={classes.wwd__titleLetter} src={A} alt="" />
+            <img className={classes.wwd__titleLetter} src={T} alt="" />
           </div>
-          <Space_S className={classes.letter__space} />
-          <div className={classes.letter__wrapper}>
-            <img className={classes.letter} src={W2} alt="" />
-            <img className={classes.letter} src={E} alt="" />
+          <Space_S
+            className={clsx(
+              classes.wwd__letterSpace,
+              classes.wwd__letterSpace_s
+            )}
+          />
+          <div className={classes.wwd__letterWrapper}>
+            <img className={classes.wwd__titleLetter} src={W2} alt="" />
+            <img className={classes.wwd__titleLetter} src={E} alt="" />
           </div>
-          <Space_L className={classes.letter__space} />
-          <div className={classes.letter__wrapper}>
-            <img className={classes.letter} src={D} alt="" />
-            <img className={classes.letter} src={O} alt="" />
+          <Space_L
+            className={clsx(
+              classes.wwd__letterSpace,
+              classes.wwd__letterSpace_l
+            )}
+          />
+          <div className={classes.wwd__letterWrapper}>
+            <img className={classes.wwd__titleLetter} src={D} alt="" />
+            <img className={classes.wwd__titleLetter} src={O} alt="" />
           </div>
         </div>
       </div>
