@@ -87,7 +87,7 @@ function App() {
           <WWD />
           <div style={{ height: "30%" }} />
           <Industries />
-          <div style={{ height: "17%" }} />
+          {/* <div style={{ height: "8%" }} /> */}
           <MobileApps />
           <Cases />
         </div>

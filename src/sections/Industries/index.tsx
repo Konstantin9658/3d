@@ -29,7 +29,7 @@ export const Industries = () => {
         scrollTrigger: {
           trigger: "#industries",
           // start: "top 0%",
-          end: "bottom 20%",
+          end: "bottom 40%",
           scrub: 1,
           pin: "#industries-pin",
           // markers: true,

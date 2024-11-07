@@ -12,21 +12,22 @@ gsap.registerPlugin(ScrollTrigger);
 
 export const MobileApps = () => {
   useEffect(() => {
-    // const letters = document.querySelectorAll<HTMLImageElement>(
-    //   `.${classes.mobileApps__countItem}`
-    // );
-    // console.log(letters);
-    // const shuffledLetters = gsap.utils.shuffle([...letters]);
+    const letters = document.querySelectorAll<HTMLImageElement>(
+      `.${classes.mobileApps__countItem}`
+    );
+
+    const shuffledLetters = gsap.utils.shuffle([...letters]);
 
     const tl = gsap
       .timeline({
         paused: true,
         scrollTrigger: {
           trigger: "#mobileapps",
-          // start: "top 0%",
-          end: "bottom 60%",
+          end: "bottom 100%",
           scrub: 1,
           pin: "#mobileapps-pin",
+          fastScrollEnd: 1000,
+          preventOverlaps: true,
           // markers: true,
         },
       })
@@ -42,12 +43,12 @@ export const MobileApps = () => {
           opacity: 1,
           scale: 1,
           filter: "blur(0px)",
-          stagger: 0.1,
+          // stagger: 0.01,
           ease: "power2.out",
         }
       )
       .fromTo(
-        `.${classes.mobileApps__count}`,
+        shuffledLetters,
         {
           opacity: 0,
           scale: 0.85,
@@ -58,7 +59,7 @@ export const MobileApps = () => {
           opacity: 1,
           scale: 1,
           filter: "blur(0px)",
-          stagger: 0.1,
+          stagger: 0.03,
           ease: "power2.out",
         },
         ">"
@@ -75,9 +76,40 @@ export const MobileApps = () => {
           opacity: 1,
           scale: 1,
           filter: "blur(0px)",
-          stagger: 0.1,
           ease: "power2.out",
-        }
+        },
+        ">-=0.5"
+      )
+      .to(
+        `.${classes.mobileApps__title}`,
+        {
+          opacity: 0,
+          scale: 0.85,
+          filter: "blur(5px)",
+          ease: "power2.out",
+        },
+        ">"
+      )
+      .to(
+        `.${classes.mobileApps__description}`,
+        {
+          opacity: 0,
+          scale: 0.85,
+          filter: "blur(5px)",
+          ease: "power2.out",
+        },
+        ">-=0.5"
+      )
+      .to(
+        shuffledLetters,
+        {
+          opacity: 0,
+          scale: 0.85,
+          filter: "blur(5px)",
+          ease: "power2.out",
+          stagger: 0.05,
+        },
+        ">"
       );
 
     return () => void tl.kill();
