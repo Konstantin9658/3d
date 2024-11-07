@@ -1,4 +1,5 @@
 import {
+  BlendFunction,
   BrightnessContrastEffect,
   Effect,
   HueSaturationEffect,
@@ -8,6 +9,8 @@ import { degToRad } from "three/src/math/MathUtils.js";
 
 interface ColorEffectProps {
   colorEnabled: boolean;
+  brightBlendFunc: BlendFunction;
+  hueBlendFunc: BlendFunction;
   colorHue: number;
   colorSaturation: number;
   colorBrightness: number;
@@ -20,6 +23,8 @@ export const useColorEffects = ({
   colorSaturation,
   colorBrightness,
   colorContrast,
+  brightBlendFunc,
+  hueBlendFunc,
 }: ColorEffectProps): Effect[] | null => {
   const colorHueRads = useMemo(() => degToRad(colorHue), [colorHue]);
   const colorSaturationRads = useMemo(
@@ -32,18 +37,22 @@ export const useColorEffects = ({
 
     return [
       new HueSaturationEffect({
+        blendFunction: hueBlendFunc,
         hue: colorHueRads,
         saturation: colorSaturationRads,
       }),
       new BrightnessContrastEffect({
+        blendFunction: brightBlendFunc,
         brightness: colorBrightness,
         contrast: colorContrast,
       }),
     ];
   }, [
     colorEnabled,
+    hueBlendFunc,
     colorHueRads,
     colorSaturationRads,
+    brightBlendFunc,
     colorBrightness,
     colorContrast,
   ]);

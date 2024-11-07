@@ -30,6 +30,8 @@ export const Effects = () => {
     colorSaturation,
     colorBrightness,
     colorContrast,
+    hueBlendFunc,
+    brightBlendFunc,
 
     bloomEnabled,
     mipmapBlur,
@@ -79,6 +81,8 @@ export const Effects = () => {
     colorSaturation,
     colorBrightness,
     colorContrast,
+    hueBlendFunc,
+    brightBlendFunc,
   });
   const vignetteEffect = useVignetteEffect({
     vignetteEnabled,

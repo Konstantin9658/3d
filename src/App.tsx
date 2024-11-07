@@ -48,7 +48,7 @@ function App() {
   // const lenis = useLenis();
   const { envIntensity } = useControls({
     envIntensity: {
-      value: 0.5,
+      value: 2.2,
       max: 5,
       min: 0,
       step: 0.1,
@@ -94,6 +94,11 @@ function App() {
         <Leva collapsed />
         <Canvas
           linear
+          gl={{
+            precision: "highp",
+            depth: false,
+            powerPreference: "high-performance",
+          }}
           style={{
             background: "#000",
             position: "fixed",

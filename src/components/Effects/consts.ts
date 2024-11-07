@@ -58,7 +58,7 @@ export const CONFIG = {
         options: BLEND_FUNC_OPTIONS,
       },
       luminanceThreshold: {
-        value: 1,
+        value: 1.8,
         max: 5,
         min: 0,
         step: 0.05,
@@ -70,7 +70,7 @@ export const CONFIG = {
         step: 0.05,
       },
       intensity: {
-        value: 0.65,
+        value: 1,
         max: 5,
         min: 0,
         step: 0.05,
@@ -133,14 +133,22 @@ export const CONFIG = {
   ),
   Color: folder(
     {
-      colorEnabled: { label: "enabled", value: true },
-      colorHue: { label: "hue", value: 0, step: 1, min: -180, max: 180 },
+      colorEnabled: { label: "enabled", value: false },
+      hueBlendFunc: {
+        value: BLEND_FUNC_OPTIONS.NORMAL,
+        options: BLEND_FUNC_OPTIONS,
+      },
+      brightBlendFunc: {
+        value: BLEND_FUNC_OPTIONS.NORMAL,
+        options: BLEND_FUNC_OPTIONS,
+      },
+      colorHue: { label: "hue", value: 0, step: 0.05, min: -1, max: 1 },
       colorSaturation: {
         label: "saturation",
-        value: 7,
-        step: 1,
-        min: -180,
-        max: 180,
+        value: 1,
+        step: 0.05,
+        min: -1,
+        max: 1,
       },
       colorBrightness: {
         label: "brightness",
