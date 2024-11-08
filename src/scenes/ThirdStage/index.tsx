@@ -1,12 +1,11 @@
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 import stage_3rd from "@/assets/models/3rd_stage.glb";
 
 const COLLIDER_NAME = "collider_3st_1";
-
 const CLOSE_CLIP = "1doors_close";
 const OPEN_CLIP = "1doors_open";
 
@@ -14,13 +13,34 @@ export const ThirdStage = () => {
   const { scene, animations } = useGLTF(stage_3rd);
   const { actions } = useAnimations(animations, scene);
 
+  const [isOpenDoor, setOpenDoor] = useState(true);
+
   const camera = useThree((state) => state.camera);
   const colliderRef = useRef(scene.getObjectByName(COLLIDER_NAME));
-
   const prevCameraPosition = useRef(new THREE.Vector3());
 
   useEffect(() => {
-    // Скрытие коллайдера, если это Mesh
+    const actionsOpen = actions[OPEN_CLIP];
+    const actionsClose = actions[CLOSE_CLIP];
+
+    if (!actionsOpen || !actionsClose) return;
+
+    if (isOpenDoor) {
+      actionsClose.stop();
+      actionsOpen.reset().play();
+      actionsOpen.loop = THREE.LoopOnce;
+      actionsOpen.clampWhenFinished = true;
+      return;
+    } else {
+      actionsOpen.stop();
+      actionsClose.reset().play();
+      actionsClose.loop = THREE.LoopOnce;
+      actionsClose.clampWhenFinished = true;
+      return;
+    }
+  }, [actions, isOpenDoor]);
+
+  useEffect(() => {
     if (
       colliderRef.current instanceof THREE.Mesh &&
       colliderRef.current.material instanceof THREE.Material
@@ -59,16 +79,11 @@ export const ThirdStage = () => {
         : new THREE.Vector3(0, 0, -1)
     );
 
+    // Установите время анимации в 0 перед ее воспроизведением
     if (dotProduct > 0) {
-      // console.log("Коллайдер пересечен с задней стороны");
-      actionsClose.reset().play();
-      actionsClose.loop = THREE.LoopOnce;
-      actionsClose.clampWhenFinished = true;
+      return setOpenDoor(true);
     } else {
-      // console.log("Коллайдер пересечен с передней стороны");
-      actionsOpen.reset().play();
-      actionsOpen.loop = THREE.LoopOnce;
-      actionsOpen.clampWhenFinished = true;
+      return setOpenDoor(false);
     }
 
     // Обновление последней позиции камеры
