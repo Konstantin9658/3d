@@ -79,15 +79,14 @@ export const ThirdStage = () => {
         : new THREE.Vector3(0, 0, -1)
     );
 
-    // Установите время анимации в 0 перед ее воспроизведением
+    // Обновление последней позиции камеры
+    prevCameraPosition.current.copy(currentCameraPosition);
+
     if (dotProduct > 0) {
       return setOpenDoor(true);
     } else {
       return setOpenDoor(false);
     }
-
-    // Обновление последней позиции камеры
-    prevCameraPosition.current.copy(currentCameraPosition);
   });
 
   return <primitive object={scene} position={[0, 0, 0]} />;
