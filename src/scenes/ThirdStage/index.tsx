@@ -8,6 +8,7 @@ import stage_3rd from "@/assets/models/3rd_stage.glb";
 const COLLIDER_NAME = "collider_3st_1";
 const CLOSE_CLIP = "1doors_close";
 const OPEN_CLIP = "1doors_open";
+const LOOP_ANIMATION = "looped";
 
 export const ThirdStage = () => {
   const { scene, animations } = useGLTF(stage_3rd);
@@ -18,6 +19,14 @@ export const ThirdStage = () => {
   const camera = useThree((state) => state.camera);
   const colliderRef = useRef(scene.getObjectByName(COLLIDER_NAME));
   const prevCameraPosition = useRef(new THREE.Vector3());
+
+  useEffect(() => {
+    if (!actions) return;
+
+    const loopAnimation = actions[LOOP_ANIMATION];
+
+    loopAnimation?.play();
+  }, [actions]);
 
   useEffect(() => {
     const actionsOpen = actions[OPEN_CLIP];
