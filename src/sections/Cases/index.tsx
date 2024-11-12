@@ -29,7 +29,7 @@ export const Cases = () => {
         scrollTrigger: {
           trigger: "#cases",
           // start: "top 0%",
-          end: "bottom -350%",
+          end: "bottom 100%",
           scrub: 1,
           pin: "#cases-pin",
           // markers: true,

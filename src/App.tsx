@@ -34,6 +34,7 @@ import { SixthStage } from "./scenes/SixthStage";
 import { SpaceStation } from "./scenes/SpaceStation";
 import { ThirdStage } from "./scenes/ThirdStage";
 import { Cases } from "./sections/Cases";
+import { Footer } from "./sections/Footer";
 import { Industries } from "./sections/Industries";
 import { MobileApps } from "./sections/MobileApps";
 import { Welcome } from "./sections/Welcome";
@@ -90,6 +91,7 @@ function App() {
           {/* <div style={{ height: "8%" }} /> */}
           <MobileApps />
           <Cases />
+          <Footer />
         </div>
         <Leva collapsed />
         <Canvas
