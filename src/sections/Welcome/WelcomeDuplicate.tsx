@@ -1,8 +1,3 @@
-import { useGSAP } from "@gsap/react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
-
 import Decor from "./images/decor.svg?react";
 import Title from "./images/development_the_future.svg?react";
 import AppStore from "./images/p44_app_store.svg?react";
@@ -11,60 +6,10 @@ import GlobalLeaders from "./images/p44_global_leaders.svg?react";
 import AndroidDev from "./images/p44_top_android_development.svg?react";
 import classes from "./styles.module.scss";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
-
-export const Welcome = () => {
-  const welcomeRef = useRef<HTMLElement | null>(null);
-
-  useGSAP(
-    () => {
-      gsap
-        .timeline({
-          scrollTrigger: {
-            start: "top 133px",
-            end: "+=100%",
-            scrub: 0.5,
-            pin: "#welcome-pin",
-            fastScrollEnd: 100,
-            // markers: true,
-          },
-        })
-        .from(`.${classes.welcome__inner}`, {
-          immediateRender: false,
-          autoAlpha: 1,
-          // transform: "translateY(0%)",
-          ease: "power2.out",
-        })
-        .to(`.${classes.welcome__inner}`, {
-          autoAlpha: 0,
-          // transform: "translateY(-100%)",
-        })
-        // .fromTo(
-        //   `.${classes.welcome__inner}`,
-        //   {
-        //     opacity: 1,
-        //     immediateRender: true,
-        //     // transform: "translateY(0%)",
-        //     ease: "power2.out",
-        //   },
-        //   {
-        //     // transform: "translateY(-100%)",
-        //     opacity: 0,
-        //   }
-        // )
-        .to(
-          `.${classes.welcome__bottom}`,
-          {
-            opacity: 0,
-          },
-          ">-0.5"
-        );
-    },
-    { scope: welcomeRef }
-  );
+export const WelcomeDuplicate = () => {
   return (
-    <section className={classes.welcome} id="welcome" ref={welcomeRef}>
-      <div className={classes.welcome__wrapper} id="welcome-pin">
+    <section className={classes.welcome}>
+      <div className={classes.welcome__wrapper}>
         <div className={classes.welcome__inner}>
           <div className={classes.welcome__badge}>Worldwide reach</div>
           <Title className={classes.wrapper__title} />

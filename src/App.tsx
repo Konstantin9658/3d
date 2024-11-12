@@ -38,6 +38,7 @@ import { Footer } from "./sections/Footer";
 import { Industries } from "./sections/Industries";
 import { MobileApps } from "./sections/MobileApps";
 import { Welcome } from "./sections/Welcome";
+import { WelcomeDuplicate } from "./sections/Welcome/WelcomeDuplicate";
 import { WWD } from "./sections/WWD";
 import { useAppStore } from "./store/app";
 
@@ -45,8 +46,12 @@ function App() {
   const [envRotation, setEnvRotation] = useState(new THREE.Euler());
 
   const lenisRef = useRef<LenisRef | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+
   const cameraFov = useAppStore((state) => state.cameraFov);
-  // const lenis = useLenis();
+
+  const appHeight = useAppHeight();
+
   const { envIntensity } = useControls({
     envIntensity: {
       value: 2.2,
@@ -66,8 +71,6 @@ function App() {
     return () => gsap.ticker.remove(update);
   }, []);
 
-  const appHeight = useAppHeight();
-
   return (
     <>
       <ReactLenis
@@ -76,6 +79,7 @@ function App() {
         options={{ infinite: true, lerp: 0.03, syncTouch: true }}
       >
         <div
+          ref={contentRef}
           style={{
             width: "100%",
             height: `${appHeight}px`,
@@ -84,6 +88,7 @@ function App() {
           }}
         >
           <Header />
+          {/* <WelcomeDuplicate /> */}
           <Welcome />
           <WWD />
           <div style={{ height: "30%" }} />
@@ -92,6 +97,9 @@ function App() {
           <MobileApps />
           <Cases />
           <Footer />
+          <div style={{overflow: "hidden", height: "100vh"}}>
+            <WelcomeDuplicate />
+          </div>
         </div>
         <Leva collapsed />
         <Canvas
