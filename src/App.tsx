@@ -97,7 +97,7 @@ function App() {
           <MobileApps />
           <Cases />
           <Footer />
-          <div style={{overflow: "hidden", height: "100vh"}}>
+          <div style={{ overflow: "hidden", height: "100vh" }}>
             <WelcomeDuplicate />
           </div>
         </div>

@@ -5,10 +5,8 @@ import * as THREE from "three";
 
 import stage_3rd from "@/assets/models/3rd_stage.glb";
 
-const COLLIDER_NAME = "collider_3st_1";
-const CLOSE_CLIP = "1doors_close";
-const OPEN_CLIP = "1doors_open";
-const LOOP_ANIMATION = "looped";
+import { CLOSE_CLIP, COLLIDER_NAME, LOOP_ANIMATION, OPEN_CLIP } from "./consts";
+import { handleActionDoor } from "./utils";
 
 export const ThirdStage = () => {
   const { scene, animations } = useGLTF(stage_3rd);
@@ -17,8 +15,10 @@ export const ThirdStage = () => {
   const [isOpenDoor, setOpenDoor] = useState(true);
 
   const camera = useThree((state) => state.camera);
+
+  const colliderToCamera = useRef(new THREE.Vector3());
+  const colliderWorldPosition = useRef(new THREE.Vector3());
   const colliderRef = useRef(scene.getObjectByName(COLLIDER_NAME));
-  const prevCameraPosition = useRef(new THREE.Vector3());
 
   useEffect(() => {
     if (!actions) return;
@@ -36,15 +36,11 @@ export const ThirdStage = () => {
 
     if (isOpenDoor) {
       actionsClose.stop();
-      actionsOpen.reset().play();
-      actionsOpen.loop = THREE.LoopOnce;
-      actionsOpen.clampWhenFinished = true;
+      handleActionDoor(actionsOpen);
       return;
     } else {
       actionsOpen.stop();
-      actionsClose.reset().play();
-      actionsClose.loop = THREE.LoopOnce;
-      actionsClose.clampWhenFinished = true;
+      handleActionDoor(actionsClose);
       return;
     }
   }, [actions, isOpenDoor]);
@@ -62,40 +58,22 @@ export const ThirdStage = () => {
     if (!colliderRef.current || !(colliderRef.current instanceof THREE.Mesh))
       return;
 
-    const actionsOpen = actions[OPEN_CLIP];
-    const actionsClose = actions[CLOSE_CLIP];
-
-    if (!actionsOpen || !actionsClose) return;
-
     const collider = colliderRef.current;
-    const colliderWorldPosition = new THREE.Vector3();
-    collider.getWorldPosition(colliderWorldPosition);
-
-    const currentCameraPosition = camera.position.clone();
-    const cameraDirection = new THREE.Vector3();
-    camera.getWorldDirection(cameraDirection);
 
     // Вектор от коллайдера к камере
-    const colliderToCamera = currentCameraPosition
-      .clone()
-      .sub(colliderWorldPosition)
+    colliderToCamera.current
+      .copy(camera.position)
+      .sub(colliderWorldPosition.current)
       .normalize();
 
     // Проверка направления пересечения с помощью скалярного произведения
-    const dotProduct = colliderToCamera.dot(
+    const dotProduct = colliderToCamera.current.dot(
       collider.geometry.normals
         ? collider.geometry.normals[0]
         : new THREE.Vector3(0, 0, -1)
     );
 
-    // Обновление последней позиции камеры
-    prevCameraPosition.current.copy(currentCameraPosition);
-
-    if (dotProduct > 0) {
-      return setOpenDoor(true);
-    } else {
-      return setOpenDoor(false);
-    }
+    return setOpenDoor(dotProduct > 0);
   });
 
   return <primitive object={scene} position={[0, 0, 0]} />;

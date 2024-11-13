@@ -19,41 +19,26 @@ export const Cases = () => {
     );
     const shuffledLetters = gsap.utils.shuffle([...letters]);
 
-    gsap.set(letters, {
-      opacity: 0,
-    });
-
     const tl = gsap
       .timeline({
         paused: true,
         scrollTrigger: {
           trigger: "#cases",
-          // start: "top 0%",
-          end: "bottom 100%",
+          end: "bottom -=5",
           scrub: 1,
           pin: "#cases-pin",
-          // markers: true,
+          markers: true,
           fastScrollEnd: 1000,
           preventOverlaps: true,
           anticipatePin: 0.1,
         },
       })
-      .fromTo(
-        shuffledLetters,
-        {
-          immediateRender: false,
-          opacity: 0,
-          scale: 0.85,
-          filter: "blur(5px)",
-        },
-        {
-          opacity: 1,
-          scale: 1,
-          filter: "blur(0px)",
-          stagger: 0.03,
-          ease: "power2.out",
-        }
-      )
+      .from(shuffledLetters, {
+        immediateRender: false,
+        opacity: 0,
+        scale: 0.85,
+        filter: "blur(5px)",
+      })
       .fromTo(
         `.${classes.cases__description}`,
         {
@@ -76,6 +61,30 @@ export const Cases = () => {
         },
         "<"
       )
+      .to(shuffledLetters, {
+        opacity: 1,
+        scale: 1,
+        filter: "blur(0px)",
+        stagger: 0.03,
+        ease: "power2.out",
+      })
+      // .fromTo(
+      //   shuffledLetters,
+      //   {
+      //     immediateRender: false,
+      //     opacity: 0,
+      //     scale: 0.85,
+      //     filter: "blur(5px)",
+      //   },
+      //   {
+      //     opacity: 1,
+      //     scale: 1,
+      //     filter: "blur(0px)",
+      //     stagger: 0.03,
+      //     ease: "power2.out",
+      //   }
+      // )
+
       .to(
         shuffledLetters,
         {
