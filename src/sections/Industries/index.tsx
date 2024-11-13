@@ -30,6 +30,7 @@ export const Industries = () => {
           trigger: "#industries",
           // start: "top 0%",
           end: "bottom 40%",
+          fastScrollEnd: 1000,
           scrub: 1,
           pin: "#industries-pin",
           // markers: true,

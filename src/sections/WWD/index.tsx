@@ -28,10 +28,10 @@ export const WWD = () => {
       .timeline({
         paused: true,
         scrollTrigger: {
-          invalidateOnRefresh: true,
           trigger: "#wwd",
           end: "bottom 35%",
           scrub: 1,
+          fastScrollEnd: 1000,
           pin: "#wwd-pin",
         },
       })

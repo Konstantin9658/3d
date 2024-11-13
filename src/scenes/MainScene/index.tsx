@@ -20,7 +20,7 @@ import { useAppStore } from "@/store/app";
 export const MainScene = ({
   setEnvRotation,
 }: {
-  setEnvRotation?: (euler: THREE.Euler) => void;
+  setEnvRotation: (euler: THREE.Euler) => void;
 }) => {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
@@ -151,7 +151,7 @@ export const MainScene = ({
 
     // Устанавливаем вращение окружения в зависимости от поворота камеры
     const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, "ZYX");
-    setEnvRotation?.(euler);
+    setEnvRotation(euler);
   });
 
   return <primitive object={scene} />;
