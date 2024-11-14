@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 import stage_2nd from "@/assets/models/2nd_stage.glb";
+import { useEmissiveNoToneMapped } from "@/hooks/useEmissiveNoToneMapped";
 import { useAppStore } from "@/store/app";
 
 import { MAX_HOVER_DISTANCE, SCROLL_ACTION } from "./consts";
@@ -33,6 +34,8 @@ export const SecondStage = () => {
   const collidersRef = useRef(
     Object.values(WwdColliderName).map((name) => scene.getObjectByName(name))
   );
+
+  useEmissiveNoToneMapped(scene);
 
   const handleHoverAction = useCallback(
     (

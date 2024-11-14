@@ -4,13 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 import stage_3rd from "@/assets/models/3rd_stage.glb";
+import { useEmissiveNoToneMapped } from "@/hooks/useEmissiveNoToneMapped";
+import { useVideoMaterial } from "@/hooks/useVideoMaterial";
 
 import { CLOSE_CLIP, COLLIDER_NAME, LOOP_ANIMATION, OPEN_CLIP } from "./consts";
+import imageHref from "./screen.jpg";
+import videoHref from "./screen_512.mp4";
 import { handleActionDoor } from "./utils";
 
 export const ThirdStage = () => {
   const { scene, animations } = useGLTF(stage_3rd);
   const { actions } = useAnimations(animations, scene);
+
+  const ref = useRef<THREE.Group | null>(null);
 
   const [isOpenDoor, setOpenDoor] = useState(true);
 
@@ -19,6 +25,12 @@ export const ThirdStage = () => {
   const colliderToCamera = useRef(new THREE.Vector3());
   const colliderWorldPosition = useRef(new THREE.Vector3());
   const colliderRef = useRef(scene.getObjectByName(COLLIDER_NAME));
+
+  useVideoMaterial(videoHref, imageHref, ref, "screen", (mat) => {
+    mat.emissive = new THREE.Color("white");
+  });
+
+  useEmissiveNoToneMapped(scene);
 
   useEffect(() => {
     if (!actions) return;
@@ -76,5 +88,5 @@ export const ThirdStage = () => {
     return setOpenDoor(dotProduct > 0);
   });
 
-  return <primitive object={scene} position={[0, 0, 0]} />;
+  return <primitive object={scene} position={[0, 0, 0]} ref={ref} />;
 };

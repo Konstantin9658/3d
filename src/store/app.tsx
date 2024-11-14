@@ -9,6 +9,8 @@ interface AppStore {
   setCameraFov: (v: number) => void;
   hoveredStates: Record<string, boolean>;
   setHoveredState: (name: string, state: boolean) => void;
+  isVideoTexturesEnabled: boolean;
+  setVideoTexturesEnabled: (v: boolean) => void;
 }
 
 export const useAppStore = create<AppStore>((set) => ({
@@ -24,4 +26,6 @@ export const useAppStore = create<AppStore>((set) => ({
         [name]: state,
       },
     })),
+  isVideoTexturesEnabled: true,
+  setVideoTexturesEnabled: (v) => set({ isVideoTexturesEnabled: v }),
 }));

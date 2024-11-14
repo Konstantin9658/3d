@@ -49,17 +49,25 @@ function App() {
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   const cameraFov = useAppStore((state) => state.cameraFov);
+  const setVideoTexturesEnabled = useAppStore(
+    (state) => state.setVideoTexturesEnabled
+  );
 
   const appHeight = useAppHeight();
 
-  const { envIntensity } = useControls({
+  const { envIntensity, videoEnabled } = useControls({
     envIntensity: {
       value: 2.2,
       max: 5,
       min: 0,
       step: 0.1,
     },
+    videoEnabled: { label: "video", value: true },
   });
+
+  useEffect(() => {
+    setVideoTexturesEnabled(videoEnabled);
+  }, [setVideoTexturesEnabled, videoEnabled]);
 
   useEffect(() => {
     function update(time: number) {
