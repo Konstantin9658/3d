@@ -125,7 +125,7 @@ export const Effects = () => {
   ]);
 
   return (
-    <EffectComposer multisampling={0} ref={effectComposer}>
+    <EffectComposer multisampling={5} ref={effectComposer}>
       <></>
     </EffectComposer>
   );
