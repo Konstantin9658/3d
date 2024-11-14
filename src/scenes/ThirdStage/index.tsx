@@ -5,12 +5,13 @@ import * as THREE from "three";
 
 import stage_3rd from "@/assets/models/3rd_stage.glb";
 import { useEmissiveNoToneMapped } from "@/hooks/useEmissiveNoToneMapped";
+import { useInvisibleMaterial } from "@/hooks/useInvisibleMaterial";
 import { useVideoMaterial } from "@/hooks/useVideoMaterial";
+import { playAction } from "@/utils";
 
 import { CLOSE_CLIP, COLLIDER_NAME, LOOP_ANIMATION, OPEN_CLIP } from "./consts";
 import imageHref from "./screen.jpg";
-import videoHref from "./screen_512.mp4";
-import { handleActionDoor } from "./utils";
+import videoHref from "./screen_1024.mp4";
 
 export const ThirdStage = () => {
   const { scene, animations } = useGLTF(stage_3rd);
@@ -31,6 +32,7 @@ export const ThirdStage = () => {
   });
 
   useEmissiveNoToneMapped(scene);
+  useInvisibleMaterial(colliderRef);
 
   useEffect(() => {
     if (!actions) return;
@@ -48,29 +50,16 @@ export const ThirdStage = () => {
 
     if (isOpenDoor) {
       actionsClose.stop();
-      handleActionDoor(actionsOpen);
-      return;
+      return playAction(actionsOpen);
     } else {
       actionsOpen.stop();
-      handleActionDoor(actionsClose);
-      return;
+      return playAction(actionsClose);
     }
   }, [actions, isOpenDoor]);
-
-  useEffect(() => {
-    if (
-      colliderRef.current instanceof THREE.Mesh &&
-      colliderRef.current.material instanceof THREE.Material
-    ) {
-      colliderRef.current.material.visible = false;
-    }
-  }, []);
 
   useFrame(() => {
     if (!colliderRef.current || !(colliderRef.current instanceof THREE.Mesh))
       return;
-
-    const collider = colliderRef.current;
 
     // Вектор от коллайдера к камере
     colliderToCamera.current
@@ -80,8 +69,8 @@ export const ThirdStage = () => {
 
     // Проверка направления пересечения с помощью скалярного произведения
     const dotProduct = colliderToCamera.current.dot(
-      collider.geometry.normals
-        ? collider.geometry.normals[0]
+      colliderRef.current.geometry.normals
+        ? colliderRef.current.geometry.normals[0]
         : new THREE.Vector3(0, 0, -1)
     );
 

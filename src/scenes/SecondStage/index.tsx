@@ -6,7 +6,9 @@ import * as THREE from "three";
 
 import stage_2nd from "@/assets/models/2nd_stage.glb";
 import { useEmissiveNoToneMapped } from "@/hooks/useEmissiveNoToneMapped";
+import { useInvisibleMaterial } from "@/hooks/useInvisibleMaterial";
 import { useAppStore } from "@/store/app";
+import { playAction } from "@/utils";
 
 import { MAX_HOVER_DISTANCE, SCROLL_ACTION } from "./consts";
 import {
@@ -20,7 +22,7 @@ export const SecondStage = () => {
   const [isDistanceExceeded, setIsDistanceExceeded] = useState(false);
 
   const { scene, animations } = useGLTF(stage_2nd);
-  const { actions, mixer } = useAnimations(animations, scene);
+  const { actions } = useAnimations(animations, scene);
 
   const hoveredStates = useAppStore((state) => state.hoveredStates);
   const setHoveredStates = useAppStore((state) => state.setHoveredState);
@@ -36,6 +38,38 @@ export const SecondStage = () => {
   );
 
   useEmissiveNoToneMapped(scene);
+  useInvisibleMaterial(collidersRef);
+
+  // const mat = useRef<THREE.MeshStandardMaterial | null>(null);
+
+  // useEffect(() => {
+  //   console.log(scene);
+  //   scene.traverse((node) => {
+  //     if (node instanceof THREE.Mesh) {
+  //       if (node.material instanceof THREE.MeshStandardMaterial) {
+  //         // if (node.material.name !== nodeMaterialName) return;
+
+  //         node.material.toneMapped = false;
+  //         // node.material.side = FrontSide;
+  //         // node.material.map = texture;
+  //         // node.material.map.flipY = false;
+  //         // node.material.map.minFilter = LinearFilter;
+  //         // node.material.emissiveMap = texture;
+  //         node.material.emissiveIntensity = 0.1;
+  //         // node.material.envMapIntensity = 0;
+  //         // node.material.envMap = null;
+
+  //         // additionalInstructions?.(node.material);
+
+  //         // node.material.needsUpdate = true;
+  //         console.log(node.material);
+  //         mat.current = node.material;
+  //       }
+  //     }
+
+  //     return () => mat.current?.dispose();
+  //   });
+  // }, [scene]);
 
   const handleHoverAction = useCallback(
     (
@@ -43,22 +77,11 @@ export const SecondStage = () => {
       colliderName: WwdColliderName,
       isHover: boolean
     ) => {
-      action.setDuration(2);
-      action.reset().play();
-      action.clampWhenFinished = true;
-      action.loop = THREE.LoopOnce;
+      playAction(action);
       setHoveredStates(colliderName, isHover);
     },
     [setHoveredStates]
   );
-
-  useEffect(() => {
-    collidersRef.current.forEach((collider) => {
-      if (collider && collider instanceof THREE.Mesh) {
-        collider.material.visible = false;
-      }
-    });
-  }, [collidersRef]);
 
   useEffect(() => {
     if (!actions) return;
@@ -79,10 +102,11 @@ export const SecondStage = () => {
     else actionScroll.play();
   }, [actions, lenis?.isSmooth]);
 
-  useFrame((_, delta) => {
+  useFrame(() => {
     if (!actions) return;
 
     const actionScroll = actions[SCROLL_ACTION];
+
     if (actionScroll) {
       const duration = actionScroll.getClip().duration;
       actionScroll.time = scrollOffset * duration;
@@ -98,9 +122,10 @@ export const SecondStage = () => {
         if (!collider) return;
 
         const colliderName = Object.values(WwdColliderName)[index];
-        const isHovered = hoveredStates[colliderName];
-        const actionsUnhover = actions[Object.values(WwdUnhoverAction)[index]];
         const actionsHover = actions[Object.values(WwdHoverAction)[index]];
+        const actionsUnhover = actions[Object.values(WwdUnhoverAction)[index]];
+
+        const isHovered = hoveredStates[colliderName];
 
         if (isHovered && actionsUnhover && actionsHover) {
           actionsHover.stop();
@@ -111,7 +136,7 @@ export const SecondStage = () => {
       setIsDistanceExceeded(false);
     }
 
-    mixer.update(delta);
+    // mixer.update(delta);
   });
 
   const handleMouseMove = (event: MouseEvent) => {

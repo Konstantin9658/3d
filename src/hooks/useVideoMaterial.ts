@@ -5,6 +5,7 @@ import {
   LinearFilter,
   Mesh,
   MeshStandardMaterial,
+  ShaderMaterial,
   TextureLoader,
   VideoTexture,
 } from "three";
@@ -43,24 +44,46 @@ export const useVideoMaterial = (
   useEffect(() => {
     if (!ref.current) return;
 
+    const customMaterial = new ShaderMaterial({
+      uniforms: {
+        map: { value: texture },
+        saturation: { value: 1 },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D map;
+        uniform float saturation;
+        varying vec2 vUv;
+
+        void main() {
+          vec4 color = texture2D(map, vUv);
+          float gray = dot(color.rgb, vec3(0.3, 0.59, 0.11));
+          color.rgb = mix(vec3(gray), color.rgb, saturation);
+          gl_FragColor = color;
+        }
+      `,
+    });
+
     ref.current.traverse((node) => {
       if (node instanceof Mesh) {
-        if (node.material instanceof MeshStandardMaterial) {
-          if (node.material.name !== nodeMaterialName) return;
+        if (node.material.name !== nodeMaterialName) return;
 
-          node.material.toneMapped = false;
-          node.material.side = FrontSide;
-          node.material.map = texture;
-          node.material.map.flipY = false;
-          node.material.map.minFilter = LinearFilter;
-          node.material.emissiveMap = texture;
+        node.material = customMaterial;
+        node.material.side = FrontSide;
+        node.material.map = texture;
+        node.material.map.flipY = false;
+        node.material.map.minFilter = LinearFilter;
 
-          if (additionalInstructions) additionalInstructions(node.material);
+        additionalInstructions?.(node.material);
 
-          node.material.needsUpdate = true;
-
-          mat.current = node.material;
-        }
+        node.material.needsUpdate = true;
+        mat.current = node.material;
       }
     });
 
