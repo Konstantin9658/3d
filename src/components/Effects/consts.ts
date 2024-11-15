@@ -133,7 +133,7 @@ export const CONFIG = {
   ),
   Color: folder(
     {
-      colorEnabled: { label: "enabled", value: false },
+      colorEnabled: { label: "enabled", value: true },
       hueBlendFunc: {
         value: BLEND_FUNC_OPTIONS.NORMAL,
         options: BLEND_FUNC_OPTIONS,
@@ -142,13 +142,13 @@ export const CONFIG = {
         value: BLEND_FUNC_OPTIONS.NORMAL,
         options: BLEND_FUNC_OPTIONS,
       },
-      colorHue: { label: "hue", value: 0, step: 0.05, min: -1, max: 1 },
+      colorHue: { label: "hue", value: 0, step: 1, min: -180, max: 180 },
       colorSaturation: {
         label: "saturation",
-        value: 1,
-        step: 0.05,
-        min: -1,
-        max: 1,
+        value: 7,
+        step: 1,
+        min: -180,
+        max: 180,
       },
       colorBrightness: {
         label: "brightness",
@@ -167,4 +167,33 @@ export const CONFIG = {
     },
     { collapsed: true }
   ),
+  // Color: folder(
+  //   {
+  //     colorEnabled: { label: "enabled", value: true },
+
+  //     colorHue: { label: "hue", value: 0, step: 0.05, min: -10, max: 10 },
+  //     colorSaturation: {
+  //       label: "saturation",
+  //       value: 7,
+  //       step: 0.05,
+  //       min: -100,
+  //       max: 100,
+  //     },
+  //     colorBrightness: {
+  //       label: "brightness",
+  //       value: 0.2,
+  //       step: 0.05,
+  //       min: -10,
+  //       max: 10,
+  //     },
+  //     colorContrast: {
+  //       label: "contrast",
+  //       value: -0.25,
+  //       step: 0.05,
+  //       min: -10,
+  //       max: 10,
+  //     },
+  //   },
+  //   { collapsed: true }
+  // ),
 };

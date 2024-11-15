@@ -57,7 +57,7 @@ function App() {
 
   const { envIntensity, videoEnabled } = useControls({
     envIntensity: {
-      value: 2.2,
+      value: 0.5,
       max: 5,
       min: 0,
       step: 0.1,

@@ -40,37 +40,6 @@ export const SecondStage = () => {
   useEmissiveNoToneMapped(scene);
   useInvisibleMaterial(collidersRef);
 
-  // const mat = useRef<THREE.MeshStandardMaterial | null>(null);
-
-  // useEffect(() => {
-  //   console.log(scene);
-  //   scene.traverse((node) => {
-  //     if (node instanceof THREE.Mesh) {
-  //       if (node.material instanceof THREE.MeshStandardMaterial) {
-  //         // if (node.material.name !== nodeMaterialName) return;
-
-  //         node.material.toneMapped = false;
-  //         // node.material.side = FrontSide;
-  //         // node.material.map = texture;
-  //         // node.material.map.flipY = false;
-  //         // node.material.map.minFilter = LinearFilter;
-  //         // node.material.emissiveMap = texture;
-  //         node.material.emissiveIntensity = 0.1;
-  //         // node.material.envMapIntensity = 0;
-  //         // node.material.envMap = null;
-
-  //         // additionalInstructions?.(node.material);
-
-  //         // node.material.needsUpdate = true;
-  //         console.log(node.material);
-  //         mat.current = node.material;
-  //       }
-  //     }
-
-  //     return () => mat.current?.dispose();
-  //   });
-  // }, [scene]);
-
   const handleHoverAction = useCallback(
     (
       action: THREE.AnimationAction,
