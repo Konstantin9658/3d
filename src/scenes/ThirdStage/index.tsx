@@ -27,9 +27,7 @@ export const ThirdStage = () => {
   const colliderWorldPosition = useRef(new THREE.Vector3());
   const colliderRef = useRef(scene.getObjectByName(COLLIDER_NAME));
 
-  useVideoMaterial(videoHref, imageHref, ref, "screen", (mat) => {
-    mat.emissive = new THREE.Color("black");
-  });
+  useVideoMaterial(videoHref, imageHref, ref, "screen");
 
   useEmissiveNoToneMapped(scene);
   useInvisibleMaterial(colliderRef);
