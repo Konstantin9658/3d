@@ -133,7 +133,7 @@ export const CONFIG = {
   ),
   Color: folder(
     {
-      colorEnabled: { label: "enabled", value: true },
+      colorEnabled: { label: "enabled", value: false },
       hueBlendFunc: {
         value: BLEND_FUNC_OPTIONS.NORMAL,
         options: BLEND_FUNC_OPTIONS,
