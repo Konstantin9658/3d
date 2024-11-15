@@ -58,27 +58,37 @@
 .cases__bottom {
   display: flex;
   align-self: flex-start;
+  // justify-content: space-between;
   margin-top: auto;
+  max-width: 407px;
+  // width: 21.2vw;
+  max-height: 86px;
+  height: 8vh;
 }
 
 .cases__count {
   display: flex;
   margin-right: 4px;
+
+  > svg {
+    height: 100%;
+  }
 }
 
 .cases__countWrapper {
   background-color: $accent;
-  width: 163px;
-  min-height: 86px;
+  // width: 163px;
+  // min-height: 86px;
+  height: 100%;
   display: flex;
 
-  > span {
+  > p {
     display: block;
     margin-top: 4px;
     font-family: $akrobat;
     font-weight: 900;
-    font-size: 70px;
-    line-height: 70px;
+    font-size: clamp(40px, 2vw, 70px);
+    line-height: clamp(40px, 2vw, 70px);
     color: $white;
   }
 }
@@ -87,13 +97,16 @@
   background-color: $white;
   padding: 11px 24px 11px 18px;
   max-width: 212px;
+  width: min-content;
+  display: flex;
+  align-items: center;
 
   > p {
     text-transform: uppercase;
     font-family: $akrobat;
     font-weight: 900;
-    font-size: 32px;
-    line-height: 32px;
+    font-size: clamp(20px, 2vw, 32px);
+    line-height: clamp(20px, 2vw, 32px);
     color: $black;
     letter-spacing: 1.6px;
   }

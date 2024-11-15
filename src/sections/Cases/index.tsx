@@ -135,7 +135,7 @@ export const Cases = () => {
           <div className={classes.cases__count}>
             <Part />
             <div className={classes.cases__countWrapper}>
-              <span>600+</span>
+              <p>600+</p>
             </div>
           </div>
           <div className={classes.cases__box}>
