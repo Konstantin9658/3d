@@ -61,20 +61,21 @@ const StarryBackground = () => {
     return geometry;
   }, []);
 
-  // Текстура для круглых звёзд
+  // Текстура для звёзд, похожих на настоящие (с эффектом яркого центра)
   const starTexture = useMemo(() => {
     const canvas = document.createElement("canvas");
-    canvas.width = 64;
-    canvas.height = 64;
+    canvas.width = 128;
+    canvas.height = 128;
     const ctx = canvas.getContext("2d");
 
     if (ctx) {
-      const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-      gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
-      gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.6)");
-      gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+      const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      // Добавляем эффект яркого центра с переходом
+      gradient.addColorStop(0, "rgba(255, 255, 255, 1)"); // Яркое белое
+      gradient.addColorStop(0.5, "rgba(255, 204, 100, 0.6)"); // Желтоватое
+      gradient.addColorStop(1, "rgba(0, 0, 0, 0)"); // Прозрачность по краям
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, 64, 64);
+      ctx.fillRect(0, 0, 128, 128);
     }
 
     const texture = new THREE.CanvasTexture(canvas);
@@ -85,7 +86,7 @@ const StarryBackground = () => {
   // Материал звёзд
   const starsMaterial = useMemo(() => {
     return new THREE.PointsMaterial({
-      size: 2.5,
+      size: 3, // Увеличим размер звёзд
       map: starTexture,
       sizeAttenuation: true,
       transparent: true,
@@ -93,10 +94,23 @@ const StarryBackground = () => {
     });
   }, [starTexture]);
 
-  // Медленное вращение
+  // Мерцание: случайная скорость мерцания для каждой звезды
+  const flickerSpeed = useRef(
+    new Array(50000).fill(0).map(() => Math.random() * 0.0005 + 0.0002) // Снижаем скорость мерцания
+  );
+
   useFrame(() => {
     if (pointsRef.current) {
-      pointsRef.current.rotation.y += 0.00002; // Замедленное вращение
+      pointsRef.current.rotation.y += 0.0001; // Медленное вращение
+
+      const material = pointsRef.current.material as THREE.PointsMaterial;
+
+      // Для каждой звезды обновляем прозрачность с использованием случайной скорости
+      for (let i = 0; i < flickerSpeed.current.length; i++) {
+        // Очень медленное мерцание с малой амплитудой
+        material.opacity =
+          0.8 + Math.sin(Date.now() * flickerSpeed.current[i]) * 0.03; // Еще меньшая амплитуда
+      }
     }
   });
 
