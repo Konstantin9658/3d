@@ -24,13 +24,12 @@ export const Cases = () => {
         paused: true,
         scrollTrigger: {
           trigger: "#cases",
-          end: "bottom -=5",
+          end: "bottom 100%",
           scrub: 1,
           pin: "#cases-pin",
-          markers: true,
+          // markers: true,
           fastScrollEnd: 1000,
           preventOverlaps: true,
-          anticipatePin: 0.1,
         },
       })
       .from(shuffledLetters, {

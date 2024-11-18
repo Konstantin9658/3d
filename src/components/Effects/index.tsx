@@ -1,6 +1,5 @@
 import { useThree } from "@react-three/fiber";
 import { EffectComposer } from "@react-three/postprocessing";
-import { useControls } from "leva";
 import {
   Effect,
   EffectComposer as RawEffectComposer,
@@ -11,11 +10,11 @@ import { useEffect, useRef } from "react";
 
 import { CAMERA_NAME } from "@/consts";
 
-import { CONFIG } from "./consts";
+import { BLEND_FUNC_OPTIONS, KERNEL_SIZE_OPTIONS } from "./consts";
 import { useBloomEffect } from "./hooks/useBloomEffect";
 import { useChromaticAberrationEffect } from "./hooks/useChromaticAberrationEffect";
-import { useColorEffects } from "./hooks/useColorEffect";
-import { useVignetteEffect } from "./hooks/useVignetteEffect";
+// import { useColorEffects } from "./hooks/useColorEffect";
+// import { useVignetteEffect } from "./hooks/useVignetteEffect";
 
 export const Effects = () => {
   const effectComposer = useRef<RawEffectComposer | null>(null);
@@ -24,71 +23,71 @@ export const Effects = () => {
     scene: state.scene,
   }));
 
-  const {
-    colorEnabled,
-    colorHue,
-    colorSaturation,
-    colorBrightness,
-    colorContrast,
-    hueBlendFunc,
-    brightBlendFunc,
+  // const {
+  //   colorEnabled,
+  //   colorHue,
+  //   colorSaturation,
+  //   colorBrightness,
+  //   colorContrast,
+  //   hueBlendFunc,
+  //   brightBlendFunc,
 
-    bloomEnabled,
-    mipmapBlur,
-    blendFunction,
-    luminanceThreshold,
-    luminanceSmoothing,
-    intensity,
-    kernelSize,
+  //   bloomEnabled,
+  //   mipmapBlur,
+  //   blendFunction,
+  //   luminanceThreshold,
+  //   luminanceSmoothing,
+  //   intensity,
+  //   kernelSize,
 
-    vignetteEnabled,
-    darkness,
-    offset,
+  //   vignetteEnabled,
+  //   darkness,
+  //   offset,
 
-    chromaticAberrationEnabled,
-    chromaticBlendFunc,
-    radialModulationEnabled,
-    modulationOffset,
-    x: chromaticOffsetX,
-    y: chromaticOffsetY,
+  //   chromaticAberrationEnabled,
+  //   chromaticBlendFunc,
+  //   radialModulationEnabled,
+  //   modulationOffset,
+  //   x: chromaticOffsetX,
+  //   y: chromaticOffsetY,
 
-    // aaEnabled,
-    // edgeDetectionMode,
-    // predicationMode,
-    // preset,
-  } = useControls(CONFIG, { collapsed: true });
+  //   // aaEnabled,
+  //   // edgeDetectionMode,
+  //   // predicationMode,
+  //   // preset,
+  // } = useControls(CONFIG, { collapsed: true });
 
   const bloomEffect = useBloomEffect({
-    bloomEnabled,
-    mipmapBlur,
-    blendFunction,
-    luminanceThreshold,
-    luminanceSmoothing,
-    intensity,
-    kernelSize,
+    bloomEnabled: true,
+    mipmapBlur: true,
+    blendFunction: BLEND_FUNC_OPTIONS.SCREEN,
+    luminanceThreshold: 1.8,
+    luminanceSmoothing: 0,
+    intensity: 1,
+    kernelSize: KERNEL_SIZE_OPTIONS.large,
   });
   const chromaticAberrationEffect = useChromaticAberrationEffect({
-    chromaticAberrationEnabled,
-    chromaticBlendFunc,
-    chromaticOffsetX,
-    chromaticOffsetY,
-    radialModulationEnabled,
-    modulationOffset,
+    chromaticAberrationEnabled: true,
+    chromaticBlendFunc: BLEND_FUNC_OPTIONS.NORMAL,
+    chromaticOffsetX: 0.0004,
+    chromaticOffsetY: 0.0004,
+    radialModulationEnabled: false,
+    modulationOffset: 0.15,
   });
-  const colorEffects = useColorEffects({
-    colorEnabled,
-    colorHue,
-    colorSaturation,
-    colorBrightness,
-    colorContrast,
-    hueBlendFunc,
-    brightBlendFunc,
-  });
-  const vignetteEffect = useVignetteEffect({
-    vignetteEnabled,
-    offset,
-    darkness,
-  });
+  // const colorEffects = useColorEffects({
+  //   colorEnabled: false,
+  //   colorHue,
+  //   colorSaturation,
+  //   colorBrightness,
+  //   colorContrast,
+  //   hueBlendFunc,
+  //   brightBlendFunc,
+  // });
+  // const vignetteEffect = useVignetteEffect({
+  //   vignetteEnabled,
+  //   offset,
+  //   darkness,
+  // });
 
   useEffect(() => {
     if (
@@ -106,8 +105,8 @@ export const Effects = () => {
     const effects = [
       bloomEffect,
       chromaticAberrationEffect,
-      vignetteEffect,
-      ...(colorEffects || []),
+      // vignetteEffect,
+      // ...(colorEffects || []),
     ].filter(Boolean) as Effect[];
 
     if (effects.length) {
@@ -115,14 +114,7 @@ export const Effects = () => {
     }
 
     return () => composer.reset();
-  }, [
-    bloomEffect,
-    chromaticAberrationEffect,
-    vignetteEffect,
-    colorEffects,
-    camera,
-    scene,
-  ]);
+  }, [bloomEffect, chromaticAberrationEffect, camera, scene]);
 
   return (
     <EffectComposer multisampling={5} ref={effectComposer}>

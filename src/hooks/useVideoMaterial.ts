@@ -56,8 +56,8 @@ export const useVideoMaterial = (
         emissiveMap: { value: texture }, // Текстура для эмиссии
         metalness: { value: 0.7 },
         roughness: { value: 0.3 },
-        saturation: { value: 1.3 }, // Настройка насыщенности
-        emissiveIntensity: { value: 0.6 }, // Интенсивность эмиссии
+        saturation: { value: 1.2 }, // Настройка насыщенности
+        emissiveIntensity: { value: 0.4 }, // Интенсивность эмиссии
       },
       vertexShader: `
         varying vec2 vUv;

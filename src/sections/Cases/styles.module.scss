@@ -8,7 +8,6 @@
   height: 22%;
   width: 100%;
   align-items: center;
-  // justify-content: center;
   z-index: 10;
   max-width: 1920px;
   margin: 0 auto;
@@ -58,10 +57,8 @@
 .cases__bottom {
   display: flex;
   align-self: flex-start;
-  // justify-content: space-between;
   margin-top: auto;
   max-width: 407px;
-  // width: 21.2vw;
   max-height: 86px;
   height: 8vh;
 }
@@ -77,8 +74,6 @@
 
 .cases__countWrapper {
   background-color: $accent;
-  // width: 163px;
-  // min-height: 86px;
   height: 100%;
   display: flex;
 

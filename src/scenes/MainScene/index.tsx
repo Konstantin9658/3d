@@ -17,18 +17,16 @@ import { useAppHeight } from "@/hooks/useAppHeight";
 import { useMergeVertices } from "@/hooks/useMergeVertices";
 import { useAppStore } from "@/store/app";
 
-export const MainScene = ({
-  setEnvRotation,
-}: {
-  setEnvRotation: (euler: THREE.Euler) => void;
-}) => {
+export const MainScene = () => {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
   const appHeight = useAppHeight();
 
   const scrollOffset = useAppStore((state) => state.scrollOffset);
+
   const setScrollOffset = useAppStore((state) => state.setScrollOffset);
   const setCameraFov = useAppStore((state) => state.setCameraFov);
+  const setEnvRotation = useAppStore((state) => state.setEnvRotation);
 
   const lenis = useLenis(({ scroll }) => {
     setScrollOffset(scroll / (appHeight - 1000));
@@ -108,9 +106,8 @@ export const MainScene = ({
 
     const action = actions[CAMERA_NAME];
 
-    if (!lenis?.isSmooth) {
-      action.paused = true;
-    } else action.play();
+    if (!lenis?.isSmooth) action.paused = true;
+    else action.play();
   }, [cameras, actions, camera, lenis?.isSmooth]);
 
   // Основной рендер-цикл
