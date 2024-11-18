@@ -1,27 +1,16 @@
 import "./App.css";
 
-import {
-  Environment,
-  PerspectiveCamera,
-  // OrbitControls,
-} from "@react-three/drei";
 // import classes from "./styles.module.scss";
-import { Canvas } from "@react-three/fiber";
-import { gsap } from "gsap";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { LenisRef, ReactLenis } from "lenis/react";
 // import { Leva, useControls } from "leva";
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useMemo, useRef } from "react";
+import * as THREE from "three";
 
-import env from "@/assets/hdr/kloofendal_28d_misty_1k.hdr";
-
+import { Camera } from "./components/Camera";
 import { Effects } from "./components/Effects";
+import { Env } from "./components/Env";
 import { Header } from "./components/Header";
-import {
-  CAMERA_NAME,
-  FAR_PERSPECTIVE_CAMERA,
-  NEAR_PERSPECTIVE_CAMERA,
-} from "./consts";
-import { useAppHeight } from "./hooks/useAppHeight";
 import { FifthStage } from "./scenes/FifthStage";
 import { FirstStage } from "./scenes/FirstStage";
 import { FourthStage } from "./scenes/FourthStage";
@@ -39,7 +28,6 @@ import { MobileApps } from "./sections/MobileApps";
 import { Welcome } from "./sections/Welcome";
 import { WelcomeDuplicate } from "./sections/Welcome/WelcomeDuplicate";
 import { WWD } from "./sections/WWD";
-import { useAppStore } from "./store/app";
 
 // const StarryBackground = () => {
 //   const pointsRef = useRef<THREE.Points>(null);
@@ -47,20 +35,21 @@ import { useAppStore } from "./store/app";
 //   // Генерация звёзд
 //   const starsGeometry = useMemo(() => {
 //     const geometry = new THREE.BufferGeometry();
-//     const starsCount = 50000;
+//     const starsCount = 80000;
 //     const positions = new Float32Array(starsCount * 3);
 
 //     for (let i = 0; i < starsCount * 3; i += 3) {
-//       positions[i] = (Math.random() - 0.5) * 2000; // x
+//       const distance = Math.random() * 2000 - 1000;
+//       positions[i] = Math.cos(Math.random() * Math.PI * 2) * distance; // x
 //       positions[i + 1] = (Math.random() - 0.5) * 2000; // y
-//       positions[i + 2] = (Math.random() - 0.5) * 2000; // z
+//       positions[i + 2] = Math.sin(Math.random() * Math.PI * 2) * distance; // z
 //     }
 
 //     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 //     return geometry;
 //   }, []);
 
-//   // Текстура для звёзд, похожих на настоящие (с эффектом яркого центра)
+//   // Текстура для звёзд с бело-голубым градиентом и четкими краями
 //   const starTexture = useMemo(() => {
 //     const canvas = document.createElement("canvas");
 //     canvas.width = 128;
@@ -69,10 +58,11 @@ import { useAppStore } from "./store/app";
 
 //     if (ctx) {
 //       const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-//       // Добавляем эффект яркого центра с переходом
-//       gradient.addColorStop(0, "rgba(255, 255, 255, 1)"); // Яркое белое
-//       gradient.addColorStop(0.5, "rgba(255, 204, 100, 0.6)"); // Желтоватое
-//       gradient.addColorStop(1, "rgba(0, 0, 0, 0)"); // Прозрачность по краям
+//       gradient.addColorStop(0, "rgba(255, 255, 255, 1)"); // Яркий белый центр
+//       gradient.addColorStop(0.3, "rgba(173, 216, 230, 0.8)"); // Голубой переход
+//       gradient.addColorStop(0.6, "rgba(0, 0, 255, 0.5)"); // Прозрачный синий
+//       gradient.addColorStop(0.8, "rgba(0, 0, 0, 0.2)"); // Тёмный переход
+//       gradient.addColorStop(1, "rgba(0, 0, 0, 0)"); // Полностью прозрачный край
 //       ctx.fillStyle = gradient;
 //       ctx.fillRect(0, 0, 128, 128);
 //     }
@@ -85,31 +75,25 @@ import { useAppStore } from "./store/app";
 //   // Материал звёзд
 //   const starsMaterial = useMemo(() => {
 //     return new THREE.PointsMaterial({
-//       size: 3, // Увеличим размер звёзд
+//       size: 3.5, // Увеличенный размер для более заметных звёзд
 //       map: starTexture,
 //       sizeAttenuation: true,
 //       transparent: true,
-//       opacity: 0.8,
+//       opacity: 0.9,
 //     });
 //   }, [starTexture]);
 
-//   // Мерцание: случайная скорость мерцания для каждой звезды
-//   const flickerSpeed = useRef(
-//     new Array(50000).fill(0).map(() => Math.random() * 0.0005 + 0.0002) // Снижаем скорость мерцания
-//   );
-
+//   // Обновление анимации в useFrame
 //   useFrame(() => {
 //     if (pointsRef.current) {
-//       pointsRef.current.rotation.y += 0.0001; // Медленное вращение
+//       pointsRef.current.rotation.y += 0.00003; // Медленное вращение для эффекта погружения
 
 //       const material = pointsRef.current.material as THREE.PointsMaterial;
 
-//       // Для каждой звезды обновляем прозрачность с использованием случайной скорости
-//       for (let i = 0; i < flickerSpeed.current.length; i++) {
-//         // Очень медленное мерцание с малой амплитудой
-//         material.opacity =
-//           0.8 + Math.sin(Date.now() * flickerSpeed.current[i]) * 0.03; // Еще меньшая амплитуда
-//       }
+//       // Мерцание через случайный шум
+//       const time = Date.now() * 0.0002;
+//       const flickerValue = 0.7 + 0.05 * Math.sin(time + Math.random() * Math.PI); // Добавление рандомизации
+//       material.opacity = flickerValue; // Обновляем прозрачность
 //     }
 //   });
 
@@ -118,49 +102,112 @@ import { useAppStore } from "./store/app";
 //   );
 // };
 
+const StarryBackground = () => {
+  const pointsRef = useRef<THREE.Points>(null);
+
+  // Генерация звёзд
+  const starsGeometry = useMemo(() => {
+    const geometry = new THREE.BufferGeometry();
+    const starsCount = 80000;
+    const positions = new Float32Array(starsCount * 3);
+    const colors = new Float32Array(starsCount * 3); // Для хранения RGB цветов
+    const flickerOffsets = new Float32Array(starsCount); // Для индивидуального мерцания
+
+    for (let i = 0; i < starsCount; i++) {
+      const distance = Math.random() * 1800 + 200; // Ограничиваем минимальную дистанцию (от 200 до 2000)
+      const angle1 = Math.random() * Math.PI * 2; // Случайный угол
+      const angle2 = Math.acos(Math.random() * 2 - 1); // Для равномерного распределения на сфере
+
+      const x = distance * Math.sin(angle2) * Math.cos(angle1);
+      const y = distance * Math.sin(angle2) * Math.sin(angle1);
+      const z = distance * Math.cos(angle2);
+
+      positions[i * 3] = x; // x
+      positions[i * 3 + 1] = y; // y
+      positions[i * 3 + 2] = z; // z
+
+      // Случайные цвета звезд: красный, зеленый, синий, желтоватый, белый
+      colors[i * 3] = Math.random() * 0.6 + 0.4; // R (от 0.4 до 1)
+      colors[i * 3 + 1] = Math.random() * 0.6 + 0.4; // G (от 0.4 до 1)
+      colors[i * 3 + 2] = Math.random() * 0.6 + 0.4; // B (от 0.4 до 1)
+
+      // Уникальный сдвиг фазы для мерцания
+      flickerOffsets[i] = Math.random() * Math.PI * 2;
+    }
+
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3)); // Добавляем цвета
+    geometry.setAttribute(
+      "flickerOffset",
+      new THREE.BufferAttribute(flickerOffsets, 1)
+    ); // Добавляем индивидуальные смещения для мерцания
+
+    return geometry;
+  }, []);
+
+  // Создание текстуры для круглой формы звёзд
+  const starTexture = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext("2d");
+
+    if (ctx) {
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, 128, 128); // Фон черный (прозрачность зависит от alpha)
+
+      const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      gradient.addColorStop(0, "rgba(255, 255, 255, 1)"); // Белый центр
+      gradient.addColorStop(1, "rgba(255, 255, 255, 0)"); // Прозрачный край
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(64, 64, 64, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+  }, []);
+
+  // Материал звёзд
+  const starsMaterial = useMemo(() => {
+    return new THREE.PointsMaterial({
+      size: 3, // Размер звёзд
+      map: starTexture, // Используем текстуру для круглой формы
+      vertexColors: true, // Цвета из геометрии
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 1,
+    });
+  }, [starTexture]);
+
+  // Анимация мерцания и вращения
+  useFrame(() => {
+    if (pointsRef.current) {
+      pointsRef.current.rotation.y += 0.00001; // Медленное вращение для эффекта погружения
+
+      // const positions = pointsRef.current.geometry.attributes.position.array as Float32Array;
+      const flickerOffsets = pointsRef.current.geometry.attributes.flickerOffset
+        .array as Float32Array;
+
+      const time = Date.now() * 0.002;
+      for (let i = 0; i < flickerOffsets.length; i++) {
+        const flickerValue = 0.8 + 0.2 * Math.sin(time + flickerOffsets[i]);
+        const material = pointsRef.current.material as THREE.PointsMaterial;
+        material.opacity = flickerValue; // Обновляем прозрачность индивидуально
+      }
+    }
+  });
+
+  return (
+    <points ref={pointsRef} geometry={starsGeometry} material={starsMaterial} />
+  );
+};
+
 function App() {
   const lenisRef = useRef<LenisRef | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
-
-  const cameraFov = useAppStore((state) => state.cameraFov);
-  const envRotation = useAppStore((state) => state.envRotation);
-  // const appHeight = useAppStore((state) => state.appHeight);
-  // const setAppHeight = useAppStore((state) => state.setAppHeight);
-
-  // useEffect(() => {
-  //   setAppHeight(window.innerHeight * 50);
-  // }, [setAppHeight]);
-  // const setVideoTexturesEnabled = useAppStore(
-  //   (state) => state.setVideoTexturesEnabled
-  // );
-
-  const appHeight = useAppHeight();
-
-  // const { envIntensity, videoEnabled } = useControls({
-  //   envIntensity: {
-  //     value: 2.2,
-  //     max: 5,
-  //     min: 0,
-  //     step: 0.1,
-  //   },
-  //   videoEnabled: { label: "video", value: true },
-  // });
-
-  // useEffect(() => {
-  //   setVideoTexturesEnabled(videoEnabled);
-  // }, [setVideoTexturesEnabled, videoEnabled]);
-
-  useEffect(() => {
-    function update(time: number) {
-      lenisRef.current?.lenis?.raf(time * 1000);
-    }
-
-    gsap.ticker.add(update);
-    gsap.ticker.lagSmoothing(0);
-    return () => gsap.ticker.remove(update);
-  }, []);
-
-  // if (!envRotation) return;
 
   return (
     <>
@@ -173,7 +220,7 @@ function App() {
           ref={contentRef}
           style={{
             width: "100%",
-            height: `${appHeight}px`,
+            height: `${window.innerHeight * 50}px`,
             position: "absolute",
             top: 0,
           }}
@@ -202,24 +249,10 @@ function App() {
           shadows
         >
           <Suspense fallback={null}>
-            {/* <StarryBackground /> */}
+            <StarryBackground />
             <Effects />
-            <PerspectiveCamera
-              makeDefault
-              fov={cameraFov}
-              name={CAMERA_NAME}
-              near={NEAR_PERSPECTIVE_CAMERA}
-              far={FAR_PERSPECTIVE_CAMERA}
-            />
-            <Environment
-              files={env}
-              environmentIntensity={2.2}
-              environmentRotation={[
-                envRotation.x,
-                envRotation.y,
-                envRotation.z,
-              ]}
-            />
+            <Camera />
+            <Env />
             <MainScene />
             <Planet />
             <SpaceStation />
