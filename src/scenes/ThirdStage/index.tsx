@@ -25,27 +25,25 @@ export const ThirdStage = () => {
   const { scene, animations } = useGLTF(stage_3rd);
   const { actions } = useAnimations(animations, scene);
 
-  const ref = useRef<THREE.Group | null>(null);
-
   const [isOpenDoorLeft, setOpenDoorLeft] = useState(true);
   const [isOpenDoorRight, setOpenDoorRight] = useState(false);
 
-  const camera = useThree((state) => state.camera);
-
+  const sceneRef = useRef<THREE.Group | null>(null);
   const colliderToCamera = useRef(new THREE.Vector3());
   const colliderWorldPosition = useRef(new THREE.Vector3());
   const colliderLeftRef = useRef(scene.getObjectByName(COLLIDER_NAME_1));
   const colliderRightRef = useRef(scene.getObjectByName(COLLIDER_NAME_2));
 
-  useVideoMaterial(videoHref, imageHref, ref, "screen");
+  const camera = useThree((state) => state.camera);
 
+  useVideoMaterial(videoHref, imageHref, sceneRef, "screen");
   useEmissiveNoToneMapped(scene);
   useInvisibleMaterial(colliderLeftRef);
 
   useEffect(() => {
     if (!actions) return;
-    const loopAnimation = actions[LOOP_ANIMATION];
 
+    const loopAnimation = actions[LOOP_ANIMATION];
     loopAnimation?.play();
   }, [actions]);
 
@@ -108,10 +106,16 @@ export const ThirdStage = () => {
         ? colliderRightRef.current.geometry.normals[0]
         : new THREE.Vector3(0, 0, -1)
     );
+    const newIsOpenDoorLeft = dotProductLeft > 0;
+    const newIsOpenDoorRight = dotProductRight < 0;
 
-    setOpenDoorLeft(dotProductLeft > 0);
-    setOpenDoorRight(dotProductRight < 0);
+    if (newIsOpenDoorLeft !== isOpenDoorLeft) {
+      setOpenDoorLeft(newIsOpenDoorLeft);
+    }
+    if (newIsOpenDoorRight !== isOpenDoorRight) {
+      setOpenDoorRight(newIsOpenDoorRight);
+    }
   });
 
-  return <primitive object={scene} position={[0, 0, 0]} ref={ref} />;
+  return <primitive object={scene} position={[0, 0, 0]} ref={sceneRef} />;
 };

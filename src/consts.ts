@@ -1,5 +1,5 @@
 export const NEAR_PERSPECTIVE_CAMERA = 1;
-export const FAR_PERSPECTIVE_CAMERA = 110000;
+export const FAR_PERSPECTIVE_CAMERA = 1100;
 export const CAMERA_NAME = "Camera";
 export const PARALLAX_COEF = 0.02;
 export const REFERENCE_WIDTH = 1920;

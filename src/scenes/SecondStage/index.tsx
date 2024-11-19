@@ -1,6 +1,5 @@
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useLenis } from "lenis/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -27,9 +26,10 @@ export const SecondStage = () => {
   const hoveredStates = useAppStore((state) => state.hoveredStates);
   const setHoveredStates = useAppStore((state) => state.setHoveredState);
 
-  const lenis = useLenis();
+  const scrollOffset = useRef(0);
+  const prevScrollOffset = useRef(0);
+
   const camera = useThree((state) => state.camera);
-  const scrollOffset = useAppStore((state) => state.scrollOffset);
 
   const mouse = useRef(new THREE.Vector2());
   const raycaster = useRef(new THREE.Raycaster());
@@ -65,20 +65,26 @@ export const SecondStage = () => {
       actions[actionLoopAnimations[index]]?.setDuration(2);
     });
 
-    actionScroll.clampWhenFinished = true;
-
-    if (!lenis?.isSmooth) actionScroll.paused = true;
-    else actionScroll.play();
-  }, [actions, lenis?.isSmooth]);
+    actionScroll.play();
+  }, [actions]);
 
   useFrame(() => {
     if (!actions) return;
 
     const actionScroll = actions[SCROLL_ACTION];
 
-    if (actionScroll) {
-      const duration = actionScroll.getClip().duration;
-      actionScroll.time = scrollOffset * duration;
+    if (!actionScroll) return;
+
+    const duration = actionScroll.getClip().duration;
+
+    if (prevScrollOffset.current !== scrollOffset.current) {
+      // Если прокрутка изменилась, продолжаем анимацию
+      actionScroll.time = scrollOffset.current * duration;
+      prevScrollOffset.current = scrollOffset.current; // Обновляем предыдущий скролл
+    } else {
+      // Если прокрутка не изменилась, приостанавливаем анимацию
+      actionScroll.paused = true;
+      actionScroll.clampWhenFinished = true;
     }
 
     // Проверка расстояния камеры
@@ -107,6 +113,16 @@ export const SecondStage = () => {
 
     // mixer.update(delta);
   });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const offset = window.scrollY / (window.innerHeight * 50 - 1000);
+      scrollOffset.current = offset;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleMouseMove = (event: MouseEvent) => {
     if (isDistanceExceeded) return;
