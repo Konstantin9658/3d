@@ -9,6 +9,6 @@ export const FifthStage = () => {
   const rx = degToRad(-180);
 
   return (
-    <primitive object={scene} position={[0, 28, 8]} rotation={[rx, 0, 0]} />
+    <primitive object={scene} position={[0, 28, 16]} rotation={[rx, 0, 0]} />
   );
 };
