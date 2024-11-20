@@ -39,6 +39,7 @@ export const Industries = () => {
       .fromTo(
         shuffledLetters,
         {
+          immediateRender: false,
           opacity: 0,
           scale: 0.85,
           filter: "blur(5px)",
@@ -59,7 +60,7 @@ export const Industries = () => {
         {
           opacity: 1,
         },
-        "<+=0.5"
+        "<"
       )
       .to(
         shuffledLetters,
@@ -77,7 +78,7 @@ export const Industries = () => {
         {
           opacity: 0,
         },
-        ">"
+        "<"
       );
 
     return () => void tl.kill();

@@ -24,7 +24,7 @@ export const Cases = () => {
         paused: true,
         scrollTrigger: {
           trigger: "#cases",
-          end: "bottom 100%",
+          end: "bottom 200%",
           scrub: 1,
           pin: "#cases-pin",
           // markers: true,
@@ -32,12 +32,22 @@ export const Cases = () => {
           preventOverlaps: true,
         },
       })
-      .from(shuffledLetters, {
-        immediateRender: false,
-        opacity: 0,
-        scale: 0.85,
-        filter: "blur(5px)",
-      })
+      .fromTo(
+        shuffledLetters,
+        {
+          immediateRender: false,
+          opacity: 0,
+          scale: 0.85,
+          filter: "blur(5px)",
+        },
+        {
+          opacity: 1,
+          scale: 1,
+          filter: "blur(0px)",
+          stagger: 0.03,
+          ease: "power2.out",
+        }
+      )
       .fromTo(
         `.${classes.cases__description}`,
         {
@@ -47,7 +57,7 @@ export const Cases = () => {
         {
           opacity: 1,
         },
-        "<+=0.25"
+        "<"
       )
       .fromTo(
         `.${classes.cases__bottom}`,
@@ -60,30 +70,6 @@ export const Cases = () => {
         },
         "<"
       )
-      .to(shuffledLetters, {
-        opacity: 1,
-        scale: 1,
-        filter: "blur(0px)",
-        stagger: 0.03,
-        ease: "power2.out",
-      })
-      // .fromTo(
-      //   shuffledLetters,
-      //   {
-      //     immediateRender: false,
-      //     opacity: 0,
-      //     scale: 0.85,
-      //     filter: "blur(5px)",
-      //   },
-      //   {
-      //     opacity: 1,
-      //     scale: 1,
-      //     filter: "blur(0px)",
-      //     stagger: 0.03,
-      //     ease: "power2.out",
-      //   }
-      // )
-
       .to(
         shuffledLetters,
         {

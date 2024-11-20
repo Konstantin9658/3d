@@ -12,6 +12,7 @@ import {
   REFERENCE_HEIGHT,
   REFERENCE_WIDTH,
 } from "@/consts";
+import { useAppHeight } from "@/hooks/useAppHeight";
 import { useMergeVertices } from "@/hooks/useMergeVertices";
 import { useAppStore } from "@/store/app";
 
@@ -22,6 +23,8 @@ export const MainScene = () => {
   const basePosition = useRef(new THREE.Vector3());
   const parallaxOffset = useRef(new THREE.Vector3());
   const baseQuaternion = useRef(new THREE.Quaternion());
+
+  const appHeight = useAppHeight();
 
   const setEnvRotation = useAppStore((state) => state.setEnvRotation);
 
@@ -111,13 +114,13 @@ export const MainScene = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const offset = window.scrollY / (window.innerHeight * 50 - 1000);
+      const offset = window.scrollY / (appHeight - 1000);
       scrollOffset.current = offset;
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [appHeight]);
 
   // Основной рендер-цикл
   useFrame((_, delta) => {
@@ -134,6 +137,13 @@ export const MainScene = () => {
       // Если прокрутка изменилась, продолжаем анимацию
       action.time = scrollOffset.current * duration;
       prevScrollOffset.current = scrollOffset.current; // Обновляем предыдущий скролл
+
+      // Устанавливаем вращение окружения в зависимости от поворота камеры
+      const euler = new THREE.Euler().setFromQuaternion(
+        camera.quaternion,
+        "ZYX"
+      );
+      setEnvRotation(euler);
     } else {
       // Если прокрутка не изменилась, приостанавливаем анимацию
       action.paused = true;
@@ -161,10 +171,6 @@ export const MainScene = () => {
 
     parallaxOffset.current.set(parallaxX, parallaxY, 0);
     camera.position.add(parallaxOffset.current);
-
-    // Устанавливаем вращение окружения в зависимости от поворота камеры
-    const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, "ZYX");
-    setEnvRotation(euler);
   });
 
   return <primitive object={scene} />;

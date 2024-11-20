@@ -3,9 +3,10 @@ import "./App.css";
 import { Preload, Stars } from "@react-three/drei";
 // import classes from "./styles.module.scss";
 import { Canvas } from "@react-three/fiber";
+import { gsap } from "gsap";
 import { LenisRef, ReactLenis } from "lenis/react";
 // import { Leva, useControls } from "leva";
-import { Suspense, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 
 import { Camera } from "./components/Camera";
 import { Effects } from "./components/Effects";
@@ -36,6 +37,17 @@ function App() {
 
   const appHeight = useAppHeight();
 
+  useEffect(() => {
+    function update(time: number) {
+      lenisRef.current?.lenis?.raf(time * 1000);
+    }
+
+    gsap.ticker.add(update);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => gsap.ticker.remove(update);
+  }, []);
+
   return (
     <>
       <ReactLenis
@@ -55,10 +67,11 @@ function App() {
           <Header />
           <Welcome />
           <WWD />
-          <div style={{ height: "30%" }} />
+          <div style={{ height: "35%" }} />
           <Industries />
           <MobileApps />
           <Cases />
+          <div style={{ height: "5%" }} />
           <Footer />
           <div style={{ overflow: "hidden", height: "100vh" }}>
             <WelcomeDuplicate />
@@ -78,10 +91,10 @@ function App() {
           <Suspense fallback={null}>
             <Preload all />
             <Stars
-              radius={70}
-              count={10000}
+              radius={130}
+              count={8000}
               depth={100}
-              factor={10}
+              factor={7}
               fade
               speed={0.5}
               saturation={0}
