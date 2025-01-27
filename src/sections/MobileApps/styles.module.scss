@@ -25,25 +25,26 @@
 
 .mobileApps__title {
   font-family: $akrobat;
-  font-size: 114px;
-  line-height: 117px;
+  font-size: clamp(71px, 3vw, 114px);
+  line-height: normal;
   font-weight: 900;
   color: $white;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 5px;
-  margin-bottom: 58px;
+  margin-bottom: clamp(36px, 3vw, 58px);
 }
 
 .mobileApps__description {
   font-family: $akrobat;
-  font-size: 64px;
-  line-height: 77px;
+  font-size: clamp(40px, 3.3vw, 64px);
+  line-height: normal;
   font-weight: 900;
   color: $white;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 3.2px;
+  white-space: pre-wrap;
 }
 
 .mobileApps__count {

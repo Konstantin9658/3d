@@ -16,19 +16,7 @@ export const Planet = () => {
     action.play();
   }, [actions, animations]);
 
-  // useEffect(() => {
-  //   scene.traverse((object) => {
-  //     if (object instanceof THREE.Mesh && object.material) {
-  //       if (Array.isArray(object.material)) {
-  //         object.material.forEach((mat) => {
-  //           mat.wireframe = true;
-  //         });
-  //       } else {
-  //         object.material.wireframe = true;
-  //       }
-  //     }
-  //   });
-  // }, [scene]);
-
   return <primitive object={scene} position={[-17, 40, -94]} />;
 };
+
+useGLTF.preload(planet);

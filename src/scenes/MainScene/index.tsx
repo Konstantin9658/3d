@@ -175,3 +175,5 @@ export const MainScene = () => {
 
   return <primitive object={scene} />;
 };
+
+useGLTF.preload(model);

@@ -1,7 +1,8 @@
 import clsx from "clsx";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 import { Button } from "@/components/Button";
 
@@ -12,15 +13,21 @@ gsap.registerPlugin(ScrollTrigger);
 const TITLE_1 = ["N", "e", "e", "d", " "];
 const TITLE_2 = ["h", "e", "l", "p", "?"];
 
+interface IFormData {
+  name: string;
+  email: string;
+  about?: string;
+  privacy: boolean;
+}
+
 export const Footer = () => {
-  const [isAgree, setAgree] = useState<boolean>(false);
+  const { control, setValue } = useForm<IFormData>({
+    defaultValues: { name: "", email: "", about: "", privacy: false },
+  });
+
+  // const { name, email, privacy } = watch();
 
   useEffect(() => {
-    // const letters = document.querySelectorAll<HTMLSpanElement>(
-    //   `.${classes.footer__titleLetter}`
-    // );
-    // const shuffledLetters = gsap.utils.shuffle([...letters]);
-
     const tl = gsap
       .timeline({
         paused: true,
@@ -154,7 +161,8 @@ export const Footer = () => {
                 </h2>
               </div>
               <p className={classes.footer__description}>
-                Feel free to contact us and we'll respond as soon as possible.
+                Feel free to contact us and we'll{`\n`}respond as soon as
+                possible.
               </p>
             </div>
             <div className={classes.footer__contacts}>
@@ -172,63 +180,120 @@ export const Footer = () => {
           <form action="POST" className={classes.footer__form}>
             <ul className={classes.footer__formFields}>
               <li className={classes.footer__formField}>
-                <input
-                  className={classes.footer__formInput}
-                  type="text"
-                  id="name-field"
+                <Controller
+                  name="name"
+                  control={control}
+                  rules={{ required: "Required" }}
+                  render={({ field }) => (
+                    <>
+                      <input
+                        value={field.value}
+                        onChange={field.onChange}
+                        className={clsx(
+                          classes.footer__formInput,
+                          !!field.value && classes.footer__formInput_filled
+                        )}
+                        type="text"
+                        id="name-field"
+                      />
+                      <label
+                        className={classes.footer__formLabel}
+                        htmlFor="name-field"
+                      >
+                        Name
+                      </label>
+                    </>
+                  )}
                 />
-                <label
-                  className={classes.footer__formLabel}
-                  htmlFor="name-field"
-                >
-                  Name
-                </label>
               </li>
               <li className={classes.footer__formField}>
-                <input
-                  className={classes.footer__formInput}
-                  type="text"
-                  id="email-field"
+                <Controller
+                  control={control}
+                  rules={{ required: "Required" }}
+                  name="email"
+                  render={({ field }) => (
+                    <>
+                      <input
+                        className={clsx(
+                          classes.footer__formInput,
+                          !!field.value && classes.footer__formInput_filled
+                        )}
+                        value={field.value}
+                        onChange={field.onChange}
+                        type="text"
+                        id="email-field"
+                      />
+                      <label
+                        className={classes.footer__formLabel}
+                        htmlFor="email-field"
+                      >
+                        Email or phone
+                      </label>
+                    </>
+                  )}
                 />
-                <label
-                  className={classes.footer__formLabel}
-                  htmlFor="email-field"
-                >
-                  Email or phone
-                </label>
               </li>
               <li className={classes.footer__formField}>
-                <input
-                  className={classes.footer__formInput}
-                  type="text"
-                  id="textarea-field"
+                <Controller
+                  control={control}
+                  name="about"
+                  render={({ field }) => (
+                    <>
+                      <input
+                        value={field.value}
+                        className={clsx(
+                          classes.footer__formInput,
+                          !!field.value && classes.footer__formInput_filled
+                        )}
+                        type="text"
+                        id="textarea-field"
+                        onChange={field.onChange}
+                      />
+                      <label
+                        className={classes.footer__formLabel}
+                        htmlFor="textarea-field"
+                      >
+                        Tell us about your project
+                      </label>
+                    </>
+                  )}
                 />
-                <label
-                  className={classes.footer__formLabel}
-                  htmlFor="textarea-field"
-                >
-                  Tell us about your project
-                </label>
               </li>
             </ul>
             <div className={classes.footer__formPrivacy}>
-              <input
-                checked={isAgree}
-                readOnly
-                type="checkbox"
-                id="checkbox-field"
-                className={classes.footer__formCheckbox}
-              />
-              <label
-                className={classes.footer__formPrivacyLabel}
-                htmlFor="checkbox-field"
-                onClick={() => setAgree(!isAgree)}
-              >
-                I agree to personal data processing and the privacy policy.
-              </label>
-              <div
-                className={classes.footer__formSwitcher}
-                onClick={() => setAgree(!isAgree)}
+              <Controller
+                control={control}
+                name="privacy"
+                rules={{ required: true }}
+                render={({ field }) => {
+                  console.log(field.value);
+                  return (
+                    <>
+                      <input
+                        checked={field.value}
+                        readOnly
+                        type="checkbox"
+                        id="checkbox-field"
+                        className={clsx(
+                          classes.footer__formCheckbox,
+                          field.value && classes.footer__formCheckbox_checked
+                        )}
+                      />
+                      <label
+                        className={classes.footer__formPrivacyLabel}
+                        htmlFor="checkbox-field"
+                        onClick={() => setValue("privacy", !field.value)}
+                      >
+                        I agree to personal data processing and the privacy
+                        policy.
+                      </label>
+                      <div
+                        className={classes.footer__formSwitcher}
+                        onClick={() => setValue("privacy", !field.value)}
+                      />
+                    </>
+                  );
+                }}
               />
             </div>
             <Button

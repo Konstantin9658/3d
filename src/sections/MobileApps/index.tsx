@@ -126,7 +126,7 @@ export const MobileApps = () => {
           <img className={classes.mobileApps__countItem} src={zero_2} alt="" />
         </div>
         <p className={classes.mobileApps__description}>
-          Mobile apps & Web services
+          Mobile apps & Web{`\n`}services
         </p>
       </div>
     </section>

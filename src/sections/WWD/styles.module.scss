@@ -21,7 +21,9 @@
   max-width: 1920px;
   max-height: 200px;
   height: 9.5vw;
+  // height: 10.2vw;
   padding: 0 120px;
+  // padding-inline: clamp(75px, 6.2vw, 120px);
   align-items: center;
   justify-content: center;
 }

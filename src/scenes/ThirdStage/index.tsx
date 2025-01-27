@@ -119,3 +119,5 @@ export const ThirdStage = () => {
 
   return <primitive object={scene} position={[0, 0, 0]} ref={sceneRef} />;
 };
+
+useGLTF.preload(stage_3rd);
