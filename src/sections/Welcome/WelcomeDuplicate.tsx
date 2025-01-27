@@ -12,7 +12,9 @@ export const WelcomeDuplicate = () => {
       <div className={classes.welcome__wrapper}>
         <div className={classes.welcome__inner}>
           <div className={classes.welcome__badge}>Worldwide reach</div>
-          <Title className={classes.wrapper__title} />
+          <div className={classes.welcome__title}>
+            <Title />
+          </div>
           <p className={classes.welcome__description}>
             Proven by startups with core technologies by Mercury and sold to
             Fortune 500 companies.

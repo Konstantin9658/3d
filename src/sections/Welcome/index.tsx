@@ -21,7 +21,7 @@ export const Welcome = () => {
       gsap
         .timeline({
           scrollTrigger: {
-            start: "top 133px",
+            start: "top 12%",
             end: "+=100%",
             scrub: 0.5,
             pin: "#welcome-pin",
@@ -67,7 +67,9 @@ export const Welcome = () => {
       <div className={classes.welcome__wrapper} id="welcome-pin">
         <div className={classes.welcome__inner}>
           <div className={classes.welcome__badge}>Worldwide reach</div>
-          <Title className={classes.wrapper__title} />
+          <div className={classes.welcome__title}>
+            <Title />
+          </div>
           <p className={classes.welcome__description}>
             Proven by startups with core technologies by Mercury and sold to
             Fortune 500 companies.

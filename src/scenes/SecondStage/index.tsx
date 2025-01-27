@@ -163,3 +163,5 @@ export const SecondStage = () => {
     />
   );
 };
+
+useGLTF.preload(stage_2nd);

@@ -17,3 +17,5 @@ export const SpaceStation = () => {
 
   return <primitive object={scene} position={[22, 0, -108]} />;
 };
+
+useGLTF.preload(spaceStation);

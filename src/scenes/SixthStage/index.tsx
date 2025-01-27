@@ -11,3 +11,5 @@ export const SixthStage = () => {
     <primitive object={scene} position={[0, 28, -12]} rotation={[rx, 0, 0]} />
   );
 };
+
+useGLTF.preload(stage_6th);

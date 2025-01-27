@@ -7,3 +7,5 @@ export const FirstStage = () => {
 
   return <primitive object={scene} position={[0, 0, -36]} />;
 };
+
+useGLTF.preload(stage_1st);

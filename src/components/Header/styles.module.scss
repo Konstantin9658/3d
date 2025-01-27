@@ -4,7 +4,8 @@
 .header {
   width: 100%;
   position: fixed;
-  min-height: 116px;
+  // min-height: 116px;
+  height: clamp(72px, 6.1vw, 116px);
   z-index: 11;
   top: 0;
   left: 0;
@@ -12,17 +13,23 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease-in-out;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
 }
 
 .header__logo {
   flex-shrink: 0;
+  width: clamp(132.5px, 3vw, 212px);
+  height: clamp(23.75px, 3vw, 38px);
 }
 
 .header__wrapper {
   width: 100%;
   max-width: 1920px;
-  padding: 0 120px;
+  padding-inline: clamp(75px, 6.2vw, 120px);
 
   display: flex;
   align-items: center;
@@ -30,9 +37,8 @@
 }
 
 .header__button {
-  max-width: 208px;
-  width: 100%;
-  padding: 0 26px;
+  width: clamp(130px, 10.8vw, 208px);
+  padding-inline: clamp(20px, 2vw, 26px);
 }
 
 .header__navList {
@@ -43,8 +49,8 @@
   cursor: pointer;
   text-transform: uppercase;
   font-family: $hoves;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: clamp(8.125px, 0.7vw, 13px);
+  line-height: clamp(11.25px, 0.9vw, 18px);
   font-weight: 700;
   color: $white;
   letter-spacing: 1px;

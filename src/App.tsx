@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { Preload, Stars } from "@react-three/drei";
+import { Loader, Preload, Stars } from "@react-three/drei";
 // import classes from "./styles.module.scss";
 import { Canvas } from "@react-three/fiber";
 import { gsap } from "gsap";
@@ -48,6 +48,17 @@ function App() {
     return () => gsap.ticker.remove(update);
   }, []);
 
+  const handleLoading = (active: boolean) => {
+    if (!active) {
+      document.body.style.overflow = "";
+    } else {
+      document.body.style.overflow = "hidden";
+      window.scrollTo(0, 0);
+    }
+
+    return active;
+  };
+
   return (
     <>
       <ReactLenis
@@ -55,40 +66,40 @@ function App() {
         ref={lenisRef}
         options={{ infinite: true, lerp: 0.03, syncTouch: true }}
       >
-        <div
-          ref={contentRef}
-          style={{
-            width: "100%",
-            height: `${appHeight}px`,
-            position: "absolute",
-            top: 0,
-          }}
-        >
-          <Header />
-          <Welcome />
-          <WWD />
-          <div style={{ height: "35%" }} />
-          <Industries />
-          <MobileApps />
-          <Cases />
-          <div style={{ height: "5%" }} />
-          <Footer />
-          <div style={{ overflow: "hidden", height: "100vh" }}>
-            <WelcomeDuplicate />
-          </div>
-        </div>
         {/* <Leva collapsed /> */}
-        <Canvas
-          linear
-          style={{
-            background: "#000",
-            position: "fixed",
-            top: 0,
-            height: "100vh",
-          }}
-          shadows
-        >
-          <Suspense fallback={null}>
+        <Suspense fallback={null}>
+          <div
+            ref={contentRef}
+            style={{
+              width: "100%",
+              height: `${appHeight}px`,
+              position: "absolute",
+              top: 0,
+            }}
+          >
+            <Header />
+            <Welcome />
+            <WWD />
+            <div style={{ height: "35%" }} />
+            <Industries />
+            <MobileApps />
+            <Cases />
+            <div style={{ height: "5%" }} />
+            <Footer />
+            <div style={{ overflow: "hidden", height: "100vh" }}>
+              <WelcomeDuplicate />
+            </div>
+          </div>
+          <Canvas
+            linear
+            style={{
+              background: "#000",
+              position: "fixed",
+              top: 0,
+              height: "100vh",
+            }}
+            shadows
+          >
             <Preload all />
             <Stars
               radius={130}
@@ -112,8 +123,12 @@ function App() {
             <FifthStage />
             <SixthStage />
             <SeventhStage />
-          </Suspense>
-        </Canvas>
+          </Canvas>
+        </Suspense>
+        <Loader
+          containerStyles={{ position: "fixed", top: 0 }}
+          initialState={handleLoading}
+        />
       </ReactLenis>
     </>
   );
