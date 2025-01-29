@@ -1,6 +1,7 @@
+import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect } from "react";
+import { useRef } from "react";
 
 import I from "./images/1i.svg";
 import N from "./images/2n.svg";
@@ -14,78 +15,80 @@ import E from "./images/9e.svg";
 import S2 from "./images/10s.svg";
 import classes from "./styles.module.scss";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export const Industries = () => {
-  useEffect(() => {
-    const letters = document.querySelectorAll<HTMLImageElement>(
-      `.${classes.industries__titleLetter}`
-    );
-    const shuffledLetters = gsap.utils.shuffle([...letters]);
+  const container = useRef<HTMLElement | null>(null);
 
-    const tl = gsap
-      .timeline({
-        paused: true,
-        scrollTrigger: {
-          trigger: "#industries",
-          // start: "top 0%",
-          end: "bottom 40%",
-          fastScrollEnd: 1000,
-          scrub: 1,
-          pin: "#industries-pin",
-          // markers: true,
-        },
-      })
-      .fromTo(
-        shuffledLetters,
-        {
-          immediateRender: false,
-          opacity: 0,
-          scale: 0.85,
-          filter: "blur(5px)",
-        },
-        {
-          opacity: 1,
-          scale: 1,
-          filter: "blur(0px)",
-          stagger: 0.03,
-          ease: "power2.out",
-        }
-      )
-      .fromTo(
-        `.${classes.industries__description}`,
-        {
-          opacity: 0,
-        },
-        {
-          opacity: 1,
-        },
-        "<"
-      )
-      .to(
-        shuffledLetters,
-        {
-          opacity: 0,
-          scale: 0.85,
-          filter: "blur(5px)",
-          stagger: 0.03,
-          ease: "power2.out",
-        },
-        ">"
-      )
-      .to(
-        `.${classes.industries__description}`,
-        {
-          opacity: 0,
-        },
-        "<"
+  useGSAP(
+    () => {
+      const letters = document.querySelectorAll<HTMLImageElement>(
+        `.${classes.industries__titleLetter}`
       );
+      const shuffledLetters = gsap.utils.shuffle([...letters]);
 
-    return () => void tl.kill();
-  }, []);
+      gsap
+        .timeline({
+          paused: true,
+          scrollTrigger: {
+            trigger: container.current,
+            end: "bottom 40%",
+            fastScrollEnd: 1000,
+            scrub: 1,
+            pin: "#industries-pin",
+            // markers: true,
+          },
+        })
+        .fromTo(
+          shuffledLetters,
+          {
+            immediateRender: false,
+            opacity: 0,
+            scale: 0.85,
+            filter: "blur(5px)",
+          },
+          {
+            opacity: 1,
+            scale: 1,
+            filter: "blur(0px)",
+            stagger: 0.03,
+            ease: "power2.out",
+          }
+        )
+        .fromTo(
+          `.${classes.industries__description}`,
+          {
+            opacity: 0,
+          },
+          {
+            opacity: 1,
+          },
+          "<"
+        )
+        .to(
+          shuffledLetters,
+          {
+            opacity: 0,
+            scale: 0.85,
+            filter: "blur(5px)",
+            stagger: 0.03,
+            ease: "power2.out",
+          },
+          ">"
+        )
+        .to(
+          `.${classes.industries__description}`,
+          {
+            opacity: 0,
+          },
+          "<"
+        );
+    },
+    { scope: container }
+  );
 
   return (
-    <section className={classes.industries} id="industries">
+    <section className={classes.industries} id="industries" ref={container}>
       <div id="industries-pin" className={classes.industries__wrapper}>
         <div className={classes.industries__inner}>
           <div className={classes.industries__title}>
