@@ -1,14 +1,15 @@
+import { useGSAP } from "@gsap/react";
 import clsx from "clsx";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect } from "react";
+import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { Button } from "@/components/Button";
 
 import classes from "./styles.module.scss";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const TITLE_1 = ["N", "e", "e", "d", " "];
 const TITLE_2 = ["h", "e", "l", "p", "?"];
@@ -25,110 +26,113 @@ export const Footer = () => {
     defaultValues: { name: "", email: "", about: "", privacy: false },
   });
 
+  const container = useRef<HTMLElement | null>(null);
+
   // const { name, email, privacy } = watch();
 
-  useEffect(() => {
-    const tl = gsap
-      .timeline({
-        paused: true,
-        repeat: 0,
-        scrollTrigger: {
-          trigger: "#footer",
-          // start: "top 0%",
-          end: "bottom 10%",
-          fastScrollEnd: 1000,
-          scrub: 1,
-          pin: "#footer-pin",
-          // markers: true,
-        },
-      })
-      // .fromTo(
+  useGSAP(
+    () => {
+      gsap
+        .timeline({
+          paused: true,
+          repeat: 0,
+          scrollTrigger: {
+            trigger: container.current,
+            // start: "top 0%",
+            end: "bottom 10%",
+            fastScrollEnd: 1000,
+            scrub: 1,
+            pin: "#footer-pin",
+            // markers: true,
+          },
+        })
+        // .fromTo(
+        //   shuffledLetters,
+        //   {
+        //     opacity: 0,
+        //     scale: 0.85,
+        //     filter: "blur(5px)",
+        //     immediateRender: false,
+        //   },
+        //   {
+        //     opacity: 1,
+        //     scale: 1,
+        //     filter: "blur(0px)",
+        //     stagger: 0.03,
+        //     ease: "power2.out",
+        //   }
+        // )
+        .fromTo(
+          `.${classes.footer__wrapper}`,
+          {
+            opacity: 0,
+            immediateRender: false,
+          },
+          {
+            opacity: 1,
+          }
+          // "<+=0.5"
+        )
+        // .fromTo(
+        //   `.${classes.footer__contacts}`,
+        //   {
+        //     immediateRender: false,
+        //     opacity: 0,
+        //   },
+        //   {
+        //     opacity: 1,
+        //   },
+        //   ">-=0.5"
+        // )
+        // .fromTo(
+        //   `.${classes.footer__form}`,
+        //   {
+        //     immediateRender: false,
+        //     opacity: 0,
+        //   },
+        //   {
+        //     opacity: 1,
+        //   },
+        //   ">-=0.5"
+        // )
+        // .to(
+        //   `.${classes.footer__description}`,
+        //   {
+        //     opacity: 0,
+        //   },
+        //   ">"
+        // )
+        // .to(
+        //   `.${classes.footer__contacts}`,
+        //   {
+        //     opacity: 0,
+        //   },
+        //   ">"
+        // )
+        .to(
+          `.${classes.footer__wrapper}`,
+          {
+            opacity: 0,
+          },
+          ">"
+        );
+      // .to(
       //   shuffledLetters,
       //   {
       //     opacity: 0,
       //     scale: 0.85,
       //     filter: "blur(5px)",
-      //     immediateRender: false,
-      //   },
-      //   {
-      //     opacity: 1,
-      //     scale: 1,
-      //     filter: "blur(0px)",
       //     stagger: 0.03,
       //     ease: "power2.out",
-      //   }
-      // )
-      .fromTo(
-        `.${classes.footer__wrapper}`,
-        {
-          opacity: 0,
-          immediateRender: false,
-        },
-        {
-          opacity: 1,
-        }
-        // "<+=0.5"
-      )
-      // .fromTo(
-      //   `.${classes.footer__contacts}`,
-      //   {
-      //     immediateRender: false,
-      //     opacity: 0,
-      //   },
-      //   {
-      //     opacity: 1,
-      //   },
-      //   ">-=0.5"
-      // )
-      // .fromTo(
-      //   `.${classes.footer__form}`,
-      //   {
-      //     immediateRender: false,
-      //     opacity: 0,
-      //   },
-      //   {
-      //     opacity: 1,
-      //   },
-      //   ">-=0.5"
-      // )
-      // .to(
-      //   `.${classes.footer__description}`,
-      //   {
-      //     opacity: 0,
       //   },
       //   ">"
-      // )
-      // .to(
-      //   `.${classes.footer__contacts}`,
-      //   {
-      //     opacity: 0,
-      //   },
-      //   ">"
-      // )
-      .to(
-        `.${classes.footer__wrapper}`,
-        {
-          opacity: 0,
-        },
-        ">"
-      );
-    // .to(
-    //   shuffledLetters,
-    //   {
-    //     opacity: 0,
-    //     scale: 0.85,
-    //     filter: "blur(5px)",
-    //     stagger: 0.03,
-    //     ease: "power2.out",
-    //   },
-    //   ">"
-    // );
-
-    return () => void tl.kill();
-  }, []);
+      // );
+    },
+    { scope: container }
+  );
 
   return (
-    <footer className={classes.footer} id="footer">
+    <footer className={classes.footer} ref={container} id="footer">
       <div className={classes.footer__wrapper} id="footer-pin">
         <div className={classes.footer__overlay} />
         <div className={classes.footer__content}>

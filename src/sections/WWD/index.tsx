@@ -1,7 +1,8 @@
+import { useGSAP } from "@gsap/react";
 import clsx from "clsx";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect } from "react";
+import { useRef } from "react";
 
 import W from "./images/1w.svg";
 import H from "./images/2h.svg";
@@ -15,60 +16,63 @@ import Space_S from "./images/space_1.svg?react";
 import Space_L from "./images/space_2.svg?react";
 import classes from "./styles.module.scss";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export const WWD = () => {
-  useEffect(() => {
-    const letters = document.querySelectorAll<HTMLImageElement>(
-      `.${classes.wwd__titleLetter}`
-    );
-    const shuffledLetters = gsap.utils.shuffle([...letters]);
+  const container = useRef<HTMLElement | null>(null);
 
-    const tl = gsap
-      .timeline({
-        paused: true,
-        scrollTrigger: {
-          trigger: "#wwd",
-          end: "bottom 35%",
-          scrub: 1,
-          fastScrollEnd: 1000,
-          pin: "#wwd-pin",
-        },
-      })
-      .fromTo(
-        shuffledLetters,
-        {
-          opacity: 0,
-          scale: 0.85,
-          filter: "blur(5px)",
-        },
-        {
-          opacity: 1,
-          scale: 1,
-          filter: "blur(0px)",
-          stagger: 0.05,
-          ease: "power2.out",
-        },
-        "<-0.6"
-      )
-      .to(
-        shuffledLetters,
-        {
-          opacity: 0,
-          scale: 0.85,
-          filter: "blur(5px)",
-          stagger: 0.03,
-          duration: 0.1,
-          ease: "power2.out",
-        },
-        ">"
+  useGSAP(
+    () => {
+      const letters = document.querySelectorAll<HTMLImageElement>(
+        `.${classes.wwd__titleLetter}`
       );
+      const shuffledLetters = gsap.utils.shuffle([...letters]);
 
-    return () => void tl.kill();
-  }, []);
+      gsap
+        .timeline({
+          paused: true,
+          scrollTrigger: {
+            trigger: container.current,
+            end: "bottom 35%",
+            scrub: 1,
+            fastScrollEnd: 1000,
+            pin: "#wwd-pin",
+          },
+        })
+        .fromTo(
+          shuffledLetters,
+          {
+            opacity: 0,
+            scale: 0.85,
+            filter: "blur(5px)",
+          },
+          {
+            opacity: 1,
+            scale: 1,
+            filter: "blur(0px)",
+            stagger: 0.05,
+            ease: "power2.out",
+          },
+          "<-0.6"
+        )
+        .to(
+          shuffledLetters,
+          {
+            opacity: 0,
+            scale: 0.85,
+            filter: "blur(5px)",
+            stagger: 0.03,
+            duration: 0.1,
+            ease: "power2.out",
+          },
+          ">"
+        );
+    },
+    { scope: container }
+  );
 
   return (
-    <section id="wwd" className={classes.wwd}>
+    <section id="wwd" className={classes.wwd} ref={container}>
       <div id="wwd-pin" className={classes.wwd__pin}>
         <div className={classes.wwd__title}>
           <div className={classes.wwd__letterWrapper}>
