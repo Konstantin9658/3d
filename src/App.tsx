@@ -30,12 +30,15 @@ import { MobileApps } from "./sections/MobileApps";
 import { Welcome } from "./sections/Welcome";
 import { WelcomeDuplicate } from "./sections/Welcome/WelcomeDuplicate";
 import { WWD } from "./sections/WWD";
+import { useAppStore } from "./store/app";
 
 function App() {
   const lenisRef = useRef<LenisRef | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   const appHeight = useAppHeight();
+
+  const setAppLoaded = useAppStore((state) => state.setAppLoaded);
 
   useEffect(() => {
     function update(time: number) {
@@ -51,9 +54,11 @@ function App() {
   const handleLoading = (active: boolean) => {
     if (!active) {
       document.body.style.overflow = "";
+      setAppLoaded(true);
     } else {
       document.body.style.overflow = "hidden";
       window.scrollTo(0, 0);
+      setAppLoaded(false);
     }
 
     return active;

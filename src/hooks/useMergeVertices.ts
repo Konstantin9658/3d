@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import * as THREE from "three";
 import { mergeVertices } from "three-stdlib";
+
 export const useMergeVertices = (scene: THREE.Scene | null) => {
   useEffect(() => {
     if (!scene) return;

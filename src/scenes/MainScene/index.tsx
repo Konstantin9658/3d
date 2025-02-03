@@ -19,7 +19,6 @@ import { useAppStore } from "@/store/app";
 export const MainScene = () => {
   console.log("Main scene render");
 
-  // const scrollOffset = useRef(0);
   const prevScrollOffset = useRef(0); // Для отслеживания изменений прокрутки
   const mouseMove = useRef({ x: 0, y: 0 });
   const basePosition = useRef(new THREE.Vector3());
@@ -37,7 +36,10 @@ export const MainScene = () => {
   const scenes = useThree((state) => state.scene);
 
   useMergeVertices(scenes);
+
   const scrollOffset = useScrollOffset();
+
+  const appLoaded = useAppStore((state) => state.appLoaded);
 
   const animatedCamera = useMemo(
     () => (cameras.length > 0 ? cameras[0] : null),
@@ -46,14 +48,9 @@ export const MainScene = () => {
 
   // Инициализация камеры и анимации
   useEffect(() => {
-    if (cameras.length < 0 || !actions || !actions[CAMERA_NAME]) return;
-
     basePosition.current.copy(camera.position);
     baseQuaternion.current.copy(camera.quaternion);
-
-    const action = actions[CAMERA_NAME];
-    action.play();
-  }, [cameras, actions, camera]);
+  }, [camera.position, camera.quaternion]);
 
   const handleResize = useCallback(() => {
     const widthFactor = REFERENCE_WIDTH / size.width;
@@ -78,13 +75,13 @@ export const MainScene = () => {
   const debouncedResize = useDebounce(handleResize, 300);
 
   useEffect(() => {
-    handleResize();
+    debouncedResize();
     window.addEventListener("resize", debouncedResize);
 
     return () => {
       window.removeEventListener("resize", debouncedResize);
     };
-  }, [debouncedResize, handleResize]);
+  }, [debouncedResize]);
 
   useEffect(() => {
     if (animatedCamera) {
@@ -108,14 +105,14 @@ export const MainScene = () => {
     basePosition.current.copy(camera.position);
     baseQuaternion.current.copy(camera.quaternion);
 
-    const action = actions[CAMERA_NAME];
+    // const action = actions[CAMERA_NAME];
 
-    action.play();
-  }, [cameras, actions, camera]);
+    // action.play();
+  }, [cameras, actions, camera, mixer, animatedCamera?.position]);
 
   // Основной рендер-цикл
   useFrame((_, delta) => {
-    if (!animatedCamera || !actions) return;
+    if (!appLoaded || !animatedCamera || !actions) return;
 
     const action = actions[CAMERA_NAME];
 
@@ -135,12 +132,11 @@ export const MainScene = () => {
         "ZYX"
       );
       setEnvRotation(euler);
+      action.play();
     } else {
       // Если прокрутка не изменилась, приостанавливаем анимацию
       action.paused = true;
     }
-
-    animatedCamera.updateMatrixWorld();
 
     // Плавное обновление позиции и поворота камеры из анимации
     camera.position.lerp(animatedCamera.position, 0.3);
@@ -161,6 +157,7 @@ export const MainScene = () => {
     parallaxOffset.current.set(parallaxX, parallaxY, 0);
     camera.position.add(parallaxOffset.current);
 
+    animatedCamera.updateMatrixWorld();
     mixer.update(delta);
   });
 
