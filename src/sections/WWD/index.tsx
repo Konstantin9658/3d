@@ -33,7 +33,7 @@ export const WWD = () => {
           paused: true,
           scrollTrigger: {
             trigger: container.current,
-            end: "bottom 35%",
+            end: "bottom 75%",
             scrub: 1,
             fastScrollEnd: 1000,
             pin: "#wwd-pin",

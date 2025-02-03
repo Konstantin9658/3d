@@ -12,19 +12,19 @@ import {
   REFERENCE_HEIGHT,
   REFERENCE_WIDTH,
 } from "@/consts";
-import { useAppHeight } from "@/hooks/useAppHeight";
+import { useScrollOffset } from "@/hooks/useAppHeight";
 import { useMergeVertices } from "@/hooks/useMergeVertices";
 import { useAppStore } from "@/store/app";
 
 export const MainScene = () => {
-  const scrollOffset = useRef(0);
+  console.log("Main scene render");
+
+  // const scrollOffset = useRef(0);
   const prevScrollOffset = useRef(0); // Для отслеживания изменений прокрутки
   const mouseMove = useRef({ x: 0, y: 0 });
   const basePosition = useRef(new THREE.Vector3());
   const parallaxOffset = useRef(new THREE.Vector3());
   const baseQuaternion = useRef(new THREE.Quaternion());
-
-  const appHeight = useAppHeight();
 
   const setEnvRotation = useAppStore((state) => state.setEnvRotation);
 
@@ -37,6 +37,7 @@ export const MainScene = () => {
   const scenes = useThree((state) => state.scene);
 
   useMergeVertices(scenes);
+  const scrollOffset = useScrollOffset();
 
   const animatedCamera = useMemo(
     () => (cameras.length > 0 ? cameras[0] : null),
@@ -112,16 +113,6 @@ export const MainScene = () => {
     action.play();
   }, [cameras, actions, camera]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const offset = window.scrollY / (appHeight - 1000);
-      scrollOffset.current = offset;
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [appHeight]);
-
   // Основной рендер-цикл
   useFrame((_, delta) => {
     if (!animatedCamera || !actions) return;
@@ -149,8 +140,6 @@ export const MainScene = () => {
       action.paused = true;
     }
 
-    mixer.update(delta);
-
     animatedCamera.updateMatrixWorld();
 
     // Плавное обновление позиции и поворота камеры из анимации
@@ -171,6 +160,8 @@ export const MainScene = () => {
 
     parallaxOffset.current.set(parallaxX, parallaxY, 0);
     camera.position.add(parallaxOffset.current);
+
+    mixer.update(delta);
   });
 
   return <primitive object={scene} />;

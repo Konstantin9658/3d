@@ -1,6 +1,16 @@
 import * as THREE from "three";
 import { create } from "zustand";
 
+export enum CameraInScene {
+  FirstStage,
+  SecondStage,
+  ThirdStage,
+  FourthStage,
+  FifthStage,
+  SixthStage,
+  SevenStage,
+}
+
 interface AppStore {
   appHeight: number;
   setAppHeight: (v: number) => void;
@@ -12,6 +22,8 @@ interface AppStore {
   setVideoTexturesEnabled: (v: boolean) => void;
   envRotation: THREE.Euler;
   setEnvRotation: (v: THREE.Euler) => void;
+  cameraInScene: CameraInScene;
+  setCameraInScene: (v: CameraInScene) => void;
 }
 
 export const useAppStore = create<AppStore>((set) => ({
@@ -31,4 +43,6 @@ export const useAppStore = create<AppStore>((set) => ({
   setVideoTexturesEnabled: (v) => set({ isVideoTexturesEnabled: v }),
   envRotation: new THREE.Euler(0, 0, 0),
   setEnvRotation: (v) => set({ envRotation: v }),
+  cameraInScene: CameraInScene.FirstStage,
+  setCameraInScene: (v) => set({ cameraInScene: v }),
 }));

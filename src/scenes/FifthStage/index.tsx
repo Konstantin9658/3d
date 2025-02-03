@@ -4,6 +4,8 @@ import { degToRad } from "three/src/math/MathUtils.js";
 import stage_5th from "@/assets/models/5th_stage.glb";
 
 export const FifthStage = () => {
+  console.log("Render 5th stage");
+
   const { scene } = useGLTF(stage_5th);
 
   const rx = degToRad(-180);

@@ -1,7 +1,7 @@
 .wwd {
   display: flex;
   position: relative;
-  height: 12.5%;
+  height: 15%;
   width: 100%;
   z-index: 10;
 }
@@ -21,7 +21,6 @@
   max-width: 1920px;
   max-height: 200px;
   height: 9.5vw;
-  // height: 10.2vw;
   padding: 0 120px;
   // padding-inline: clamp(75px, 6.2vw, 120px);
   align-items: center;
@@ -38,7 +37,6 @@
 }
 
 .wwd__letterSpace {
-  // flex-shrink: 0;
   width: 10vw;
 
   &_s {

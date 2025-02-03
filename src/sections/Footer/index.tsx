@@ -270,7 +270,6 @@ export const Footer = () => {
                 name="privacy"
                 rules={{ required: true }}
                 render={({ field }) => {
-                  console.log(field.value);
                   return (
                     <>
                       <input

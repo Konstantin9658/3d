@@ -32,7 +32,7 @@ export const Industries = () => {
           paused: true,
           scrollTrigger: {
             trigger: container.current,
-            end: "bottom 40%",
+            end: "bottom 90%",
             fastScrollEnd: 1000,
             scrub: 1,
             pin: "#industries-pin",

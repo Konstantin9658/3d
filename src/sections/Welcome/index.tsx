@@ -21,7 +21,7 @@ export const Welcome = () => {
       gsap
         .timeline({
           scrollTrigger: {
-            start: "top 12%",
+            trigger: welcomeRef.current,
             end: "+=100%",
             scrub: 0.5,
             pin: "#welcome-pin",
@@ -31,12 +31,12 @@ export const Welcome = () => {
         })
         .from(`.${classes.welcome__inner}`, {
           immediateRender: false,
-          autoAlpha: 1,
+          opacity: 1,
           // transform: "translateY(0%)",
           ease: "power2.out",
         })
         .to(`.${classes.welcome__inner}`, {
-          autoAlpha: 0,
+          opacity: 0,
           // transform: "translateY(-100%)",
         })
         // .fromTo(
@@ -60,7 +60,7 @@ export const Welcome = () => {
           ">-0.5"
         );
     },
-    { scope: welcomeRef }
+    { scope: welcomeRef, revertOnUpdate: true, dependencies: [] }
   );
   return (
     <section className={classes.welcome} id="welcome" ref={welcomeRef}>
