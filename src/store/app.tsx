@@ -12,6 +12,8 @@ export enum CameraInScene {
 }
 
 interface AppStore {
+  appLoaded: boolean;
+  setAppLoaded: (v: boolean) => void;
   appHeight: number;
   setAppHeight: (v: number) => void;
   scrollOffset: number;
@@ -27,6 +29,8 @@ interface AppStore {
 }
 
 export const useAppStore = create<AppStore>((set) => ({
+  appLoaded: false,
+  setAppLoaded: (v) => set({ appLoaded: v }),
   appHeight: 0,
   setAppHeight: (v) => set({ appHeight: v }),
   scrollOffset: 0,
