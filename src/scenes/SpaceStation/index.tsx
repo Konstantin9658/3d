@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import spaceStation from "@/assets/models/space_station.glb";
 
 export const SpaceStation = () => {
+  console.log("Render Space station");
   const { scene, animations } = useGLTF(spaceStation);
 
   const { actions } = useAnimations(animations, scene);

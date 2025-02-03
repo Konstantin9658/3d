@@ -80,11 +80,12 @@ function App() {
             <Header />
             <Welcome />
             <WWD />
-            <div style={{ height: "35%" }} />
+            <div style={{ height: "26%" }} />
             <Industries />
+            <div style={{ height: "15%" }} />
             <MobileApps />
             <Cases />
-            <div style={{ height: "5%" }} />
+            <div style={{ height: "3%" }} />
             <Footer />
             <div style={{ overflow: "hidden", height: "100vh" }}>
               <WelcomeDuplicate />

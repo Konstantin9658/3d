@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import planet from "@/assets/models/planet.glb";
 
 export const Planet = () => {
+  console.log("Render Planet");
   const { scene,animations } = useGLTF(planet);
 
   const { actions } = useAnimations(animations, scene);
