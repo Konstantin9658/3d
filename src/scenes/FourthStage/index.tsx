@@ -1,11 +1,12 @@
 import { useAnimations, useGLTF } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 
 import stage_4th from "@/assets/models/4th_stage.glb";
 import { useScrollOffset } from "@/hooks/useAppHeight";
+import { useInvisibleMaterial } from "@/hooks/useInvisibleMaterial";
 
 export const FourthStage = () => {
   console.log("Render 4th stage");
@@ -13,13 +14,17 @@ export const FourthStage = () => {
   const { scene, animations } = useGLTF(stage_4th);
   const { actions, mixer } = useAnimations(animations, scene);
 
-  // const camera = useThree((state) => state.camera);
+  const camera = useThree((state) => state.camera);
+
+  const colliderRef = useRef(scene.getObjectByName("4th_collider"));
+
+  useInvisibleMaterial(colliderRef);
 
   const rx = degToRad(-90);
 
   const prevScrollOffset = useRef(0);
   const sceneBounds = useRef(new THREE.Box3());
-  // const isSceneActive = useRef<boolean>(false);
+  const isSceneActive = useRef<boolean>(false);
 
   const scrollOffset = useScrollOffset();
 
@@ -38,15 +43,17 @@ export const FourthStage = () => {
     sceneBounds.current.setFromObject(scene);
   }, [scene]);
 
-  // useFrame(() => {
-  //   if (!sceneBounds.current) return;
+  useFrame(() => {
+    if (!sceneBounds.current) return;
 
-  //   // Проверяем, находится ли камера внутри границ сцены
-  //   isSceneActive.current = sceneBounds.current.containsPoint(camera.position);
-  // });
+    // Проверяем, находится ли камера внутри границ сцены
+    isSceneActive.current = sceneBounds.current.containsPoint(camera.position);
+  });
 
   useFrame((_, delta) => {
-    if (!actions) return;
+    if (!actions || !isSceneActive.current) return;
+
+    console.log("I'm in 4th stage");
 
     const actionScroll = actions["Scene"];
 
