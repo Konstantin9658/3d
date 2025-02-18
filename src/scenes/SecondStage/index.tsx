@@ -36,7 +36,6 @@ export const SecondStage = () => {
   const sceneBounds = useRef(new THREE.Box3());
   const isSceneActive = useRef<boolean>(false);
 
-  // const isDistanceExceeded = useRef<boolean>(false);
   const mouse = useRef(new THREE.Vector2());
   const raycaster = useRef(new THREE.Raycaster());
   const collidersRef = useRef(
@@ -120,6 +119,8 @@ export const SecondStage = () => {
   });
 
   useFrame((_, delta) => {
+    if (!isSceneActive.current) return;
+
     if (!actions) return;
 
     const actionScroll = actions[SCROLL_ACTION];

@@ -144,7 +144,7 @@ export const ThirdStage = () => {
         document.body.style.cursor = "pointer";
       } else {
         isHovered.current = false;
-        document.body.style.cursor = "default";
+        document.body.style.cursor = "";
       }
     },
     [camera]
