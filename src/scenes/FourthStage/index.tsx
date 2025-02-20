@@ -24,12 +24,6 @@ export const FourthStage = () => {
 
   const scrollOffset = useScrollOffset();
 
-  const collider1Ref = useRef<THREE.Mesh<
-    THREE.BufferGeometry<THREE.NormalBufferAttributes>,
-    THREE.Material | THREE.Material[],
-    THREE.Object3DEventMap
-  > | null>(null);
-
   useEffect(() => {
     if (!actions) return;
 
@@ -108,7 +102,6 @@ export const FourthStage = () => {
               scale={0.492}
             />
             <mesh
-              ref={collider1Ref}
               name="collider_1"
               visible={false}
               geometry={(nodes.collider_1 as THREE.Mesh).geometry}
@@ -142,6 +135,36 @@ export const FourthStage = () => {
               name="screen_light"
               geometry={(nodes.screen_light as THREE.Mesh).geometry}
               material={materials.screen}
+              position={[0, 0, 6.287]}
+            />
+          </group>
+          <group name="room_2" rotation={[Math.PI / 2, -Math.PI / 3, Math.PI]}>
+            <mesh
+              name="read_more_2"
+              geometry={(nodes.read_more_2 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0.82, 7.144]}
+              rotation={[Math.PI / 2, 0, 0]}
+            />
+            <mesh
+              name="room2"
+              geometry={(nodes.room2 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0, 6.287]}
+            />
+          </group>
+          <group name="room_2001" rotation={[-Math.PI / 2, Math.PI / 3, 0]}>
+            <mesh
+              name="read_more_2_1"
+              geometry={(nodes.read_more_2_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0.82, 7.144]}
+              rotation={[Math.PI / 2, 0, 0]}
+            />
+            <mesh
+              name="room2_1"
+              geometry={(nodes.room2_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
               position={[0, 0, 6.287]}
             />
           </group>
@@ -215,11 +238,157 @@ export const FourthStage = () => {
               scale={0.559}
             />
           </group>
+          <group name="room_3001" rotation={[-Math.PI / 2, Math.PI / 2, 0]}>
+            <mesh
+              name="read_more_3_1"
+              geometry={(nodes.read_more_3_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0.82, 7.144]}
+              rotation={[Math.PI / 2, 0, 0]}
+            />
+            <mesh
+              name="fan_1"
+              geometry={(nodes.fan_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 1.339, 5.582]}
+            />
+            <mesh
+              name="fan001_1"
+              geometry={(nodes.fan001_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[-0.87, 1.339, 5.515]}
+              rotation={[0, -0.157, 0]}
+            />
+            <mesh
+              name="fan002_1"
+              geometry={(nodes.fan002_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0.87, 1.339, 5.515]}
+              rotation={[0, 0.157, 0]}
+            />
+            <mesh
+              name="collider_3_1"
+              visible={false}
+              geometry={(nodes.collider_3_1 as THREE.Mesh).geometry}
+              material={(nodes.collider_3_1 as THREE.Mesh).material}
+              position={[0, 1.868, 6.537]}
+              scale={1.152}
+            />
+            <mesh
+              name="fandw_1"
+              geometry={(nodes.fandw_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0, 6.287]}
+            />
+            <mesh
+              name="shadow001_1"
+              geometry={(nodes.shadow001_1 as THREE.Mesh).geometry}
+              material={materials.shadow}
+              position={[1.021, 0.12, 5.594]}
+              scale={0.559}
+            />
+          </group>
+          <group name="room_4" rotation={[-Math.PI / 2, -Math.PI / 3, 0]}>
+            <mesh
+              name="read_more_4"
+              geometry={(nodes.read_more_4 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0.82, 7.144]}
+              rotation={[Math.PI / 2, 0, 0]}
+            />
+            <mesh
+              name="room4"
+              geometry={(nodes.room4 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0, 6.287]}
+            />
+          </group>
+          <group
+            name="room_4001"
+            rotation={[Math.PI / 2, Math.PI / 3, Math.PI]}
+          >
+            <mesh
+              name="read_more_4_1"
+              geometry={(nodes.read_more_4_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0.82, 7.144]}
+              rotation={[Math.PI / 2, 0, 0]}
+            />
+            <mesh
+              name="room4_1"
+              geometry={(nodes.room4_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0, 6.287]}
+            />
+          </group>
+          <group name="room_5" rotation={[-Math.PI / 2, -Math.PI / 6, 0]}>
+            <mesh
+              name="read_more_5"
+              geometry={(nodes.read_more_5 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0.82, 7.144]}
+              rotation={[Math.PI / 2, 0, 0]}
+            />
+            <mesh
+              name="room5"
+              geometry={(nodes.room5 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0, 6.287]}
+            />
+          </group>
+          <group
+            name="room_5001"
+            rotation={[Math.PI / 2, Math.PI / 6, Math.PI]}
+          >
+            <mesh
+              name="read_more_5_1"
+              geometry={(nodes.read_more_5_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0.82, 7.144]}
+              rotation={[Math.PI / 2, 0, 0]}
+            />
+            <mesh
+              name="room5_1"
+              geometry={(nodes.room5_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0, 6.287]}
+            />
+          </group>
+          <group name="room_6" rotation={[-Math.PI / 2, 0, 0]}>
+            <mesh
+              name="read_more_6"
+              geometry={(nodes.read_more_6 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0.82, 7.144]}
+              rotation={[Math.PI / 2, 0, 0]}
+            />
+            <mesh
+              name="room6"
+              geometry={(nodes.room6 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0, 6.287]}
+            />
+          </group>
+          <group name="room_6001" rotation={[Math.PI / 2, 0, Math.PI]}>
+            <mesh
+              name="read_more_6_1"
+              geometry={(nodes.read_more_6_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0.82, 7.144]}
+              rotation={[Math.PI / 2, 0, 0]}
+            />
+            <mesh
+              name="room6_1"
+              geometry={(nodes.room6_1 as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              position={[0, 0, 6.287]}
+            />
+          </group>
           <mesh
-            name="Circle"
-            geometry={(nodes.Circle as THREE.Mesh).geometry}
+            name="dividers"
+            geometry={(nodes.dividers as THREE.Mesh).geometry}
             material={materials.all_colors}
-            rotation={[-Math.PI / 2, -Math.PI / 4, 0]}
+            rotation={[-Math.PI / 2, -Math.PI / 6, 0]}
           />
           <mesh
             name="windows"
