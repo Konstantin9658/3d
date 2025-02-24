@@ -5,6 +5,7 @@ import { Loader, Preload, Stars } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { gsap } from "gsap";
 import { LenisRef, ReactLenis } from "lenis/react";
+import { Perf } from "r3f-perf";
 // import { Leva, useControls } from "leva";
 import { Suspense, useEffect, useRef } from "react";
 
@@ -104,9 +105,11 @@ function App() {
               top: 0,
               height: "100vh",
             }}
+            gl={{ pixelRatio: 1.5 }}
             shadows
           >
             <Preload all />
+            <Perf position="bottom-left" />
             <Stars
               radius={130}
               count={8000}
