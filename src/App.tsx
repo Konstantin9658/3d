@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { Loader, Preload, Stars } from "@react-three/drei";
+import { Bvh, Loader, Preload, Stars } from "@react-three/drei";
 // import classes from "./styles.module.scss";
 import { Canvas } from "@react-three/fiber";
 import { gsap } from "gsap";
@@ -126,7 +126,9 @@ function App() {
             <Planet />
             <SpaceStation />
             <FirstStage />
-            <SecondStage />
+            <Bvh>
+              <SecondStage />
+            </Bvh>
             <ThirdStage />
             <FourthStage />
             <FifthStage />

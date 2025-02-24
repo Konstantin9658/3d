@@ -203,7 +203,7 @@ export const FourthStage = () => {
               material={(nodes.collider_3 as THREE.Mesh).material}
               position={[0, 1.868, 6.537]}
               scale={1.152}
-              onPointerOut={() => {
+              onPointerLeave={() => {
                 if (!unhoverAction3 || !hoverAction3) return;
 
                 hoverAction3.stop();
