@@ -15,94 +15,94 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 export const Cases = () => {
   const container = useRef<HTMLElement | null>(null);
 
-  useGSAP(
-    () => {
-      const letters = document.querySelectorAll<HTMLImageElement>(
-        `.${classes.cases__titleLetter}`
-      );
-      const shuffledLetters = gsap.utils.shuffle([...letters]);
+  // useGSAP(
+  //   () => {
+  //     const letters = document.querySelectorAll<HTMLImageElement>(
+  //       `.${classes.cases__titleLetter}`
+  //     );
+  //     const shuffledLetters = gsap.utils.shuffle([...letters]);
 
-      gsap
-        .timeline({
-          paused: true,
-          scrollTrigger: {
-            trigger: container.current,
-            end: "bottom 200%",
-            pinSpacing: true,
-            scrub: 1,
-            pin: "#cases-pin",
-            // markers: true,
-            fastScrollEnd: 1000,
-            preventOverlaps: true,
-          },
-        })
-        .fromTo(
-          shuffledLetters,
-          {
-            immediateRender: false,
-            opacity: 0,
-            scale: 0.85,
-            filter: "blur(5px)",
-          },
-          {
-            opacity: 1,
-            scale: 1,
-            filter: "blur(0px)",
-            stagger: 0.03,
-            ease: "power2.out",
-          }
-        )
-        .fromTo(
-          `.${classes.cases__description}`,
-          {
-            immediateRender: false,
-            opacity: 0,
-          },
-          {
-            opacity: 1,
-          },
-          "<"
-        )
-        .fromTo(
-          `.${classes.cases__bottom}`,
-          {
-            immediateRender: false,
-            opacity: 0,
-          },
-          {
-            opacity: 1,
-          },
-          "<"
-        )
-        .to(
-          shuffledLetters,
-          {
-            opacity: 0,
-            scale: 0.85,
-            filter: "blur(5px)",
-            stagger: 0.05,
-            duration: 0.5,
-            ease: "power2.out",
-          },
-          ">"
-        )
-        .to(
-          `.${classes.cases__description}`,
-          {
-            opacity: 0,
-          },
-          "<"
-        )
-        .to(
-          `.${classes.cases__bottom}`,
-          {
-            opacity: 0,
-          },
-          "<"
-        );
-    },
-    { scope: container }
-  );
+  //     gsap
+  //       .timeline({
+  //         paused: true,
+  //         scrollTrigger: {
+  //           trigger: container.current,
+  //           end: "bottom 200%",
+  //           pinSpacing: true,
+  //           scrub: 1,
+  //           pin: "#cases-pin",
+  //           // markers: true,
+  //           fastScrollEnd: 1000,
+  //           preventOverlaps: true,
+  //         },
+  //       })
+  //       .fromTo(
+  //         shuffledLetters,
+  //         {
+  //           immediateRender: false,
+  //           opacity: 0,
+  //           scale: 0.85,
+  //           filter: "blur(5px)",
+  //         },
+  //         {
+  //           opacity: 1,
+  //           scale: 1,
+  //           filter: "blur(0px)",
+  //           stagger: 0.03,
+  //           ease: "power2.out",
+  //         }
+  //       )
+  //       .fromTo(
+  //         `.${classes.cases__description}`,
+  //         {
+  //           immediateRender: false,
+  //           opacity: 0,
+  //         },
+  //         {
+  //           opacity: 1,
+  //         },
+  //         "<"
+  //       )
+  //       .fromTo(
+  //         `.${classes.cases__bottom}`,
+  //         {
+  //           immediateRender: false,
+  //           opacity: 0,
+  //         },
+  //         {
+  //           opacity: 1,
+  //         },
+  //         "<"
+  //       )
+  //       .to(
+  //         shuffledLetters,
+  //         {
+  //           opacity: 0,
+  //           scale: 0.85,
+  //           filter: "blur(5px)",
+  //           stagger: 0.05,
+  //           duration: 0.5,
+  //           ease: "power2.out",
+  //         },
+  //         ">"
+  //       )
+  //       .to(
+  //         `.${classes.cases__description}`,
+  //         {
+  //           opacity: 0,
+  //         },
+  //         "<"
+  //       )
+  //       .to(
+  //         `.${classes.cases__bottom}`,
+  //         {
+  //           opacity: 0,
+  //         },
+  //         "<"
+  //       );
+  //   },
+  //   { scope: container }
+  // );
 
   return (
     <section className={classes.cases} ref={container} id="cases">

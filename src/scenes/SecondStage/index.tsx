@@ -1,17 +1,12 @@
-import { useAnimations, useGLTF } from "@react-three/drei";
+import { useAnimations, useGLTF, useScroll } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 import stage_2nd from "@/assets/models/2nd_stage.glb";
-import { useScrollOffset } from "@/hooks/useAppHeight";
 
 import { SCROLL_ACTION } from "./consts";
-import {
-  WwdHoverAction,
-  WwdLoopAnimations,
-  WwdUnhoverAction,
-} from "./types";
+import { WwdHoverAction, WwdLoopAnimations, WwdUnhoverAction } from "./types";
 
 export const SecondStage = () => {
   console.log("Render 2nd stage");
@@ -21,29 +16,27 @@ export const SecondStage = () => {
   const { animations, nodes, materials } = useGLTF(stage_2nd);
   const { actions, mixer } = useAnimations(animations, group);
 
-  const prevScrollOffset = useRef(0);
-
   const camera = useThree((state) => state.camera);
 
   const sceneBounds = useRef(new THREE.Box3());
   const isSceneActive = useRef<boolean>(false);
 
-  const scrollOffset = useScrollOffset();
+  const scroll = useScroll();
 
   useEffect(() => {
     if (!actions) return;
 
-    const actionScroll = actions[SCROLL_ACTION];
+    // const actionScroll = actions[SCROLL_ACTION];
     const actionLoopAnimations = Object.values(WwdLoopAnimations);
 
-    if (!actionScroll) return;
+    // if (!actionScroll) return;
 
     actionLoopAnimations.forEach((_, index) => {
       actions[actionLoopAnimations[index]]?.play();
       actions[actionLoopAnimations[index]]?.setDuration(2);
     });
 
-    actionScroll.play();
+    // actionScroll.play();
   }, [actions]);
 
   useEffect(() => {
@@ -86,21 +79,16 @@ export const SecondStage = () => {
 
     const duration = actionScroll.getClip().duration;
 
-    if (prevScrollOffset.current !== scrollOffset.current) {
-      // Если прокрутка изменилась, продолжаем анимацию
-      actionScroll.time = scrollOffset.current * duration;
-      prevScrollOffset.current = scrollOffset.current; // Обновляем предыдущий скролл
+    if (scroll.delta !== 0) {
+      actionScroll.time = scroll.offset * duration;
+      actionScroll.play();
     } else {
-      // Если прокрутка не изменилась, приостанавливаем анимацию
       actionScroll.paused = true;
       actionScroll.clampWhenFinished = true;
     }
 
     mixer.update(delta);
   });
-
-  // const isEmissiveMaterial = (mat: THREE.MeshStandardMaterial) =>
-  //   mat.emissive.r || mat.emissive.g || mat.emissive.b;
 
   const hover_1 = actions[WwdHoverAction.WWD_1_Hover];
   const hover_2 = actions[WwdHoverAction.WWD_2_Hover];

@@ -1,19 +1,25 @@
 import "./App.css";
 
-import { Bvh, Loader, Preload, Stars } from "@react-three/drei";
+import {
+  Loader,
+  Preload,
+  // Scroll,
+  ScrollControls,
+  Stars,
+} from "@react-three/drei";
 // import classes from "./styles.module.scss";
 import { Canvas } from "@react-three/fiber";
-import { gsap } from "gsap";
-import { LenisRef, ReactLenis } from "lenis/react";
+// import { gsap } from "gsap";
+// import { LenisRef, ReactLenis } from "lenis/react";
 import { Perf } from "r3f-perf";
 // import { Leva, useControls } from "leva";
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense } from "react";
 
 import { Camera } from "./components/Camera";
 import { Effects } from "./components/Effects";
 import { Env } from "./components/Env";
-import { Header } from "./components/Header";
-import { useAppHeight } from "./hooks/useAppHeight";
+// import { Header } from "./components/Header";
+// import { useAppHeight } from "./hooks/useAppHeight";
 import { FifthStage } from "./scenes/FifthStage";
 import { FirstStage } from "./scenes/FirstStage";
 import { FourthStage } from "./scenes/FourthStage";
@@ -24,33 +30,17 @@ import { SeventhStage } from "./scenes/SeventhStage";
 import { SixthStage } from "./scenes/SixthStage";
 import { SpaceStation } from "./scenes/SpaceStation";
 import { ThirdStage } from "./scenes/ThirdStage";
-import { Cases } from "./sections/Cases";
-import { Footer } from "./sections/Footer";
-import { Industries } from "./sections/Industries";
-import { MobileApps } from "./sections/MobileApps";
-import { Welcome } from "./sections/Welcome";
-import { WelcomeDuplicate } from "./sections/Welcome/WelcomeDuplicate";
-import { WWD } from "./sections/WWD";
+// import { Cases } from "./sections/Cases";
+// import { Footer } from "./sections/Footer";
+// import { Industries } from "./sections/Industries";
+// import { MobileApps } from "./sections/MobileApps";
+// import { Welcome } from "./sections/Welcome";
+// import { WelcomeDuplicate } from "./sections/Welcome/WelcomeDuplicate";
+// import { WWD } from "./sections/WWD";
 import { useAppStore } from "./store/app";
 
 function App() {
-  const lenisRef = useRef<LenisRef | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
-
-  const appHeight = useAppHeight();
-
   const setAppLoaded = useAppStore((state) => state.setAppLoaded);
-
-  useEffect(() => {
-    function update(time: number) {
-      lenisRef.current?.lenis?.raf(time * 1000);
-    }
-
-    gsap.ticker.add(update);
-    gsap.ticker.lagSmoothing(0);
-
-    return () => gsap.ticker.remove(update);
-  }, []);
 
   const handleLoading = (active: boolean) => {
     if (!active) {
@@ -67,80 +57,97 @@ function App() {
 
   return (
     <>
-      <ReactLenis
-        root
-        ref={lenisRef}
-        options={{ infinite: true, lerp: 0.03, syncTouch: true }}
-      >
-        {/* <Leva collapsed /> */}
-        <Suspense fallback={null}>
-          <div
-            ref={contentRef}
-            style={{
-              width: "100%",
-              height: `${appHeight}px`,
-              position: "absolute",
-              top: 0,
-            }}
-          >
-            <Header />
-            <Welcome />
-            <WWD />
-            <div style={{ height: "26%" }} />
-            <Industries />
-            <div style={{ height: "15%" }} />
-            <MobileApps />
-            <Cases />
-            <div style={{ height: "3%" }} />
-            <Footer />
-            <div style={{ overflow: "hidden", height: "100vh" }}>
-              <WelcomeDuplicate />
-            </div>
+      {/* <Leva collapsed /> */}
+
+      <Suspense fallback={null}>
+        {/* <div
+          ref={contentRef}
+          style={{
+            width: "100%",
+            height: `${appHeight}px`,
+            position: "absolute",
+            top: 0,
+          }}
+        >
+          <Header />
+          <Welcome />
+          <WWD />
+          <div style={{ height: "26%" }} />
+          <Industries />
+          <div style={{ height: "15%" }} />
+          <MobileApps />
+          <Cases />
+          <div style={{ height: "3%" }} />
+          <Footer />
+          <div style={{ overflow: "hidden", height: "100vh" }}>
+            <WelcomeDuplicate />
           </div>
-          <Canvas
-            linear
-            style={{
-              background: "#000",
-              position: "fixed",
-              top: 0,
-              height: "100vh",
-            }}
-            gl={{ pixelRatio: 1.5 }}
-            shadows
+        </div> */}
+
+        <Canvas
+          linear
+          style={{
+            background: "#000",
+            position: "fixed",
+            top: 0,
+            height: "100vh",
+          }}
+          gl={{ pixelRatio: 1.5 }}
+          shadows
+        >
+          <Preload all />
+          <Perf position="bottom-left" />
+          <Stars
+            radius={130}
+            count={8000}
+            depth={100}
+            factor={7}
+            fade
+            speed={0.5}
+            saturation={0}
+          />
+          <Effects />
+          <Camera />
+          <Env />
+          <ScrollControls
+            pages={55}
+            infinite
+            damping={0.7}
+            prepend
+            maxSpeed={0.1}
           >
-            <Preload all />
-            <Perf position="bottom-left" />
-            <Stars
-              radius={130}
-              count={8000}
-              depth={100}
-              factor={7}
-              fade
-              speed={0.5}
-              saturation={0}
-            />
-            <Effects />
-            <Camera />
-            <Env />
+            {/* <Scroll html>
+              <Header />
+              <Welcome />
+              <WWD />
+              <div style={{ height: "26%" }} />
+              <Industries />
+              <div style={{ height: "15%" }} />
+              <MobileApps />
+              <Cases />
+              <div style={{ height: "3%" }} />
+              <Footer />
+              <div style={{ overflow: "hidden", height: "100vh" }}>
+                <WelcomeDuplicate />
+              </div>
+            </Scroll> */}
             <MainScene />
             <Planet />
             <SpaceStation />
             <FirstStage />
-            <Bvh>
-              <SecondStage />
-            </Bvh>
+            <SecondStage />
             <ThirdStage />
             <FourthStage />
             <FifthStage />
             <SixthStage />
             <SeventhStage />
-          </Canvas>
-        </Suspense>
-        <Loader
-          containerStyles={{ position: "fixed", top: 0 }}
-          initialState={handleLoading}
-        />
-      </ReactLenis>
+          </ScrollControls>
+        </Canvas>
+      </Suspense>
+      <Loader
+        containerStyles={{ position: "fixed", top: 0 }}
+        initialState={handleLoading}
+      />
     </>
   );
 }

@@ -1,13 +1,12 @@
-import { useAnimations, useGLTF } from "@react-three/drei";
+import { useAnimations, useGLTF, useScroll } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
 import stage_3rd from "@/assets/models/3rd_stage.glb";
 import { useEmissiveNoToneMapped } from "@/hooks/useEmissiveNoToneMapped";
 import { useInvisibleMaterial } from "@/hooks/useInvisibleMaterial";
 import { useVideoMaterial } from "@/hooks/useVideoMaterial";
-import { playAction } from "@/utils";
 
 import {
   CLOSE_CLIP_1,
@@ -27,17 +26,9 @@ export const ThirdStage = () => {
   console.log("Render 3rd stage");
 
   const { scene, animations } = useGLTF(stage_3rd);
-  const { actions } = useAnimations(animations, scene);
-
-  const [isOpenDoorLeft, setOpenDoorLeft] = useState(true);
-  const [isOpenDoorRight, setOpenDoorRight] = useState(false);
+  const { actions, mixer } = useAnimations(animations, scene);
 
   const sceneRef = useRef<THREE.Group | null>(null);
-
-  const colliderToCamera = useRef(new THREE.Vector3());
-  const colliderWorldPosition = useRef(new THREE.Vector3());
-  const colliderLeftRef = useRef(scene.getObjectByName(COLLIDER_NAME_1));
-  const colliderRightRef = useRef(scene.getObjectByName(COLLIDER_NAME_2));
 
   const nexMeshRef = useRef<THREE.Mesh | null>(null);
   const glowMeshRef = useRef<THREE.Mesh | null>(null);
@@ -49,11 +40,24 @@ export const ThirdStage = () => {
   const isHovered = useRef<boolean>(false);
   const isSceneActive = useRef<boolean>(false);
 
+  const colliderLeftRef = useRef(scene.getObjectByName(COLLIDER_NAME_1));
+  const colliderRightRef = useRef(scene.getObjectByName(COLLIDER_NAME_2));
+
   const camera = useThree((state) => state.camera);
 
   useVideoMaterial(videoHref, imageHref, sceneRef, "screen");
   useEmissiveNoToneMapped(scene);
   useInvisibleMaterial(colliderLeftRef);
+  useInvisibleMaterial(colliderRightRef);
+
+  const scroll = useScroll();
+  const lastOffset = useRef(scroll.offset);
+
+  const actionOpen_1 = actions[OPEN_CLIP_1];
+  const actionClose_1 = actions[CLOSE_CLIP_1];
+
+  const actionOpen_2 = actions[OPEN_CLIP_2];
+  const actionClose_2 = actions[CLOSE_CLIP_2];
 
   const glowMaterial = useMemo(
     () =>
@@ -77,36 +81,6 @@ export const ThirdStage = () => {
     const loopAnimation = actions[LOOP_ANIMATION];
     loopAnimation?.play();
   }, [actions]);
-
-  useEffect(() => {
-    const actionsOpen = actions[OPEN_CLIP_1];
-    const actionsClose = actions[CLOSE_CLIP_1];
-
-    if (!actionsOpen || !actionsClose) return;
-
-    if (isOpenDoorLeft) {
-      actionsClose.stop();
-      return playAction(actionsOpen);
-    } else {
-      actionsOpen.stop();
-      return playAction(actionsClose);
-    }
-  }, [actions, isOpenDoorLeft]);
-
-  useEffect(() => {
-    const actionsOpen = actions[OPEN_CLIP_2];
-    const actionsClose = actions[CLOSE_CLIP_2];
-
-    if (!actionsOpen || !actionsClose) return;
-
-    if (isOpenDoorRight) {
-      actionsClose.stop();
-      return playAction(actionsOpen);
-    } else {
-      actionsOpen.stop();
-      return playAction(actionsClose);
-    }
-  }, [actions, isOpenDoorRight]);
 
   useEffect(() => {
     const nexMesh = scene.getObjectByName("nex");
@@ -165,47 +139,60 @@ export const ThirdStage = () => {
     isSceneActive.current = sceneBounds.current.containsPoint(camera.position);
   });
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (!isSceneActive.current) return;
 
-    if (
-      !colliderLeftRef.current ||
-      !(colliderLeftRef.current instanceof THREE.Mesh)
-    )
+    const deltaOffset = scroll.offset - lastOffset.current;
+
+    lastOffset.current = scroll.offset;
+
+    // if (
+    //   !colliderLeftRef.current ||
+    //   !(colliderLeftRef.current instanceof THREE.Mesh)
+    // )
+    //   return;
+    // if (
+    //   !colliderRightRef.current ||
+    //   !(colliderRightRef.current instanceof THREE.Mesh)
+    // )
+    //   return;
+
+    if (!actionClose_1 || !actionOpen_1 || !actionOpen_2 || !actionClose_2)
       return;
-    if (
-      !colliderRightRef.current ||
-      !(colliderRightRef.current instanceof THREE.Mesh)
-    )
-      return;
 
-    // Вектор от коллайдера к камере
-    colliderToCamera.current
-      .copy(camera.position)
-      .sub(colliderWorldPosition.current)
-      .normalize();
+    if (scroll.offset.toFixed(2) >= "0.29" && deltaOffset > 0) {
+      actionOpen_1.stop();
 
-    // Проверка направления пересечения с помощью скалярного произведения
-    const dotProductLeft = colliderToCamera.current.dot(
-      colliderLeftRef.current.geometry.normals
-        ? colliderLeftRef.current.geometry.normals[0]
-        : new THREE.Vector3(0, 0, -1)
-    );
-    const dotProductRight = colliderToCamera.current.dot(
-      colliderRightRef.current.geometry.normals
-        ? colliderRightRef.current.geometry.normals[0]
-        : new THREE.Vector3(0, 0, -1)
-    );
-
-    const newIsOpenDoorLeft = dotProductLeft > 0;
-    const newIsOpenDoorRight = dotProductRight < 0;
-
-    if (newIsOpenDoorLeft !== isOpenDoorLeft) {
-      setOpenDoorLeft(newIsOpenDoorLeft);
+      actionClose_1.play();
+      actionClose_1.loop = THREE.LoopOnce;
+      actionClose_1.clampWhenFinished = true;
     }
-    if (newIsOpenDoorRight !== isOpenDoorRight) {
-      setOpenDoorRight(newIsOpenDoorRight);
+
+    if (scroll.offset.toFixed(2) <= "0.28" && deltaOffset < 0) {
+      actionClose_1.stop();
+
+      actionOpen_1.play();
+      actionOpen_1.loop = THREE.LoopOnce;
+      actionOpen_1.clampWhenFinished = true;
     }
+
+    if (scroll.offset.toFixed(2) >= "0.45" && deltaOffset > 0) {
+      actionClose_2.stop();
+
+      actionOpen_2.play();
+      actionOpen_2.loop = THREE.LoopOnce;
+      actionOpen_2.clampWhenFinished = true;
+    }
+
+    if (scroll.offset.toFixed(2) <= "0.44" && deltaOffset < 0) {
+      actionOpen_2.stop();
+
+      actionClose_2.play();
+      actionClose_2.loop = THREE.LoopOnce;
+      actionClose_2.clampWhenFinished = true;
+    }
+
+    mixer.update(delta);
   });
 
   useFrame((state) => {

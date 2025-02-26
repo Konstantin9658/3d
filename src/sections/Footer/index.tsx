@@ -30,106 +30,106 @@ export const Footer = () => {
 
   // const { name, email, privacy } = watch();
 
-  useGSAP(
-    () => {
-      gsap
-        .timeline({
-          paused: true,
-          repeat: 0,
-          scrollTrigger: {
-            trigger: container.current,
-            // start: "top 0%",
-            end: "bottom 10%",
-            fastScrollEnd: 1000,
-            scrub: 1,
-            pin: "#footer-pin",
-            // markers: true,
-          },
-        })
-        // .fromTo(
-        //   shuffledLetters,
-        //   {
-        //     opacity: 0,
-        //     scale: 0.85,
-        //     filter: "blur(5px)",
-        //     immediateRender: false,
-        //   },
-        //   {
-        //     opacity: 1,
-        //     scale: 1,
-        //     filter: "blur(0px)",
-        //     stagger: 0.03,
-        //     ease: "power2.out",
-        //   }
-        // )
-        .fromTo(
-          `.${classes.footer__wrapper}`,
-          {
-            opacity: 0,
-            immediateRender: false,
-          },
-          {
-            opacity: 1,
-          }
-          // "<+=0.5"
-        )
-        // .fromTo(
-        //   `.${classes.footer__contacts}`,
-        //   {
-        //     immediateRender: false,
-        //     opacity: 0,
-        //   },
-        //   {
-        //     opacity: 1,
-        //   },
-        //   ">-=0.5"
-        // )
-        // .fromTo(
-        //   `.${classes.footer__form}`,
-        //   {
-        //     immediateRender: false,
-        //     opacity: 0,
-        //   },
-        //   {
-        //     opacity: 1,
-        //   },
-        //   ">-=0.5"
-        // )
-        // .to(
-        //   `.${classes.footer__description}`,
-        //   {
-        //     opacity: 0,
-        //   },
-        //   ">"
-        // )
-        // .to(
-        //   `.${classes.footer__contacts}`,
-        //   {
-        //     opacity: 0,
-        //   },
-        //   ">"
-        // )
-        .to(
-          `.${classes.footer__wrapper}`,
-          {
-            opacity: 0,
-          },
-          ">"
-        );
-      // .to(
-      //   shuffledLetters,
-      //   {
-      //     opacity: 0,
-      //     scale: 0.85,
-      //     filter: "blur(5px)",
-      //     stagger: 0.03,
-      //     ease: "power2.out",
-      //   },
-      //   ">"
-      // );
-    },
-    { scope: container }
-  );
+  // useGSAP(
+  //   () => {
+  //     gsap
+  //       .timeline({
+  //         paused: true,
+  //         repeat: 0,
+  //         scrollTrigger: {
+  //           trigger: container.current,
+  //           // start: "top 0%",
+  //           end: "bottom 10%",
+  //           fastScrollEnd: 1000,
+  //           scrub: 1,
+  //           pin: "#footer-pin",
+  //           // markers: true,
+  //         },
+  //       })
+  //       // .fromTo(
+  //       //   shuffledLetters,
+  //       //   {
+  //       //     opacity: 0,
+  //       //     scale: 0.85,
+  //       //     filter: "blur(5px)",
+  //       //     immediateRender: false,
+  //       //   },
+  //       //   {
+  //       //     opacity: 1,
+  //       //     scale: 1,
+  //       //     filter: "blur(0px)",
+  //       //     stagger: 0.03,
+  //       //     ease: "power2.out",
+  //       //   }
+  //       // )
+  //       .fromTo(
+  //         `.${classes.footer__wrapper}`,
+  //         {
+  //           opacity: 0,
+  //           immediateRender: false,
+  //         },
+  //         {
+  //           opacity: 1,
+  //         }
+  //         // "<+=0.5"
+  //       )
+  //       // .fromTo(
+  //       //   `.${classes.footer__contacts}`,
+  //       //   {
+  //       //     immediateRender: false,
+  //       //     opacity: 0,
+  //       //   },
+  //       //   {
+  //       //     opacity: 1,
+  //       //   },
+  //       //   ">-=0.5"
+  //       // )
+  //       // .fromTo(
+  //       //   `.${classes.footer__form}`,
+  //       //   {
+  //       //     immediateRender: false,
+  //       //     opacity: 0,
+  //       //   },
+  //       //   {
+  //       //     opacity: 1,
+  //       //   },
+  //       //   ">-=0.5"
+  //       // )
+  //       // .to(
+  //       //   `.${classes.footer__description}`,
+  //       //   {
+  //       //     opacity: 0,
+  //       //   },
+  //       //   ">"
+  //       // )
+  //       // .to(
+  //       //   `.${classes.footer__contacts}`,
+  //       //   {
+  //       //     opacity: 0,
+  //       //   },
+  //       //   ">"
+  //       // )
+  //       .to(
+  //         `.${classes.footer__wrapper}`,
+  //         {
+  //           opacity: 0,
+  //         },
+  //         ">"
+  //       );
+  //     // .to(
+  //     //   shuffledLetters,
+  //     //   {
+  //     //     opacity: 0,
+  //     //     scale: 0.85,
+  //     //     filter: "blur(5px)",
+  //     //     stagger: 0.03,
+  //     //     ease: "power2.out",
+  //     //   },
+  //     //   ">"
+  //     // );
+  //   },
+  //   { scope: container }
+  // );
 
   return (
     <footer className={classes.footer} ref={container} id="footer">
