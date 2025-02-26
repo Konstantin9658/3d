@@ -1,11 +1,10 @@
-import { useAnimations, useGLTF } from "@react-three/drei";
+import { useAnimations, useGLTF, useScroll } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 
 import stage_4th from "@/assets/models/4th_stage.glb";
-import { useScrollOffset } from "@/hooks/useAppHeight";
 
 export const FourthStage = () => {
   console.log("Render 4th stage");
@@ -18,11 +17,11 @@ export const FourthStage = () => {
   const camera = useThree((state) => state.camera);
 
   const rx = degToRad(-65);
-  const prevScrollOffset = useRef(0);
+
   const sceneBounds = useRef(new THREE.Box3());
   const isSceneActive = useRef<boolean>(false);
 
-  const scrollOffset = useScrollOffset();
+  const scroll = useScroll();
 
   useEffect(() => {
     if (!actions) return;
@@ -55,9 +54,8 @@ export const FourthStage = () => {
 
     const duration = actionScroll.getClip().duration;
 
-    if (prevScrollOffset.current !== scrollOffset.current) {
-      actionScroll.time = scrollOffset.current * duration;
-      prevScrollOffset.current = scrollOffset.current;
+    if (scroll.delta !== 0) {
+      actionScroll.time = scroll.offset * duration;
     } else {
       actionScroll.paused = true;
       actionScroll.clampWhenFinished = true;
@@ -203,7 +201,7 @@ export const FourthStage = () => {
               material={(nodes.collider_3 as THREE.Mesh).material}
               position={[0, 1.868, 6.537]}
               scale={1.152}
-              onPointerOut={() => {
+              onPointerLeave={() => {
                 if (!unhoverAction3 || !hoverAction3) return;
 
                 hoverAction3.stop();

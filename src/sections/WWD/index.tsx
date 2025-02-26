@@ -21,55 +21,55 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 export const WWD = () => {
   const container = useRef<HTMLElement | null>(null);
 
-  useGSAP(
-    () => {
-      const letters = document.querySelectorAll<HTMLImageElement>(
-        `.${classes.wwd__titleLetter}`
-      );
-      const shuffledLetters = gsap.utils.shuffle([...letters]);
+  // useGSAP(
+  //   () => {
+  //     const letters = document.querySelectorAll<HTMLImageElement>(
+  //       `.${classes.wwd__titleLetter}`
+  //     );
+  //     const shuffledLetters = gsap.utils.shuffle([...letters]);
 
-      gsap
-        .timeline({
-          paused: true,
-          scrollTrigger: {
-            trigger: container.current,
-            end: "bottom 75%",
-            scrub: 1,
-            fastScrollEnd: 1000,
-            pin: "#wwd-pin",
-          },
-        })
-        .fromTo(
-          shuffledLetters,
-          {
-            opacity: 0,
-            scale: 0.85,
-            filter: "blur(5px)",
-          },
-          {
-            opacity: 1,
-            scale: 1,
-            filter: "blur(0px)",
-            stagger: 0.05,
-            ease: "power2.out",
-          },
-          "<-0.6"
-        )
-        .to(
-          shuffledLetters,
-          {
-            opacity: 0,
-            scale: 0.85,
-            filter: "blur(5px)",
-            stagger: 0.03,
-            duration: 0.1,
-            ease: "power2.out",
-          },
-          ">"
-        );
-    },
-    { scope: container }
-  );
+  //     gsap
+  //       .timeline({
+  //         paused: true,
+  //         scrollTrigger: {
+  //           trigger: container.current,
+  //           end: "bottom 75%",
+  //           scrub: 1,
+  //           fastScrollEnd: 1000,
+  //           pin: "#wwd-pin",
+  //         },
+  //       })
+  //       .fromTo(
+  //         shuffledLetters,
+  //         {
+  //           opacity: 0,
+  //           scale: 0.85,
+  //           filter: "blur(5px)",
+  //         },
+  //         {
+  //           opacity: 1,
+  //           scale: 1,
+  //           filter: "blur(0px)",
+  //           stagger: 0.05,
+  //           ease: "power2.out",
+  //         },
+  //         "<-0.6"
+  //       )
+  //       .to(
+  //         shuffledLetters,
+  //         {
+  //           opacity: 0,
+  //           scale: 0.85,
+  //           filter: "blur(5px)",
+  //           stagger: 0.03,
+  //           duration: 0.1,
+  //           ease: "power2.out",
+  //         },
+  //         ">"
+  //       );
+  //   },
+  //   { scope: container, dependencies: [] }
+  // );
 
   return (
     <section id="wwd" className={classes.wwd} ref={container}>

@@ -20,72 +20,72 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 export const Industries = () => {
   const container = useRef<HTMLElement | null>(null);
 
-  useGSAP(
-    () => {
-      const letters = document.querySelectorAll<HTMLImageElement>(
-        `.${classes.industries__titleLetter}`
-      );
-      const shuffledLetters = gsap.utils.shuffle([...letters]);
+  // useGSAP(
+  //   () => {
+  //     const letters = document.querySelectorAll<HTMLImageElement>(
+  //       `.${classes.industries__titleLetter}`
+  //     );
+  //     const shuffledLetters = gsap.utils.shuffle([...letters]);
 
-      gsap
-        .timeline({
-          paused: true,
-          scrollTrigger: {
-            trigger: container.current,
-            end: "bottom 90%",
-            fastScrollEnd: 1000,
-            scrub: 1,
-            pin: "#industries-pin",
-            // markers: true,
-          },
-        })
-        .fromTo(
-          shuffledLetters,
-          {
-            immediateRender: false,
-            opacity: 0,
-            scale: 0.85,
-            filter: "blur(5px)",
-          },
-          {
-            opacity: 1,
-            scale: 1,
-            filter: "blur(0px)",
-            stagger: 0.03,
-            ease: "power2.out",
-          }
-        )
-        .fromTo(
-          `.${classes.industries__description}`,
-          {
-            opacity: 0,
-          },
-          {
-            opacity: 1,
-          },
-          "<"
-        )
-        .to(
-          shuffledLetters,
-          {
-            opacity: 0,
-            scale: 0.85,
-            filter: "blur(5px)",
-            stagger: 0.03,
-            ease: "power2.out",
-          },
-          ">"
-        )
-        .to(
-          `.${classes.industries__description}`,
-          {
-            opacity: 0,
-          },
-          "<"
-        );
-    },
-    { scope: container }
-  );
+  //     gsap
+  //       .timeline({
+  //         paused: true,
+  //         scrollTrigger: {
+  //           trigger: container.current,
+  //           end: "bottom 90%",
+  //           fastScrollEnd: 1000,
+  //           scrub: 1,
+  //           pin: "#industries-pin",
+  //           // markers: true,
+  //         },
+  //       })
+  //       .fromTo(
+  //         shuffledLetters,
+  //         {
+  //           immediateRender: false,
+  //           opacity: 0,
+  //           scale: 0.85,
+  //           filter: "blur(5px)",
+  //         },
+  //         {
+  //           opacity: 1,
+  //           scale: 1,
+  //           filter: "blur(0px)",
+  //           stagger: 0.03,
+  //           ease: "power2.out",
+  //         }
+  //       )
+  //       .fromTo(
+  //         `.${classes.industries__description}`,
+  //         {
+  //           opacity: 0,
+  //         },
+  //         {
+  //           opacity: 1,
+  //         },
+  //         "<"
+  //       )
+  //       .to(
+  //         shuffledLetters,
+  //         {
+  //           opacity: 0,
+  //           scale: 0.85,
+  //           filter: "blur(5px)",
+  //           stagger: 0.03,
+  //           ease: "power2.out",
+  //         },
+  //         ">"
+  //       )
+  //       .to(
+  //         `.${classes.industries__description}`,
+  //         {
+  //           opacity: 0,
+  //         },
+  //         "<"
+  //       );
+  //   },
+  //   { scope: container }
+  // );
 
   return (
     <section className={classes.industries} id="industries" ref={container}>

@@ -14,110 +14,110 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 export const MobileApps = () => {
   const container = useRef<HTMLElement | null>(null);
 
-  useGSAP(
-    () => {
-      const letters = document.querySelectorAll<HTMLImageElement>(
-        `.${classes.mobileApps__countItem}`
-      );
+  // useGSAP(
+  //   () => {
+  //     const letters = document.querySelectorAll<HTMLImageElement>(
+  //       `.${classes.mobileApps__countItem}`
+  //     );
 
-      const shuffledLetters = gsap.utils.shuffle([...letters]);
+  //     const shuffledLetters = gsap.utils.shuffle([...letters]);
 
-      gsap
-        .timeline({
-          paused: true,
-          scrollTrigger: {
-            trigger: container.current,
-            end: "bottom 100%",
-            scrub: 1,
-            pin: "#mobileapps-pin",
-            fastScrollEnd: 1000,
-            preventOverlaps: true,
-            // markers: true,
-          },
-        })
-        .fromTo(
-          `.${classes.mobileApps__title}`,
-          {
-            opacity: 0,
-            scale: 0.85,
-            immediateRender: false,
-            filter: "blur(5px)",
-          },
-          {
-            opacity: 1,
-            scale: 1,
-            filter: "blur(0px)",
-            // stagger: 0.01,
-            ease: "power2.out",
-          }
-        )
-        .fromTo(
-          shuffledLetters,
-          {
-            opacity: 0,
-            scale: 0.85,
-            immediateRender: false,
-            filter: "blur(5px)",
-          },
-          {
-            opacity: 1,
-            scale: 1,
-            filter: "blur(0px)",
-            stagger: 0.03,
-            ease: "power2.out",
-          },
-          ">"
-        )
-        .fromTo(
-          `.${classes.mobileApps__description}`,
-          {
-            opacity: 0,
-            scale: 0.85,
-            immediateRender: false,
-            filter: "blur(5px)",
-          },
-          {
-            opacity: 1,
-            scale: 1,
-            filter: "blur(0px)",
-            ease: "power2.out",
-          },
-          ">-=0.5"
-        )
-        .to(
-          `.${classes.mobileApps__title}`,
-          {
-            opacity: 0,
-            scale: 0.85,
-            filter: "blur(5px)",
-            ease: "power2.out",
-          },
-          ">"
-        )
-        .to(
-          `.${classes.mobileApps__description}`,
-          {
-            opacity: 0,
-            scale: 0.85,
-            filter: "blur(5px)",
-            ease: "power2.out",
-          },
-          ">-=0.5"
-        )
-        .to(
-          shuffledLetters,
-          {
-            opacity: 0,
-            scale: 0.85,
-            filter: "blur(5px)",
-            ease: "power2.out",
-            stagger: 0.05,
-          },
-          ">"
-        );
-    },
-    { scope: container }
-  );
+  //     gsap
+  //       .timeline({
+  //         paused: true,
+  //         scrollTrigger: {
+  //           trigger: container.current,
+  //           end: "bottom 100%",
+  //           scrub: 1,
+  //           pin: "#mobileapps-pin",
+  //           fastScrollEnd: 1000,
+  //           preventOverlaps: true,
+  //           // markers: true,
+  //         },
+  //       })
+  //       .fromTo(
+  //         `.${classes.mobileApps__title}`,
+  //         {
+  //           opacity: 0,
+  //           scale: 0.85,
+  //           immediateRender: false,
+  //           filter: "blur(5px)",
+  //         },
+  //         {
+  //           opacity: 1,
+  //           scale: 1,
+  //           filter: "blur(0px)",
+  //           // stagger: 0.01,
+  //           ease: "power2.out",
+  //         }
+  //       )
+  //       .fromTo(
+  //         shuffledLetters,
+  //         {
+  //           opacity: 0,
+  //           scale: 0.85,
+  //           immediateRender: false,
+  //           filter: "blur(5px)",
+  //         },
+  //         {
+  //           opacity: 1,
+  //           scale: 1,
+  //           filter: "blur(0px)",
+  //           stagger: 0.03,
+  //           ease: "power2.out",
+  //         },
+  //         ">"
+  //       )
+  //       .fromTo(
+  //         `.${classes.mobileApps__description}`,
+  //         {
+  //           opacity: 0,
+  //           scale: 0.85,
+  //           immediateRender: false,
+  //           filter: "blur(5px)",
+  //         },
+  //         {
+  //           opacity: 1,
+  //           scale: 1,
+  //           filter: "blur(0px)",
+  //           ease: "power2.out",
+  //         },
+  //         ">-=0.5"
+  //       )
+  //       .to(
+  //         `.${classes.mobileApps__title}`,
+  //         {
+  //           opacity: 0,
+  //           scale: 0.85,
+  //           filter: "blur(5px)",
+  //           ease: "power2.out",
+  //         },
+  //         ">"
+  //       )
+  //       .to(
+  //         `.${classes.mobileApps__description}`,
+  //         {
+  //           opacity: 0,
+  //           scale: 0.85,
+  //           filter: "blur(5px)",
+  //           ease: "power2.out",
+  //         },
+  //         ">-=0.5"
+  //       )
+  //       .to(
+  //         shuffledLetters,
+  //         {
+  //           opacity: 0,
+  //           scale: 0.85,
+  //           filter: "blur(5px)",
+  //           ease: "power2.out",
+  //           stagger: 0.05,
+  //         },
+  //         ">"
+  //       );
+  //   },
+  //   { scope: container }
+  // );
 
   return (
     <section className={classes.mobileApps} id="mobileapps" ref={container}>

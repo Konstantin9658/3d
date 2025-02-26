@@ -16,52 +16,54 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 export const Welcome = () => {
   const welcomeRef = useRef<HTMLElement | null>(null);
 
-  useGSAP(
-    () => {
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: welcomeRef.current,
-            end: "+=100%",
-            scrub: 0.5,
-            pin: "#welcome-pin",
-            fastScrollEnd: 100,
-            // markers: true,
-          },
-        })
-        .from(`.${classes.welcome__inner}`, {
-          immediateRender: false,
-          opacity: 1,
-          // transform: "translateY(0%)",
-          ease: "power2.out",
-        })
-        .to(`.${classes.welcome__inner}`, {
-          opacity: 0,
-          // transform: "translateY(-100%)",
-        })
-        // .fromTo(
-        //   `.${classes.welcome__inner}`,
-        //   {
-        //     opacity: 1,
-        //     immediateRender: true,
-        //     // transform: "translateY(0%)",
-        //     ease: "power2.out",
-        //   },
-        //   {
-        //     // transform: "translateY(-100%)",
-        //     opacity: 0,
-        //   }
-        // )
-        .to(
-          `.${classes.welcome__bottom}`,
-          {
-            opacity: 0,
-          },
-          ">-0.5"
-        );
-    },
-    { scope: welcomeRef, revertOnUpdate: true, dependencies: [] }
-  );
+  // useGSAP(
+  //   () => {
+  //     console.log("asd");
+  //     gsap
+  //       .timeline({
+  //         scrollTrigger: {
+  //           trigger: welcomeRef.current,
+  //           end: "+=100%",
+  //           scrub: 0.5,
+  //           pin: "#welcome-pin",
+  //           fastScrollEnd: 100,
+  //           scroller: scroll.fixed.parentElement,
+  //           // markers: true,
+  //         },
+  //       })
+  //       .from(`.${classes.welcome__inner}`, {
+  //         immediateRender: false,
+  //         opacity: 1,
+  //         // transform: "translateY(0%)",
+  //         ease: "power2.out",
+  //       })
+  //       .to(`.${classes.welcome__inner}`, {
+  //         opacity: 0,
+  //         // transform: "translateY(-100%)",
+  //       })
+  //       // .fromTo(
+  //       //   `.${classes.welcome__inner}`,
+  //       //   {
+  //       //     opacity: 1,
+  //       //     immediateRender: true,
+  //       //     // transform: "translateY(0%)",
+  //       //     ease: "power2.out",
+  //       //   },
+  //       //   {
+  //       //     // transform: "translateY(-100%)",
+  //       //     opacity: 0,
+  //       //   }
+  //       // )
+  //       .to(
+  //         `.${classes.welcome__bottom}`,
+  //         {
+  //           opacity: 0,
+  //         },
+  //         ">-0.5"
+  //       );
+  //   },
+  //   { scope: welcomeRef, dependencies: [] }
+  // );
   return (
     <section className={classes.welcome} id="welcome" ref={welcomeRef}>
       <div className={classes.welcome__wrapper} id="welcome-pin">

@@ -1,4 +1,4 @@
-import { useAnimations, useGLTF } from "@react-three/drei";
+import { useAnimations, useGLTF, useScroll } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useDebounce } from "rooks";
@@ -12,14 +12,14 @@ import {
   REFERENCE_HEIGHT,
   REFERENCE_WIDTH,
 } from "@/consts";
-import { useScrollOffset } from "@/hooks/useAppHeight";
+// import { useScrollOffset } from "@/hooks/useAppHeight";
 import { useMergeVertices } from "@/hooks/useMergeVertices";
 import { useAppStore } from "@/store/app";
 
 export const MainScene = () => {
   console.log("Main scene render");
 
-  const prevScrollOffset = useRef(0); // Для отслеживания изменений прокрутки
+  // const prevScrollOffset = useRef(0); // Для отслеживания изменений прокрутки
   const mouseMove = useRef({ x: 0, y: 0 });
   const basePosition = useRef(new THREE.Vector3());
   const parallaxOffset = useRef(new THREE.Vector3());
@@ -37,7 +37,7 @@ export const MainScene = () => {
 
   useMergeVertices(scenes);
 
-  const scrollOffset = useScrollOffset();
+  const scroll = useScroll();
 
   const appLoaded = useAppStore((state) => state.appLoaded);
 
@@ -120,11 +120,9 @@ export const MainScene = () => {
 
     const duration = action.getClip().duration;
 
-    // Сравниваем предыдущий и текущий скролл, чтобы понять, изменился ли он
-    if (prevScrollOffset.current !== scrollOffset.current) {
-      // Если прокрутка изменилась, продолжаем анимацию
-      action.time = scrollOffset.current * duration;
-      prevScrollOffset.current = scrollOffset.current; // Обновляем предыдущий скролл
+    // Проверка на прокрутку: если delta = 0 - значит скролла нет
+    if (scroll.delta !== 0) {
+      action.time = scroll.offset * duration;
 
       // Устанавливаем вращение окружения в зависимости от поворота камеры
       const euler = new THREE.Euler().setFromQuaternion(
@@ -134,8 +132,8 @@ export const MainScene = () => {
       setEnvRotation(euler);
       action.play();
     } else {
-      // Если прокрутка не изменилась, приостанавливаем анимацию
       action.paused = true;
+      action.clampWhenFinished = true;
     }
 
     // Плавное обновление позиции и поворота камеры из анимации
