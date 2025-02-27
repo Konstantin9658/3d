@@ -26,12 +26,10 @@ export const FourthStage = () => {
   useEffect(() => {
     if (!actions) return;
 
-    const actionScroll = actions["controller"];
     const actionFanLoop = actions["industry-3-loop"];
 
-    if (!actionScroll || !actionFanLoop) return;
+    if (!actionFanLoop) return;
 
-    actionScroll.play();
     actionFanLoop.play();
   }, [actions]);
 
@@ -46,6 +44,28 @@ export const FourthStage = () => {
     isSceneActive.current = sceneBounds.current.containsPoint(camera.position);
   });
 
+  // useFrame((_, delta) => {
+  //   if (!actions || !isSceneActive.current) return;
+
+  //   const actionScroll = actions["controller"];
+  //   if (!actionScroll) return;
+
+  //   const duration = actionScroll.getClip().duration;
+  //   const targetTime = scroll.offset * duration;
+
+  //   if (scroll.delta !== 0) {
+  //     actionScroll.time = THREE.MathUtils.lerp(actionScroll.time, targetTime, delta * 10);
+  //     actionScroll.play();
+  //   } else {
+  //     actionScroll.paused = true;
+  //     actionScroll.clampWhenFinished = true;
+  //   }
+
+  //   console.log(scroll.offset, "4th stage");
+
+  //   mixer.update(delta);
+  // });
+
   useFrame((_, delta) => {
     if (!actions || !isSceneActive.current) return;
 
@@ -53,13 +73,18 @@ export const FourthStage = () => {
     if (!actionScroll) return;
 
     const duration = actionScroll.getClip().duration;
+    const targetTime = scroll.offset * duration;
 
-    if (scroll.delta !== 0) {
-      actionScroll.time = scroll.offset * duration;
-    } else {
-      actionScroll.paused = true;
-      actionScroll.clampWhenFinished = true;
-    }
+    actionScroll.time = THREE.MathUtils.lerp(
+      actionScroll.time,
+      targetTime,
+      delta * 5
+    );
+    actionScroll.paused = false;
+    actionScroll.clampWhenFinished = false; // Отключаем
+    actionScroll.play();
+
+    if (!actionScroll.isRunning()) return;
 
     mixer.update(delta);
   });

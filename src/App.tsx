@@ -110,7 +110,7 @@ function App() {
           <Camera />
           <Env />
           <ScrollControls
-            pages={55}
+            pages={60}
             infinite
             damping={0.7}
             prepend

@@ -146,17 +146,6 @@ export const ThirdStage = () => {
 
     lastOffset.current = scroll.offset;
 
-    // if (
-    //   !colliderLeftRef.current ||
-    //   !(colliderLeftRef.current instanceof THREE.Mesh)
-    // )
-    //   return;
-    // if (
-    //   !colliderRightRef.current ||
-    //   !(colliderRightRef.current instanceof THREE.Mesh)
-    // )
-    //   return;
-
     if (!actionClose_1 || !actionOpen_1 || !actionOpen_2 || !actionClose_2)
       return;
 
