@@ -99,16 +99,13 @@ export const MainScene = () => {
   }, []);
 
   // Инициализация камеры и анимации
-  useEffect(() => {
-    if (cameras.length < 0 || !actions || !actions[CAMERA_NAME]) return;
+  // useEffect(() => {
+  //   if (cameras.length < 0 || !actions || !actions[CAMERA_NAME]) return;
 
-    basePosition.current.copy(camera.position);
-    baseQuaternion.current.copy(camera.quaternion);
+  //   const action = actions[CAMERA_NAME];
 
-    // const action = actions[CAMERA_NAME];
-
-    // action.play();
-  }, [cameras, actions, camera, mixer, animatedCamera?.position]);
+  //   action.play();
+  // }, [cameras, actions]);
 
   // Основной рендер-цикл
   useFrame((_, delta) => {
@@ -119,22 +116,23 @@ export const MainScene = () => {
     if (!action) return;
 
     const duration = action.getClip().duration;
+    const targetTime = scroll.offset * duration;
 
     // Проверка на прокрутку: если delta = 0 - значит скролла нет
-    if (scroll.delta !== 0) {
-      action.time = scroll.offset * duration;
+    // if (scroll.delta !== 0) {
+    action.time = THREE.MathUtils.lerp(action.time, targetTime, delta * 5);
 
-      // Устанавливаем вращение окружения в зависимости от поворота камеры
-      const euler = new THREE.Euler().setFromQuaternion(
-        camera.quaternion,
-        "ZYX"
-      );
-      setEnvRotation(euler);
-      action.play();
-    } else {
-      action.paused = true;
-      action.clampWhenFinished = true;
-    }
+    // Устанавливаем вращение окружения в зависимости от поворота камеры
+    const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, "ZYX");
+
+    setEnvRotation(euler);
+    action.play();
+    // } else {
+      // action.paused = true;
+      // action.clampWhenFinished = true;
+    // }
+
+    // console.log(scroll.offset, "Main");
 
     // Плавное обновление позиции и поворота камеры из анимации
     camera.position.lerp(animatedCamera.position, 0.3);
@@ -156,6 +154,9 @@ export const MainScene = () => {
     camera.position.add(parallaxOffset.current);
 
     animatedCamera.updateMatrixWorld();
+
+    if (!action.isRunning()) return;
+
     mixer.update(delta);
   });
 

@@ -78,14 +78,20 @@ export const SecondStage = () => {
     if (!actionScroll) return;
 
     const duration = actionScroll.getClip().duration;
+    const targetTime = scroll.offset * duration;
 
-    if (scroll.delta !== 0) {
-      actionScroll.time = scroll.offset * duration;
-      actionScroll.play();
-    } else {
-      actionScroll.paused = true;
-      actionScroll.clampWhenFinished = true;
-    }
+    actionScroll.time = THREE.MathUtils.lerp(
+      actionScroll.time,
+      targetTime,
+      delta * 5
+    );
+    actionScroll.paused = false;
+    actionScroll.clampWhenFinished = false; // Отключаем
+    actionScroll.play();
+
+    if (!actionScroll.isRunning()) return;
+
+    mixer.update(delta);
 
     mixer.update(delta);
   });
