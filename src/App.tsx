@@ -24,7 +24,6 @@ import { FourthStage } from "./scenes/FourthStage";
 import { MainScene } from "./scenes/MainScene";
 import { Planet } from "./scenes/Planet";
 import { SecondStage } from "./scenes/SecondStage";
-import { SeventhStage } from "./scenes/SeventhStage";
 import { SixthStage } from "./scenes/SixthStage";
 import { SpaceStation } from "./scenes/SpaceStation";
 import { ThirdStage } from "./scenes/ThirdStage";
@@ -94,9 +93,7 @@ function App() {
           shadows
         >
           <Preload all />
-          {/* <Perf position="bottom-left" /> */}
           <StatsGl horizontal className="panel" />
-
           <AdaptiveDpr pixelated />
           <Stars
             radius={130}
@@ -113,8 +110,8 @@ function App() {
           <ScrollControls
             pages={60}
             // infinite
-            distance={2.5}
-            damping={0.7}
+            distance={3}
+            damping={0.65}
             prepend
             maxSpeed={0.1}
           >
@@ -142,7 +139,7 @@ function App() {
             <FourthStage />
             <FifthStage />
             <SixthStage />
-            <SeventhStage />
+            {/* <SeventhStage /> */}
           </ScrollControls>
         </Canvas>
       </Suspense>
