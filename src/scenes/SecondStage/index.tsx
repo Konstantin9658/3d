@@ -92,8 +92,6 @@ export const SecondStage = () => {
     if (!actionScroll.isRunning()) return;
 
     mixer.update(delta);
-
-    mixer.update(delta);
   });
 
   const hover_1 = actions[WwdHoverAction.WWD_1_Hover];

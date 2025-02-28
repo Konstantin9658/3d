@@ -1,18 +1,19 @@
-import { useAnimations, useGLTF, useScroll } from "@react-three/drei";
+import {
+  useAnimations,
+  useCursor,
+  useGLTF,
+  useScroll,
+} from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
 import stage_3rd from "@/assets/models/3rd_stage.glb";
-import { useEmissiveNoToneMapped } from "@/hooks/useEmissiveNoToneMapped";
-import { useInvisibleMaterial } from "@/hooks/useInvisibleMaterial";
 import { useVideoMaterial } from "@/hooks/useVideoMaterial";
 
 import {
   CLOSE_CLIP_1,
   CLOSE_CLIP_2,
-  COLLIDER_NAME_1,
-  COLLIDER_NAME_2,
   LOOP_ANIMATION,
   OPEN_CLIP_1,
   OPEN_CLIP_2,
@@ -25,30 +26,21 @@ const INITIAL_OPACITY = 0.5;
 export const ThirdStage = () => {
   console.log("Render 3rd stage");
 
-  const { scene, animations } = useGLTF(stage_3rd);
-  const { actions, mixer } = useAnimations(animations, scene);
+  const group = useRef<THREE.Group<THREE.Object3DEventMap> | null>(null);
 
-  const sceneRef = useRef<THREE.Group | null>(null);
+  const { nodes, materials, animations } = useGLTF(stage_3rd);
+  const { actions, mixer } = useAnimations(animations, group);
 
   const nexMeshRef = useRef<THREE.Mesh | null>(null);
   const glowMeshRef = useRef<THREE.Mesh | null>(null);
-
-  const raycaster = useRef(new THREE.Raycaster());
-  const mouse = useRef(new THREE.Vector2());
   const sceneBounds = useRef(new THREE.Box3());
-
-  const isHovered = useRef<boolean>(false);
   const isSceneActive = useRef<boolean>(false);
-
-  const colliderLeftRef = useRef(scene.getObjectByName(COLLIDER_NAME_1));
-  const colliderRightRef = useRef(scene.getObjectByName(COLLIDER_NAME_2));
+  const isHovered = useRef<boolean>(false);
 
   const camera = useThree((state) => state.camera);
 
-  useVideoMaterial(videoHref, imageHref, sceneRef, "screen");
-  useEmissiveNoToneMapped(scene);
-  useInvisibleMaterial(colliderLeftRef);
-  useInvisibleMaterial(colliderRightRef);
+  useCursor(isHovered.current);
+  useVideoMaterial(videoHref, imageHref, group, "screen");
 
   const scroll = useScroll();
   const lastOffset = useRef(scroll.offset);
@@ -72,9 +64,10 @@ export const ThirdStage = () => {
   );
 
   useEffect(() => {
+    if (!group.current) return;
     // Вычисляем границы сцены
-    sceneBounds.current.setFromObject(scene);
-  }, [scene]);
+    sceneBounds.current.setFromObject(group.current);
+  }, []);
 
   useEffect(() => {
     if (!actions) return;
@@ -83,7 +76,8 @@ export const ThirdStage = () => {
   }, [actions]);
 
   useEffect(() => {
-    const nexMesh = scene.getObjectByName("nex");
+    if (!group.current) return;
+    const nexMesh = group.current.getObjectByName("nex");
 
     if (nexMesh instanceof THREE.Mesh) {
       nexMeshRef.current = nexMesh;
@@ -97,40 +91,15 @@ export const ThirdStage = () => {
         nexMesh.parent.add(glowMesh);
       }
     }
-  }, [scene, glowMaterial]);
-
-  const handlePointerMove = useCallback(
-    (event: PointerEvent) => {
-      if (!nexMeshRef.current || !glowMeshRef.current) return;
-
-      // Обновляем координаты мыши
-      mouse.current.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-      // Устанавливаем луч
-      raycaster.current.setFromCamera(mouse.current, camera);
-
-      // Проверяем пересечение
-      const intersects = raycaster.current.intersectObject(nexMeshRef.current);
-
-      if (intersects.length > 0) {
-        isHovered.current = true;
-        document.body.style.cursor = "pointer";
-      } else {
-        isHovered.current = false;
-        document.body.style.cursor = "";
-      }
-    },
-    [camera]
-  );
+  }, [glowMaterial]);
 
   useEffect(() => {
-    window.addEventListener("pointermove", handlePointerMove);
+    if (!actionClose_2) return;
 
-    return () => {
-      window.removeEventListener("pointermove", handlePointerMove);
-    };
-  }, [handlePointerMove]);
+    actionClose_2.play();
+    actionClose_2.loop = THREE.LoopOnce;
+    actionClose_2.clampWhenFinished = true;
+  }, [actionClose_2]);
 
   useFrame(() => {
     if (!sceneBounds.current) return;
@@ -165,7 +134,7 @@ export const ThirdStage = () => {
       actionOpen_1.clampWhenFinished = true;
     }
 
-    if (scroll.offset.toFixed(2) >= "0.45" && deltaOffset > 0) {
+    if (scroll.offset.toFixed(2) >= "0.44" && deltaOffset > 0) {
       actionClose_2.stop();
 
       actionOpen_2.play();
@@ -173,7 +142,7 @@ export const ThirdStage = () => {
       actionOpen_2.clampWhenFinished = true;
     }
 
-    if (scroll.offset.toFixed(2) <= "0.44" && deltaOffset < 0) {
+    if (scroll.offset.toFixed(2) <= "0.43" && deltaOffset < 0) {
       actionOpen_2.stop();
 
       actionClose_2.play();
@@ -224,9 +193,171 @@ export const ThirdStage = () => {
 
     basicMaterial.transparent = true;
     basicMaterial.needsUpdate = true;
+
+    return () => basicMaterial.dispose();
   });
 
-  return <primitive object={scene} position={[0, 0, 0]} ref={sceneRef} />;
+  const toggleHovered = () => {
+    if (!isHovered.current) {
+      isHovered.current = true;
+      document.body.style.cursor = "pointer";
+    } else {
+      isHovered.current = false;
+      document.body.style.cursor = "default";
+    }
+  };
+
+  return (
+    <group ref={group} dispose={null} position={[0, 0, 0]}>
+      <group name="Scene">
+        <group
+          name="Empty"
+          position={[5.028, 0.989, -7.211]}
+          rotation={[0, Math.PI / 4, 0]}
+        >
+          <group
+            name="Armature"
+            position={[0.095, 0.357, 0.022]}
+            rotation={[0, 0, -2.093]}
+            scale={0.131}
+          >
+            <primitive object={nodes.neck} />
+            <primitive object={nodes.Bone002} />
+            <skinnedMesh
+              name="cat"
+              geometry={(nodes.cat as THREE.Mesh).geometry}
+              material={materials.all_colors}
+              skeleton={(nodes.cat as THREE.SkinnedMesh).skeleton}
+            />
+          </group>
+        </group>
+        <mesh
+          name="window_glass"
+          geometry={(nodes.window_glass as THREE.Mesh).geometry}
+          material={materials.glass}
+        />
+        <mesh
+          name="staff"
+          geometry={(nodes.staff as THREE.Mesh).geometry}
+          material={materials.all_colors}
+        />
+        <mesh
+          name="sealing"
+          geometry={(nodes.sealing as THREE.Mesh).geometry}
+          material={materials.all_colors}
+          rotation={[-Math.PI, 0, 0]}
+        />
+        <mesh
+          name="plant"
+          geometry={(nodes.plant as THREE.Mesh).geometry}
+          material={materials.all_colors}
+          position={[5.067, 0.832, 7.15]}
+          rotation={[-0.003, 0.158, 0.01]}
+          scale={0.799}
+        />
+        <mesh
+          name="plant001"
+          geometry={(nodes.plant001 as THREE.Mesh).geometry}
+          material={materials.all_colors}
+          position={[-4.923, 0.832, -6.906]}
+          rotation={[-3.138, -0.733, -3.13]}
+          scale={0.897}
+        />
+        <mesh
+          name="floor"
+          geometry={(nodes.floor as THREE.Mesh).geometry}
+          material={materials.all_colors}
+        />
+        <mesh
+          name="nex"
+          geometry={(nodes.nex as THREE.Mesh).geometry}
+          material={materials.all_colors}
+          position={[5.569, 0.973, 0.359]}
+          onPointerEnter={toggleHovered}
+          onPointerLeave={toggleHovered}
+        />
+        <mesh
+          name="phine"
+          geometry={(nodes.phine as THREE.Mesh).geometry}
+          material={materials.all_colors}
+          position={[5.237, 0.988, -0.704]}
+          rotation={[Math.PI, -1.324, Math.PI]}
+        />
+        <mesh
+          name="wall"
+          geometry={(nodes.wall as THREE.Mesh).geometry}
+          material={materials.all_colors}
+        />
+        <mesh
+          name="lamp_base"
+          geometry={(nodes.lamp_base as THREE.Mesh).geometry}
+          material={materials.all_colors}
+          position={[5.746, 2.624, 3.933]}
+        />
+        <mesh
+          name="armchair"
+          geometry={(nodes.armchair as THREE.Mesh).geometry}
+          material={materials.all_colors}
+          position={[4.755, 0, 3.857]}
+          rotation={[0, -0.218, 0]}
+          scale={1.318}
+        />
+        <mesh
+          name="armchair001"
+          geometry={(nodes.armchair001 as THREE.Mesh).geometry}
+          material={materials.all_colors}
+          position={[4.741, 0, -3.964]}
+          rotation={[0, 0.218, 0]}
+          scale={1.318}
+        />
+        <mesh
+          name="screen"
+          geometry={(nodes.screen as THREE.Mesh).geometry}
+          material={materials.screen}
+        />
+        <mesh
+          name="shadows"
+          geometry={(nodes.shadows as THREE.Mesh).geometry}
+          material={materials.shadow}
+          position={[4.51, 0.001, 3.804]}
+          rotation={[0, -0.208, 0]}
+        />
+        <mesh
+          name="door_1L"
+          geometry={(nodes.door_1L as THREE.Mesh).geometry}
+          material={materials["3rd_stage_doors"]}
+          position={[-2.2, 1, -8.401]}
+        />
+        <mesh
+          name="door_1R"
+          geometry={(nodes.door_1R as THREE.Mesh).geometry}
+          material={materials["3rd_stage_doors"]}
+          position={[2.2, 1, -8.401]}
+        />
+        <mesh
+          name="dr2_top"
+          geometry={(nodes.dr2_top as THREE.Mesh).geometry}
+          material={materials["3rd_stage_doors"]}
+          position={[0, 0.951, 8.272]}
+          rotation={[-Math.PI / 2, 0, 0]}
+        />
+        <mesh
+          name="dr2_bot"
+          geometry={(nodes.dr2_bot as THREE.Mesh).geometry}
+          material={materials["3rd_stage_doors"]}
+          position={[0, 2.921, 8.372]}
+          rotation={[-Math.PI / 2, 0, 0]}
+        />
+        <mesh
+          name="dr2_mid"
+          geometry={(nodes.dr2_mid as THREE.Mesh).geometry}
+          material={materials["3rd_stage_doors"]}
+          position={[0, 1.939, 8.322]}
+          rotation={[-Math.PI / 2, 0, 0]}
+        />
+      </group>
+    </group>
+  );
 };
 
 useGLTF.preload(stage_3rd);

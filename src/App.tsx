@@ -1,17 +1,16 @@
 import "./App.css";
 
 import {
+  AdaptiveDpr,
   Loader,
   Preload,
   // Scroll,
   ScrollControls,
   Stars,
+  StatsGl,
 } from "@react-three/drei";
 // import classes from "./styles.module.scss";
 import { Canvas } from "@react-three/fiber";
-// import { gsap } from "gsap";
-// import { LenisRef, ReactLenis } from "lenis/react";
-import { Perf } from "r3f-perf";
 // import { Leva, useControls } from "leva";
 import { Suspense } from "react";
 
@@ -19,7 +18,6 @@ import { Camera } from "./components/Camera";
 import { Effects } from "./components/Effects";
 import { Env } from "./components/Env";
 // import { Header } from "./components/Header";
-// import { useAppHeight } from "./hooks/useAppHeight";
 import { FifthStage } from "./scenes/FifthStage";
 import { FirstStage } from "./scenes/FirstStage";
 import { FourthStage } from "./scenes/FourthStage";
@@ -96,7 +94,10 @@ function App() {
           shadows
         >
           <Preload all />
-          <Perf position="bottom-left" />
+          {/* <Perf position="bottom-left" /> */}
+          <StatsGl horizontal className="panel" />
+
+          <AdaptiveDpr pixelated />
           <Stars
             radius={130}
             count={8000}
@@ -111,7 +112,8 @@ function App() {
           <Env />
           <ScrollControls
             pages={60}
-            infinite
+            // infinite
+            distance={2.5}
             damping={0.7}
             prepend
             maxSpeed={0.1}
