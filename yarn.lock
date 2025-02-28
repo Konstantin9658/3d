@@ -2347,6 +2347,11 @@ postprocessing@^6.32.1:
   resolved "https://registry.yarnpkg.com/postprocessing/-/postprocessing-6.36.3.tgz#330eec2be86db36cf227114c97f227c7ad3c95ee"
   integrity sha512-GtMLwoqg0xdYAgm9lbf6qlKay7HQPb8Z+xAPSzbCUspud/qBj3Y/orJSkqEQVlfxTtm7YAUSv+J39ir51/IwaQ==
 
+postprocessing@^6.36.7:
+  version "6.36.7"
+  resolved "https://registry.yarnpkg.com/postprocessing/-/postprocessing-6.36.7.tgz#43d968b900f1109d718e6a53cfb90976220e1a1f"
+  integrity sha512-X6B3xt9dy4Osv19kqnVGqV01I2Tm7VwV6rLegRIZkZJPH3ozKLypHSBK1xKx7P/Ols++OkXe6L8dBGTaDUL5aw==
+
 potpack@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/potpack/-/potpack-1.0.2.tgz#23b99e64eb74f5741ffe7656b5b5c4ddce8dfc14"

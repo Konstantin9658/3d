@@ -26,17 +26,18 @@ export const SecondStage = () => {
   useEffect(() => {
     if (!actions) return;
 
-    // const actionScroll = actions[SCROLL_ACTION];
+    const actionScroll = actions[SCROLL_ACTION];
     const actionLoopAnimations = Object.values(WwdLoopAnimations);
 
-    // if (!actionScroll) return;
+    if (!actionScroll) return;
 
     actionLoopAnimations.forEach((_, index) => {
       actions[actionLoopAnimations[index]]?.play();
       actions[actionLoopAnimations[index]]?.setDuration(2);
     });
 
-    // actionScroll.play();
+    actionScroll.play().paused = true;
+    // actionScroll.clampWhenFinished = true;
   }, [actions]);
 
   useEffect(() => {
@@ -68,26 +69,51 @@ export const SecondStage = () => {
     isSceneActive.current = sceneBounds.current.containsPoint(camera.position);
   });
 
-  useFrame((_, delta) => {
-    if (!isSceneActive.current) return;
+  // useFrame((_, delta) => {
+  //   if (!isSceneActive.current) return;
 
-    if (!actions) return;
+  //   if (!actions) return;
+
+  //   const actionScroll = actions[SCROLL_ACTION];
+
+  //   if (!actionScroll) return;
+
+  //   const duration = actionScroll.getClip().duration;
+  //   const targetTime = scroll.offset * duration;
+
+  //   actionScroll.time = THREE.MathUtils.lerp(
+  //     actionScroll.time,
+  //     targetTime,
+  //     delta * 5
+  //   );
+  //   actionScroll.paused = false;
+  //   actionScroll.clampWhenFinished = false; // Отключаем
+  //   actionScroll.play();
+
+  //   if (!actionScroll.isRunning()) return;
+
+  //   mixer.update(delta);
+  // });
+
+  useFrame((_, delta) => {
+    if (!actions || !isSceneActive.current) return;
 
     const actionScroll = actions[SCROLL_ACTION];
-
     if (!actionScroll) return;
 
     const duration = actionScroll.getClip().duration;
     const targetTime = scroll.offset * duration;
 
-    actionScroll.time = THREE.MathUtils.lerp(
-      actionScroll.time,
-      targetTime,
-      delta * 5
-    );
-    actionScroll.paused = false;
-    actionScroll.clampWhenFinished = false; // Отключаем
-    actionScroll.play();
+    if (scroll.delta !== 0) {
+      actionScroll.time = THREE.MathUtils.damp(
+        actionScroll.time,
+        targetTime,
+        100,
+        delta
+      );
+    } else {
+      actionScroll.paused = true;
+    }
 
     if (!actionScroll.isRunning()) return;
 

@@ -27,10 +27,13 @@ export const FourthStage = () => {
     if (!actions) return;
 
     const actionFanLoop = actions["industry-3-loop"];
+    const actionScroll = actions["controller"];
 
-    if (!actionFanLoop) return;
+    if (!actionFanLoop || !actionScroll) return;
 
     actionFanLoop.play();
+    actionScroll.play();
+    actionScroll.clampWhenFinished = true;
   }, [actions]);
 
   useEffect(() => {
@@ -44,28 +47,6 @@ export const FourthStage = () => {
     isSceneActive.current = sceneBounds.current.containsPoint(camera.position);
   });
 
-  // useFrame((_, delta) => {
-  //   if (!actions || !isSceneActive.current) return;
-
-  //   const actionScroll = actions["controller"];
-  //   if (!actionScroll) return;
-
-  //   const duration = actionScroll.getClip().duration;
-  //   const targetTime = scroll.offset * duration;
-
-  //   if (scroll.delta !== 0) {
-  //     actionScroll.time = THREE.MathUtils.lerp(actionScroll.time, targetTime, delta * 10);
-  //     actionScroll.play();
-  //   } else {
-  //     actionScroll.paused = true;
-  //     actionScroll.clampWhenFinished = true;
-  //   }
-
-  //   console.log(scroll.offset, "4th stage");
-
-  //   mixer.update(delta);
-  // });
-
   useFrame((_, delta) => {
     if (!actions || !isSceneActive.current) return;
 
@@ -75,19 +56,42 @@ export const FourthStage = () => {
     const duration = actionScroll.getClip().duration;
     const targetTime = scroll.offset * duration;
 
-    actionScroll.time = THREE.MathUtils.lerp(
-      actionScroll.time,
-      targetTime,
-      delta * 5
-    );
-    actionScroll.paused = false;
-    actionScroll.clampWhenFinished = false; // Отключаем
-    actionScroll.play();
+    if (scroll.delta !== 0) {
+      actionScroll.time = THREE.MathUtils.damp(
+        actionScroll.time,
+        targetTime,
+        100,
+        delta
+      );
+    } else {
+      actionScroll.paused = true;
+    }
 
     if (!actionScroll.isRunning()) return;
 
     mixer.update(delta);
   });
+
+  // useFrame((_, delta) => {
+  //   if (!actions || !isSceneActive.current) return;
+
+  //   const actionScroll = actions["controller"];
+
+  //   if (!actionScroll) return;
+
+  //   const duration = actionScroll.getClip().duration;
+  //   const targetTime = scroll.offset * duration;
+
+  //   actionScroll.time = THREE.MathUtils.lerp(
+  //     actionScroll.time,
+  //     targetTime,
+  //     delta * 5
+  //   );
+
+  //   if (!actionScroll.isRunning()) return;
+
+  //   mixer.update(delta);
+  // });
 
   const hoverAction1 = actions["hover-1"];
   const unhoverAction1 = actions["unhover-1"];

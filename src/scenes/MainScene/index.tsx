@@ -153,8 +153,8 @@ export const MainScene = () => {
     // console.log(scroll.offset, "Main");
 
     // Плавное обновление позиции и поворота камеры из анимации
-    camera.position.lerp(animatedCamera.position, 0.3);
-    camera.quaternion.slerp(animatedCamera.quaternion, 0.3);
+    camera.position.lerp(animatedCamera.position, 0.2);
+    camera.quaternion.slerp(animatedCamera.quaternion, 0.2);
 
     // Применение параллакс-эффекта
     const parallaxX = THREE.MathUtils.lerp(
@@ -173,8 +173,8 @@ export const MainScene = () => {
 
     animatedCamera.updateMatrixWorld();
 
-    // if (!action.isRunning()) return;
-    console.log("delta update");
+    if (!action.isRunning()) return;
+    // console.log("delta update");
     // if (scroll.offset === 1) {
     //   action.time = 0;
 
