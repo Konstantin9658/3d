@@ -18,6 +18,13 @@ html.lenis body {
   height: auto;
 }
 
+.panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+}
+
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
