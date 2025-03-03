@@ -110,7 +110,7 @@ function App() {
           <ScrollControls
             pages={60}
             // infinite
-            distance={3}
+            distance={2}
             damping={0.65}
             prepend
             maxSpeed={0.1}

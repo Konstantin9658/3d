@@ -12,7 +12,6 @@ import {
   REFERENCE_HEIGHT,
   REFERENCE_WIDTH,
 } from "@/consts";
-// import { useScrollOffset } from "@/hooks/useAppHeight";
 import { useMergeVertices } from "@/hooks/useMergeVertices";
 import { useAppStore } from "@/store/app";
 
@@ -73,21 +72,6 @@ export const MainScene = () => {
 
   const debouncedResize = useDebounce(handleResize, 300);
 
-  // const targetScroll = useRef(0);
-
-  // useFrame(() => {
-  //   targetScroll.current += (scroll.offset - targetScroll.current) * 0.5;
-
-  //   // Если достигли конца — сбрасываем в начало
-  //   if (targetScroll.current >= 1) {
-  //     targetScroll.current = 0;
-  //   } else if (targetScroll.current <= 0) {
-  //     targetScroll.current = 1;
-  //   }
-
-  //   scroll.offset = targetScroll.current;
-  // });
-
   useEffect(() => {
     if (!actions) return;
 
@@ -95,7 +79,6 @@ export const MainScene = () => {
 
     if (!cameraMove) return;
 
-    cameraMove.play();
     cameraMove.loop = THREE.LoopOnce;
     cameraMove.clampWhenFinished = true;
   }, [actions]);
@@ -128,29 +111,28 @@ export const MainScene = () => {
   useFrame((_, delta) => {
     if (!appLoaded || !animatedCamera || !actions) return;
 
-    const action = actions[CAMERA_NAME];
+    const actionScroll = actions[CAMERA_NAME];
 
-    if (!action) return;
+    if (!actionScroll) return;
 
-    const duration = action.getClip().duration;
+    const duration = actionScroll.getClip().duration;
     const targetTime = scroll.offset * duration;
 
-    // Проверка на прокрутку: если delta = 0 - значит скролла нет
-    // if (scroll.delta !== 0) {
-    action.time = THREE.MathUtils.lerp(action.time, targetTime, delta * 5);
+    if (scroll.delta !== 0) {
+      actionScroll.time = THREE.MathUtils.damp(
+        actionScroll.time,
+        targetTime,
+        100,
+        delta
+      );
+      actionScroll.play();
+    } else {
+      actionScroll.paused = true;
+    }
 
     // Устанавливаем вращение окружения в зависимости от поворота камеры
     const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, "ZYX");
     setEnvRotation(euler);
-    // console.log(action.time);
-    // action.loop = THREE.LoopOnce;
-    // action.play();
-    // } else {
-    // action.paused = true;
-    // action.clampWhenFinished = true;
-    // }
-
-    // console.log(scroll.offset, "Main");
 
     // Плавное обновление позиции и поворота камеры из анимации
     camera.position.lerp(animatedCamera.position, 0.2);
@@ -173,13 +155,7 @@ export const MainScene = () => {
 
     animatedCamera.updateMatrixWorld();
 
-    if (!action.isRunning()) return;
-    // console.log("delta update");
-    // if (scroll.offset === 1) {
-    //   action.time = 0;
-
-    //   scroll.offset = 0;
-    // }
+    if (!actionScroll.isRunning()) return;
 
     mixer.update(delta);
   });
@@ -187,7 +163,7 @@ export const MainScene = () => {
   return <primitive object={scene} />;
 };
 
-// useGLTF.preload(model);
+useGLTF.preload(model);
 
 // import { useAnimations, useGLTF, useScroll } from "@react-three/drei";
 // import { useFrame, useThree } from "@react-three/fiber";
