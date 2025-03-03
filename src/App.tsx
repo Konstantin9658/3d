@@ -8,6 +8,7 @@ import {
   ScrollControls,
   Stars,
   StatsGl,
+  // useScroll,
 } from "@react-three/drei";
 // import classes from "./styles.module.scss";
 import { Canvas } from "@react-three/fiber";
@@ -110,7 +111,7 @@ function App() {
           <ScrollControls
             pages={60}
             // infinite
-            distance={2}
+            distance={1.5}
             damping={0.65}
             prepend
             maxSpeed={0.1}

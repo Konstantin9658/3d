@@ -1,6 +1,6 @@
 import { useAnimations, useGLTF, useScroll } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 
@@ -17,13 +17,21 @@ export const SixthStage = () => {
   const open = actions["open"];
   const close = actions["close"];
 
+  const hatchOpen = actions["hatch-open"];
+  const hatchClose = actions["hatch-close"];
+
+  useEffect(() => {
+    console.log(scroll.offset);
+  }, [scroll.offset]);
+
   useFrame((_, delta) => {
     if (!open || !close) return;
+    if (!hatchOpen || !hatchClose) return;
 
     const deltaOffset = scroll.offset - lastOffset.current;
 
     lastOffset.current = scroll.offset;
-    console.log(scroll.offset);
+    // console.log(scroll.offset);
 
     if (scroll.offset.toFixed(2) >= "0.82" && deltaOffset > 0) {
       close.stop();
@@ -38,6 +46,21 @@ export const SixthStage = () => {
       close.play();
       close.loop = THREE.LoopOnce;
       close.clampWhenFinished = true;
+    }
+
+    if (scroll.offset.toFixed(2) >= "0.91" && deltaOffset > 0) {
+      hatchClose.stop();
+
+      hatchOpen.play();
+      hatchOpen.loop = THREE.LoopOnce;
+      hatchOpen.clampWhenFinished = true;
+    }
+
+    if (scroll.offset.toFixed(2) <= "0.92" && deltaOffset < 0) {
+      hatchOpen.stop();
+      hatchClose.play();
+      hatchClose.loop = THREE.LoopOnce;
+      hatchClose.clampWhenFinished = true;
     }
 
     mixer.update(delta);

@@ -33,11 +33,10 @@ export const SecondStage = () => {
 
     actionLoopAnimations.forEach((_, index) => {
       actions[actionLoopAnimations[index]]?.play();
-      actions[actionLoopAnimations[index]]?.setDuration(2);
     });
 
     actionScroll.play().paused = true;
-    // actionScroll.clampWhenFinished = true;
+    actionScroll.clampWhenFinished = true;
   }, [actions]);
 
   useEffect(() => {
