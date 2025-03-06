@@ -11,6 +11,8 @@ import * as THREE from "three";
 import stage_3rd from "@/assets/models/3rd_stage.glb";
 import { useVideoMaterial } from "@/hooks/useVideoMaterial";
 
+import animationsPlaceholder from "./animations.jpg";
+import animationsHref from "./animations_256.mp4";
 import {
   CLOSE_CLIP_1,
   CLOSE_CLIP_2,
@@ -18,10 +20,10 @@ import {
   OPEN_CLIP_1,
   OPEN_CLIP_2,
 } from "./consts";
-import imageHref from "./screen.jpg";
-import videoHref from "./screen_1024.mp4";
+import screenPlaceholder from "./screen.jpg";
+import videoHref from "./screen_512.mp4";
 
-const INITIAL_OPACITY = 0.5;
+// const INITIAL_OPACITY = 0.5;
 
 export const ThirdStage = () => {
   console.log("Render 3rd stage");
@@ -40,7 +42,10 @@ export const ThirdStage = () => {
   const camera = useThree((state) => state.camera);
 
   useCursor(isHovered.current);
-  useVideoMaterial(videoHref, imageHref, group, "screen");
+  useVideoMaterial(videoHref, screenPlaceholder, group, "screen");
+  useVideoMaterial(animationsHref, animationsPlaceholder, group, "animations");
+
+  const nexRef = useRef<THREE.Mesh | null>(null);
 
   const scroll = useScroll();
   const lastOffset = useRef(scroll.offset);
@@ -77,7 +82,7 @@ export const ThirdStage = () => {
 
   useEffect(() => {
     if (!group.current) return;
-    const nexMesh = group.current.getObjectByName("nex");
+    const nexMesh = nexRef.current;
 
     if (nexMesh instanceof THREE.Mesh) {
       nexMeshRef.current = nexMesh;
@@ -153,59 +158,60 @@ export const ThirdStage = () => {
     mixer.update(delta);
   });
 
-  useFrame((state) => {
-    if (!glowMeshRef.current || !isSceneActive.current) return;
+  // TODO: when the NEX design comes out, please uncomment this code and make edits if needed
+  // useFrame((state) => {
+  //   if (!glowMeshRef.current || !isSceneActive.current) return;
 
-    const material = glowMeshRef.current.material;
+  //   const material = glowMeshRef.current.material;
 
-    if (Array.isArray(material)) return; // Если массив, игнорируем
+  //   if (Array.isArray(material)) return; // Если массив, игнорируем
 
-    const basicMaterial = material as THREE.MeshBasicMaterial;
+  //   const basicMaterial = material as THREE.MeshBasicMaterial;
 
-    const time = state.clock.elapsedTime;
-    const sinOpacity = Math.sin(time * 1.5) * 0.2 + 0.2;
+  //   const time = state.clock.elapsedTime;
+  //   const sinOpacity = Math.sin(time * 1.5) * 0.2 + 0.2;
 
-    // Определяем целевую прозрачность и цвет в зависимости от состояния ховера
-    if (isHovered.current) {
-      basicMaterial.opacity = THREE.MathUtils.lerp(
-        basicMaterial.opacity,
-        INITIAL_OPACITY,
-        0.1
-      );
-      basicMaterial.color = new THREE.Color(0xffd700);
-    } else {
-      // Без ховера: мерцание золотым цветом
-      basicMaterial.opacity = THREE.MathUtils.lerp(
-        basicMaterial.opacity,
-        sinOpacity,
-        0.1
-      );
+  //   // Определяем целевую прозрачность и цвет в зависимости от состояния ховера
+  //   if (isHovered.current) {
+  //     basicMaterial.opacity = THREE.MathUtils.lerp(
+  //       basicMaterial.opacity,
+  //       INITIAL_OPACITY,
+  //       0.1
+  //     );
+  //     basicMaterial.color = new THREE.Color(0xffd700);
+  //   } else {
+  //     // Без ховера: мерцание золотым цветом
+  //     basicMaterial.opacity = THREE.MathUtils.lerp(
+  //       basicMaterial.opacity,
+  //       sinOpacity,
+  //       0.1
+  //     );
 
-      const baseColor = new THREE.Color(0xffffcc); // Базовый золотой цвет
-      // const pulseColor = baseColor
-      //   .clone()
-      //   .lerp(
-      //     new THREE.Color(0xffffcc),
-      //     (Math.sin(state.clock.elapsedTime * 1.5) + 1) / 2
-      //   );
-      basicMaterial.color = baseColor;
-    }
+  //     const baseColor = new THREE.Color(0xffffcc); // Базовый золотой цвет
+  //     // const pulseColor = baseColor
+  //     //   .clone()
+  //     //   .lerp(
+  //     //     new THREE.Color(0xffffcc),
+  //     //     (Math.sin(state.clock.elapsedTime * 1.5) + 1) / 2
+  //     //   );
+  //     basicMaterial.color = baseColor;
+  //   }
 
-    basicMaterial.transparent = true;
-    basicMaterial.needsUpdate = true;
+  //   basicMaterial.transparent = true;
+  //   basicMaterial.needsUpdate = true;
 
-    return () => basicMaterial.dispose();
-  });
+  //   return () => basicMaterial.dispose();
+  // });
 
-  const toggleHovered = () => {
-    if (!isHovered.current) {
-      isHovered.current = true;
-      document.body.style.cursor = "pointer";
-    } else {
-      isHovered.current = false;
-      document.body.style.cursor = "default";
-    }
-  };
+  // const toggleHovered = () => {
+  //   if (!isHovered.current) {
+  //     isHovered.current = true;
+  //     document.body.style.cursor = "pointer";
+  //   } else {
+  //     isHovered.current = false;
+  //     document.body.style.cursor = "default";
+  //   }
+  // };
 
   return (
     <group ref={group} dispose={null} position={[0, 0, 0]}>
@@ -269,19 +275,14 @@ export const ThirdStage = () => {
           material={materials.all_colors}
         />
         <mesh
+          ref={nexRef}
           name="nex"
           geometry={(nodes.nex as THREE.Mesh).geometry}
           material={materials.all_colors}
           position={[5.569, 0.973, 0.359]}
-          onPointerEnter={toggleHovered}
-          onPointerLeave={toggleHovered}
-        />
-        <mesh
-          name="phine"
-          geometry={(nodes.phine as THREE.Mesh).geometry}
-          material={materials.all_colors}
-          position={[5.237, 0.988, -0.704]}
-          rotation={[Math.PI, -1.324, Math.PI]}
+          rotation={[0, -0.174, 0]}
+          // onPointerEnter={toggleHovered}
+          // onPointerLeave={toggleHovered}
         />
         <mesh
           name="wall"
@@ -295,25 +296,17 @@ export const ThirdStage = () => {
           position={[5.746, 2.624, 3.933]}
         />
         <mesh
-          name="armchair"
-          geometry={(nodes.armchair as THREE.Mesh).geometry}
-          material={materials.all_colors}
-          position={[4.755, 0, 3.857]}
-          rotation={[0, -0.218, 0]}
-          scale={1.318}
-        />
-        <mesh
-          name="armchair001"
-          geometry={(nodes.armchair001 as THREE.Mesh).geometry}
+          name="armchairs"
+          geometry={(nodes.armchairs as THREE.Mesh).geometry}
           material={materials.all_colors}
           position={[4.741, 0, -3.964]}
           rotation={[0, 0.218, 0]}
           scale={1.318}
         />
         <mesh
-          name="screen"
-          geometry={(nodes.screen as THREE.Mesh).geometry}
-          material={materials.screen}
+          name="animations"
+          geometry={(nodes.animations as THREE.Mesh).geometry}
+          material={materials.animations}
         />
         <mesh
           name="shadows"
@@ -321,6 +314,16 @@ export const ThirdStage = () => {
           material={materials.shadow}
           position={[4.51, 0.001, 3.804]}
           rotation={[0, -0.208, 0]}
+        />
+        <mesh
+          name="screen"
+          geometry={(nodes.screen as THREE.Mesh).geometry}
+          material={materials.screen}
+        />
+        <mesh
+          name="screen_glass"
+          geometry={(nodes.screen_glass as THREE.Mesh).geometry}
+          material={materials.glass}
         />
         <mesh
           name="door_1L"
@@ -338,21 +341,21 @@ export const ThirdStage = () => {
           name="dr2_top"
           geometry={(nodes.dr2_top as THREE.Mesh).geometry}
           material={materials["3rd_stage_doors"]}
-          position={[0, 0.951, 8.272]}
+          position={[0, -0.016, 8.272]}
           rotation={[-Math.PI / 2, 0, 0]}
         />
         <mesh
           name="dr2_bot"
           geometry={(nodes.dr2_bot as THREE.Mesh).geometry}
           material={materials["3rd_stage_doors"]}
-          position={[0, 2.921, 8.372]}
+          position={[0, -0.016, 8.372]}
           rotation={[-Math.PI / 2, 0, 0]}
         />
         <mesh
           name="dr2_mid"
           geometry={(nodes.dr2_mid as THREE.Mesh).geometry}
           material={materials["3rd_stage_doors"]}
-          position={[0, 1.939, 8.322]}
+          position={[0, -0.016, 8.322]}
           rotation={[-Math.PI / 2, 0, 0]}
         />
       </group>
